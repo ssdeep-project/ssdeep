@@ -1,0 +1,3 @@
+#!/bin/bash
+
+aclocal && autoconf && autoheader && libtoolize --force --copy && automake

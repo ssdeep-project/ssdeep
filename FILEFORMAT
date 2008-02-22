@@ -1,0 +1,30 @@
+
+SSDEEP FILE FORMAT VERSION 1.0
+
+1. REVISION HISTORY
+
+14 Aug 2006 - Initial version (jk)
+
+
+
+
+2. FILE HEADER
+
+The first line of the file is a header, like this:
+
+ssdeep,1.0--blocksize:hash:hash,filename
+
+ssdeep - Identifies the file type
+1.0    - The version of the file format, NOT the version of the program
+--     - Separator
+
+The remainder of the line identifies the format of the file. 
+Note that for version 1.0 these values must be given EXACTLY as shown above
+
+
+3. FILE DATA
+
+Each line represents the hash of one file as listed in the header.
+Specifically, we have the blocksize used by the program, the hash 
+for this blocksize and twice the blocksize, and the filename. Note that
+there are *no* quotation marks in the file.

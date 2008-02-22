@@ -1,0 +1,71 @@
+
+** Version 2.0 - RBF Date
+
+* New Features
+
+  - Created fuzzy hashing API/DLL
+  - Added support for filenames with Unicode characters on Win32
+  - Added threshold mode
+  - Added CSV mode
+
+* Bugs Fixes
+
+  - Fixed extra characters appearing during verbose mode
+
+
+
+
+** Version 1.1 - 14 Aug 2006
+
+* New Features
+
+  - First public release
+  - Added verbose mode to display filenames as they're being hashed
+  - Added -d mode to make finding similar files in the same directory tree
+      both easier and faster. Removes the need for two command lines and
+      many extraneous lines of output.
+  - Added -p mode to improve -d mode. Prints bi-directional matches together
+    and omits self matches.
+  - Added LARGEFILE_SOURCE define to Linux version to allow processing
+    of large files. (You never know...) 
+
+* Bug Fixes
+
+  - Fixed cosmetic errors in usage message. Updated man page.
+
+
+
+
+** Version 1.0 - 31 Mar 2006
+
+* New Features
+
+ - Released internally
+ - Added silent mode, -s. All error messages are suppressed.
+
+* Bug Fixes
+
+ - Fixed failure to close files after reading in engine.c
+ - Fixed routine to read headers of matching hashes on Windows.
+ - Fixed handling of symbolic links
+ - Fixed cosmetic bug to display error messages if file open fails
+     (e.g. Permission denied, etc)
+ - Removed quotation marks from the signatures but not the file names.
+     Filenames may contain spaces, but signatures may not. Two bytes
+     per line adds up when we starting compiling large hash sets.
+ - Redirected all error messages to stderr instead of stdout
+ - Removed duplicate defines at the start of engine.c
+ - Replaced all references to u32 with C99 standard uint32_t
+ - Added error checking for memory allocation in main.c:main() and
+     engine.c:hash_file()
+ - Removed useless logical AND of 0xFFFFFFFF from rolling hash update
+
+
+
+** Version 0.1 - 4 Nov 2005
+
+* New Features
+
+ - Proof of concept
+ - This version supports recursion, relative and bare file names, and
+     can perform positive matching using a previous output.

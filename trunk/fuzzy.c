@@ -140,7 +140,7 @@ static int ss_init(ss_context *ctx, FILE *handle)
   return FALSE;
 }
 
-const char *b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+static const char *b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 static void ss_engine(ss_context *ctx, unsigned char *buffer, uint32_t buffer_size)
 {

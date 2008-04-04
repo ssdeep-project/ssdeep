@@ -1,0 +1,67 @@
+
+SSDEEP INSTALLATION GUIDE
+
+
+** Microsoft Windows
+
+The easiest way to install ssdeep is to download one of the pre-compiled
+binaries available at http://ssdeep.sourceforge.net/. If you want to 
+compile the program yourself, understand that the source code was
+intended to be compiled using gcc, specifically being cross-compiled
+from Linux or OS X to Win32. You can download gcc for Windows and
+compile the program on a Windows system, but this method is not supported.
+Both MinGW and Cygwin are gcc compilers for Windows. 
+
+To cross compile the program, first install a gcc cross compiler 
+(See the MinGW FAQ: http://www.mingw.org/mingwfaq.shtml#faq-cross)
+Then update the CR_BASE variable in the Makefile to reflect where your
+cross compiler has been installed. Finally, compile the program with:
+
+$ make cross
+
+
+
+** Linux
+
+To compile the program:
+
+$ make
+
+
+
+** OS X
+
+To compile a generic OS X version of the program:
+
+$ make mac
+
+To compile a version that runs faster on G5 processors (and *only* G5
+processors!)
+
+$ make macg5
+
+
+
+** BSD, Solaris, and all other OS
+
+To compile the program:
+
+$ make unix
+
+
+
+
+
+** To install the program:
+
+# make install
+
+Note that you must be root to install the program in the default
+location! You can change the installation point by altering the 
+PREFIX variable in the Makefile.
+
+
+** To uninstall the program
+
+# make uninstall
+

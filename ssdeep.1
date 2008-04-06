@@ -4,7 +4,9 @@
 ssdeep - Computes context triggered piecewise hashes
 
 .SH SYNOPSIS
-.B ssdeep [-V|h] [-m <file>] [-vrpdsbl] [FILES]
+.B ssdeep [-m <file>] [-vprdsblc] [-t val] [FILES]
+.br
+.B ssdeep [-V|h] 
 
 .SH DESCRIPTION
 .PP
@@ -16,11 +18,6 @@ is written to standard out and errors to standard error.
 Input from standard input is not supported.
 
 .TP
-\fB\-v\fR
-Verbose mode. The name of each file is printed to standard error
-as it is being hashed.
-
-.TP
 \fB\-m <file>\fR
 Load the file of known hashes to be used for matching. This file must
 be a previous output of the program and have the correct header. Displays
@@ -29,13 +26,10 @@ against. Although filenames may not contain Unicode characters, they
 can hold hashes with Unicode filenames.
 
 .TP
-\fB\-r\fR
-Enables recursive mode. All subdirectories are traversed.
-Please note that recursive mode cannot be used to examine all
-files of a given file extension. For example, invoking the program with
-\fB\-r *.txt\fR will examine all files in directories that end in .txt. 
-If you want to process all files in a directory tree with the .txt suffix,
-try using the \fBfind(1)\fR command.
+\fB\-v\fR
+Verbose mode. The name of each file is printed to standard error
+as it is being hashed.
+
 
 .TP
 \fB\-p\fR
@@ -45,6 +39,15 @@ file B, displays "A matches B" and "B matches A" but not "A matches A".
 Each file's information is grouped and separated by newlines. 
 This flag may be used with the \fB\-m\fR flag, but not 
 the \fB\-d\fR flag.
+
+.TP
+\fB\-r\fR
+Enables recursive mode. All subdirectories are traversed.
+Please note that recursive mode cannot be used to examine all
+files of a given file extension. For example, invoking the program with
+\fB\-r *.txt\fR will examine all files in directories that end in .txt. 
+If you want to process all files in a directory tree with the .txt suffix,
+try using the \fBfind(1)\fR command.
 
 .TP
 \fB\-d\fR
@@ -69,6 +72,17 @@ This flag may not be used in conjunction with the \fB\-l\fR flag.
 Enables relative file paths. Instead of printing the absolute path for
 each file, displays the relative file path as indicated on the command 
 line. This flag may not be used in conjunction with the \fB\-b\fR flag.
+
+.TP
+\fB\-c\fR
+Enables comma separated output mode. In any of the matching modes
+\-d, \-p, or \-m,
+displays the results as input file, known file, matching score.
+
+.TP
+\fB\-t <val>\fR
+In any of the matching modes, only displays matches whose match
+score is above the given value.
 
 .TP
 \fB\-h\fR

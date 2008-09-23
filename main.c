@@ -221,33 +221,33 @@ int main(int argc, char **argv)
      specified, we should tackle standard input */
   if (optind == argc)
     fatal_error("%s: No input files", __progname);
-  else
-    {
-      MD5DEEP_ALLOC(TCHAR,fn,PATH_MAX);
-      MD5DEEP_ALLOC(TCHAR,cwd,PATH_MAX);
 
-      cwd = _tgetcwd(cwd,PATH_MAX);
-      if (NULL == cwd)
-	fatal_error("%s: %s", __progname, strerror(errno));
+  MD5DEEP_ALLOC(TCHAR,fn,PATH_MAX);
+  MD5DEEP_ALLOC(TCHAR,cwd,PATH_MAX);
 
-      count = optind;
-
-      while (count < s->argc)
-	{  
-	  generate_filename(s,fn,cwd,s->argv[count]);
-	  
-#ifdef _WIN32
-	  status = process_win32(s,fn);
-#else
-	  status = process_normal(s,fn);
-#endif
-	  
-	  ++count;
-	}
+  cwd = _tgetcwd(cwd,PATH_MAX);
+  if (NULL == cwd)
+    fatal_error("%s: %s", __progname, strerror(errno));
+  
+  count = optind;
+  
+  while (count < s->argc)
+    {  
+      generate_filename(s,fn,cwd,s->argv[count]);
       
-      free(fn);
-      free(cwd);
+#ifdef _WIN32
+      status = process_win32(s,fn);
+#else
+      status = process_normal(s,fn);
+#endif
+      
+      ++count;
     }
 
+  if (s->mode & mode_match_pretty)
+    match_pretty(s);
+  
+  free(fn);
+  free(cwd);
   return (EXIT_SUCCESS);
 }

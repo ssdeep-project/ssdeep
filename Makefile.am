@@ -56,7 +56,7 @@ win-package: win-docs
 	rm -rf $(distdir) $(WINDOWSDOCS)
 
 world: distclean
-	./configure --host=mingw32
+	./configure --host=i386-mingw32
 	make win-package
 	make dist
 

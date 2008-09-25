@@ -1,7 +1,7 @@
 #! /bin/sh
 
 # libtoolT - Provide generalized library-building support services.
-# Generated automatically by  (GNU ssdeep 2.0)
+# Generated automatically by  (GNU ssdeep 2.1)
 # NOTE: Changes made to this file will be lost: look at ltmain.sh.
 #
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
@@ -56,18 +56,18 @@ build_libtool_libs=yes
 build_old_libs=yes
 
 # Whether or not to add -lc for building shared libraries.
-build_libtool_need_lc=yes
+build_libtool_need_lc=no
 
 # Whether or not to disallow shared libs when runtime libs are static
-allow_libtool_libs_with_static_runtimes=yes
+allow_libtool_libs_with_static_runtimes=no
 
 # Whether or not to optimize for fast installation.
 fast_install=needless
 
 # The host system.
-host_alias=i386-mingw32
-host=i386-pc-mingw32
-host_os=mingw32
+host_alias=
+host=powerpc-apple-darwin9.5.0
+host_os=darwin9.5.0
 
 # The build system.
 build_alias=
@@ -78,17 +78,17 @@ build_os=darwin9.5.0
 echo="/bin/echo"
 
 # The archiver.
-AR="i386-mingw32-ar"
+AR="ar"
 AR_FLAGS="cru"
 
 # A C compiler.
-LTCC="i386-mingw32-gcc"
+LTCC="gcc"
 
 # LTCC compiler flags.
 LTCFLAGS="-g -O2"
 
 # A language-specific compiler.
-CC="i386-mingw32-gcc"
+CC="gcc"
 
 # Is the compiler the GNU C compiler?
 with_gcc=yes
@@ -97,35 +97,35 @@ with_gcc=yes
 EGREP="/usr/bin/grep -E"
 
 # The linker used to build libraries.
-LD="/Users/jessek/mingw32/i386-mingw32/bin/ld"
+LD="/usr/libexec/gcc/powerpc-apple-darwin9/4.0.1/ld"
 
 # Whether we need hard or soft links.
 LN_S="ln -s"
 
 # A BSD-compatible nm program.
-NM="/Users/jessek/mingw32/bin/i386-mingw32-nm -B"
+NM="/usr/bin/nm -p"
 
 # A symbol stripping program
-STRIP="i386-mingw32-strip"
+STRIP="strip"
 
 # Used to examine libraries when file_magic_cmd begins "file"
 MAGIC_CMD=file
 
 # Used on cygwin: DLL creation program.
-DLLTOOL="i386-mingw32-dlltool"
+DLLTOOL="dlltool"
 
 # Used on cygwin: object dumper.
-OBJDUMP="i386-mingw32-objdump"
+OBJDUMP="objdump"
 
 # Used on cygwin: assembler.
-AS="i386-mingw32-as"
+AS="as"
 
 # The name of the directory that contains temporary libtool files.
 objdir=.libs
 
 # How to create reloadable object files.
 reload_flag=" -r"
-reload_cmds="\$LD\$reload_flag -o \$output\$reload_objs"
+reload_cmds="\$LTCC \$LTCFLAGS -nostdlib \${wl}-r -o \$output\$reload_objs"
 
 # How to pass a linker flag through the compiler.
 wl="-Wl,"
@@ -137,13 +137,13 @@ objext="o"
 libext="a"
 
 # Shared library suffix (normally ".so").
-shrext_cmds='.dll'
+shrext_cmds='`test .$module = .yes && echo .so || echo .dylib`'
 
 # Executable file suffix (normally "").
 exeext=""
 
 # Additional compiler flags for building library objects.
-pic_flag=" -DDLL_EXPORT -DPIC"
+pic_flag=" -fno-common -DPIC"
 pic_mode=default
 
 # What is the maximum length of a command?
@@ -171,35 +171,35 @@ dlopen_self=unknown
 dlopen_self_static=unknown
 
 # Compiler flag to prevent dynamic linking.
-link_static_flag="-static"
+link_static_flag=""
 
 # Compiler flag to turn off builtin functions.
 no_builtin_flag=" -fno-builtin"
 
 # Compiler flag to allow reflexive dlopens.
-export_dynamic_flag_spec="\${wl}--export-dynamic"
+export_dynamic_flag_spec=""
 
 # Compiler flag to generate shared objects directly from archives.
-whole_archive_flag_spec="\${wl}--whole-archive\$convenience \${wl}--no-whole-archive"
+whole_archive_flag_spec=""
 
 # Compiler flag to generate thread-safe objects.
 thread_safe_flag_spec=""
 
 # Library versioning type.
-version_type=windows
+version_type=darwin
 
 # Format of library name prefix.
 libname_spec="lib\$name"
 
 # List of archive names.  First name is the real one, the rest are links.
 # The last name is the one that the linker finds with -lNAME.
-library_names_spec="\$libname.dll.a"
+library_names_spec="\${libname}\${release}\${versuffix}\$shared_ext \${libname}\${release}\${major}\$shared_ext \${libname}\$shared_ext"
 
 # The coded name of the library, if different from the real name.
-soname_spec="\${libname}\`echo \${release} | \$SED -e s/[.]/-/g\`\${versuffix}\${shared_ext}"
+soname_spec="\${libname}\${release}\${major}\$shared_ext"
 
 # Commands used to build and install an old-style archive.
-RANLIB="i386-mingw32-ranlib"
+RANLIB="ranlib"
 old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$oldlib"
 old_postinstall_cmds="chmod 644 \$oldlib~\$RANLIB \$oldlib"
 old_postuninstall_cmds=""
@@ -211,31 +211,18 @@ old_archive_from_new_cmds=""
 old_archive_from_expsyms_cmds=""
 
 # Commands used to build and install a shared archive.
-archive_cmds="\$CC -shared \$libobjs \$deplibs \$compiler_flags -o \$output_objdir/\$soname \${wl}--enable-auto-image-base -Xlinker --out-implib -Xlinker \$lib"
-archive_expsym_cmds="if test \\\"x\\\`\$SED 1q \$export_symbols\\\`\\\" = xEXPORTS; then
-	  cp \$export_symbols \$output_objdir/\$soname.def;
-	else
-	  echo EXPORTS > \$output_objdir/\$soname.def;
-	  cat \$export_symbols >> \$output_objdir/\$soname.def;
-	fi~
-	\$CC -shared \$output_objdir/\$soname.def \$libobjs \$deplibs \$compiler_flags -o \$output_objdir/\$soname \${wl}--enable-auto-image-base -Xlinker --out-implib -Xlinker \$lib"
-postinstall_cmds="base_file=\\\`basename \\\${file}\\\`~
-      dlpath=\\\`\$SHELL 2>&1 -c '. \$dir/'\\\${base_file}'i;echo \\\$dlname'\\\`~
-      dldir=\$destdir/\\\`dirname \\\$dlpath\\\`~
-      test -d \\\$dldir || mkdir -p \\\$dldir~
-      \$install_prog \$dir/\$dlname \\\$dldir/\$dlname~
-      chmod a+x \\\$dldir/\$dlname"
-postuninstall_cmds="dldll=\\\`\$SHELL 2>&1 -c '. \$file; echo \\\$dlname'\\\`~
-      dlpath=\$dir/\\\$dldll~
-       \$rm \\\$dlpath"
+archive_cmds="\$CC -dynamiclib \$allow_undefined_flag -o \$lib \$libobjs \$deplibs \$compiler_flags -install_name \$rpath/\$soname \$verstring \$single_module~dsymutil \$lib || :"
+archive_expsym_cmds="sed 's,^,_,' < \$export_symbols > \$output_objdir/\${libname}-symbols.expsym~\$CC -dynamiclib \$allow_undefined_flag -o \$lib \$libobjs \$deplibs \$compiler_flags -install_name \$rpath/\$soname \$verstring \$single_module \${wl}-exported_symbols_list,\$output_objdir/\${libname}-symbols.expsym~dsymutil \$lib || :"
+postinstall_cmds=""
+postuninstall_cmds=""
 
 # Commands used to build a loadable module (assumed same as above if empty)
-module_cmds=""
-module_expsym_cmds=""
+module_cmds="\$CC \$allow_undefined_flag -o \$lib -bundle \$libobjs \$deplibs \$compiler_flags~dsymutil \$lib || :"
+module_expsym_cmds="sed -e 's,^,_,' < \$export_symbols > \$output_objdir/\${libname}-symbols.expsym~\$CC \$allow_undefined_flag -o \$lib -bundle \$libobjs \$deplibs \$compiler_flags \${wl}-exported_symbols_list,\$output_objdir/\${libname}-symbols.expsym~dsymutil \$lib || :"
 
 # Commands to strip libraries.
-old_striplib="i386-mingw32-strip --strip-debug"
-striplib="i386-mingw32-strip --strip-unneeded"
+old_striplib="strip -S"
+striplib="strip -x"
 
 # Dependencies to place before the objects being linked to create a
 # shared library.
@@ -262,13 +249,13 @@ compiler_lib_search_dirs=""
 compiler_lib_search_path=""
 
 # Method to check whether dependent libraries are shared objects.
-deplibs_check_method="file_magic ^x86 archive import|^x86 DLL"
+deplibs_check_method="pass_all"
 
 # Command to use when deplibs_check_method == file_magic.
-file_magic_cmd="func_win32_libid"
+file_magic_cmd="\$MAGIC_CMD"
 
 # Flag that allows shared libraries with undefined symbols to be built.
-allow_undefined_flag="unsupported"
+allow_undefined_flag="\${wl}-undefined \${wl}dynamic_lookup"
 
 # Flag that forces no undefined symbols.
 no_undefined_flag=""
@@ -280,7 +267,7 @@ finish_cmds=""
 finish_eval=""
 
 # Take the output of nm and produce a listing of raw symbols and C names.
-global_symbol_pipe="sed -n -e 's/^.*[ 	]\\([ABCDGIRSTW][ABCDGIRSTW]*\\)[ 	][ 	]*_\\([_A-Za-z][_A-Za-z0-9]*\\)\$/\\1 _\\2 \\2/p'"
+global_symbol_pipe="sed -n -e 's/^.*[ 	]\\([BCDEGRST][BCDEGRST]*\\)[ 	][ 	]*_\\([_A-Za-z][_A-Za-z0-9]*\\)\$/\\1 _\\2 \\2/p'"
 
 # Transform the output of nm in a proper C declaration
 global_symbol_to_cdecl="sed -n -e 's/^. .* \\(.*\\)\$/extern int \\1;/p'"
@@ -289,10 +276,10 @@ global_symbol_to_cdecl="sed -n -e 's/^. .* \\(.*\\)\$/extern int \\1;/p'"
 global_symbol_to_c_name_address="sed -n -e 's/^: \\([^ ]*\\) \$/  {\\\"\\1\\\", (lt_ptr) 0},/p' -e 's/^[BCDEGRST] \\([^ ]*\\) \\([^ ]*\\)\$/  {\"\\2\", (lt_ptr) \\&\\2},/p'"
 
 # This is the shared library runtime path variable.
-runpath_var=LD_RUN_PATH
+runpath_var=
 
 # This is the shared library path variable.
-shlibpath_var=PATH
+shlibpath_var=DYLD_LIBRARY_PATH
 
 # Is shlibpath searched before the hard-coded library search path?
 shlibpath_overrides_runpath=yes
@@ -305,7 +292,7 @@ hardcode_into_libs=no
 
 # Flag to hardcode $libdir into a binary during linking.
 # This must work even if $libdir does not exist.
-hardcode_libdir_flag_spec="-L\$libdir"
+hardcode_libdir_flag_spec=""
 
 # If ld is used when linking, flag to hardcode $libdir into
 # a binary during linking. This must work even if $libdir does
@@ -329,20 +316,20 @@ hardcode_shlibpath_var=unsupported
 
 # Set to yes if building a shared library automatically hardcodes DIR into the library
 # and all subsequent libraries and executables linked against it.
-hardcode_automatic=no
+hardcode_automatic=yes
 
 # Variables whose values should be saved in libtool wrapper scripts and
 # restored at relink time.
-variables_saved_for_relink="PATH PATH LD_RUN_PATH GCC_EXEC_PREFIX COMPILER_PATH LIBRARY_PATH"
+variables_saved_for_relink="PATH DYLD_LIBRARY_PATH  GCC_EXEC_PREFIX COMPILER_PATH LIBRARY_PATH"
 
 # Whether libtool must link a program against all its dependency libraries.
-link_all_deplibs=unknown
+link_all_deplibs=yes
 
 # Compile-time system search path for libraries
-sys_lib_search_path_spec=" /Users/jessek/mingw32/lib/gcc/i386-mingw32/4.2.1-sjlj/ /usr/lib/gcc/i386-mingw32/4.2.1-sjlj/ /Users/jessek/mingw32/lib/gcc/i386-mingw32/4.2.1-sjlj/../../../../i386-mingw32/lib/i386-mingw32/4.2.1-sjlj/ /Users/jessek/mingw32/lib/gcc/i386-mingw32/4.2.1-sjlj/../../../../i386-mingw32/lib/"
+sys_lib_search_path_spec="/usr/lib/powerpc-apple-darwin9/4.0.1 /usr/lib /usr/lib/gcc/powerpc-apple-darwin9/4.0.1 /usr/local/lib"
 
 # Run-time system search path for libraries
-sys_lib_dlsearch_path_spec="/lib /usr/lib"
+sys_lib_dlsearch_path_spec="/usr/local/lib /lib /usr/lib"
 
 # Fix the shell variable $srcfile for the compiler.
 fix_srcfile_path=""
@@ -351,7 +338,7 @@ fix_srcfile_path=""
 always_export_symbols=no
 
 # The commands to list exported symbols.
-export_symbols_cmds="\$NM \$libobjs \$convenience | \$global_symbol_pipe | \$SED -e '/^[BCDGRS][ ]/s/.*[ ]\\\\([^ ]*\\\\)/\\\\1 DATA/' -e '/^[AITW][ ]/s/.*[ ]//' | sort | uniq > \$export_symbols"
+export_symbols_cmds="\$NM \$libobjs \$convenience | \$global_symbol_pipe | \$SED 's/.* //' | sort | uniq > \$export_symbols"
 
 # The commands to extract the exported symbol list from a shared archive.
 extract_expsyms_cmds=""
@@ -7244,15 +7231,15 @@ build_old_libs=yes
 build_libtool_need_lc=no
 
 # Whether or not to disallow shared libs when runtime libs are static
-allow_libtool_libs_with_static_runtimes=yes
+allow_libtool_libs_with_static_runtimes=no
 
 # Whether or not to optimize for fast installation.
 fast_install=needless
 
 # The host system.
-host_alias=i386-mingw32
-host=i386-pc-mingw32
-host_os=mingw32
+host_alias=
+host=powerpc-apple-darwin9.5.0
+host_os=darwin9.5.0
 
 # The build system.
 build_alias=
@@ -7263,17 +7250,17 @@ build_os=darwin9.5.0
 echo="/bin/echo"
 
 # The archiver.
-AR="i386-mingw32-ar"
+AR="ar"
 AR_FLAGS="cru"
 
 # A C compiler.
-LTCC="i386-mingw32-gcc"
+LTCC="gcc"
 
 # LTCC compiler flags.
 LTCFLAGS="-g -O2"
 
 # A language-specific compiler.
-CC="i386-mingw32-g++"
+CC="g++"
 
 # Is the compiler the GNU C compiler?
 with_gcc=yes
@@ -7282,35 +7269,35 @@ with_gcc=yes
 EGREP="/usr/bin/grep -E"
 
 # The linker used to build libraries.
-LD="/Users/jessek/mingw32/i386-mingw32/bin/ld"
+LD="/usr/libexec/gcc/powerpc-apple-darwin9/4.0.1/ld"
 
 # Whether we need hard or soft links.
 LN_S="ln -s"
 
 # A BSD-compatible nm program.
-NM="/Users/jessek/mingw32/bin/i386-mingw32-nm -B"
+NM="/usr/bin/nm -p"
 
 # A symbol stripping program
-STRIP="i386-mingw32-strip"
+STRIP="strip"
 
 # Used to examine libraries when file_magic_cmd begins "file"
 MAGIC_CMD=file
 
 # Used on cygwin: DLL creation program.
-DLLTOOL="i386-mingw32-dlltool"
+DLLTOOL="dlltool"
 
 # Used on cygwin: object dumper.
-OBJDUMP="i386-mingw32-objdump"
+OBJDUMP="objdump"
 
 # Used on cygwin: assembler.
-AS="i386-mingw32-as"
+AS="as"
 
 # The name of the directory that contains temporary libtool files.
 objdir=.libs
 
 # How to create reloadable object files.
 reload_flag=" -r"
-reload_cmds="\$LD\$reload_flag -o \$output\$reload_objs"
+reload_cmds="\$LTCC \$LTCFLAGS -nostdlib \${wl}-r -o \$output\$reload_objs"
 
 # How to pass a linker flag through the compiler.
 wl="-Wl,"
@@ -7322,13 +7309,13 @@ objext="o"
 libext="a"
 
 # Shared library suffix (normally ".so").
-shrext_cmds='.dll'
+shrext_cmds='`test .$module = .yes && echo .so || echo .dylib`'
 
 # Executable file suffix (normally "").
 exeext=""
 
 # Additional compiler flags for building library objects.
-pic_flag=" -DDLL_EXPORT -DPIC"
+pic_flag=" -fno-common -DPIC"
 pic_mode=default
 
 # What is the maximum length of a command?
@@ -7356,35 +7343,35 @@ dlopen_self=unknown
 dlopen_self_static=unknown
 
 # Compiler flag to prevent dynamic linking.
-link_static_flag="-static"
+link_static_flag=""
 
 # Compiler flag to turn off builtin functions.
 no_builtin_flag=" -fno-builtin"
 
 # Compiler flag to allow reflexive dlopens.
-export_dynamic_flag_spec="\${wl}--export-dynamic"
+export_dynamic_flag_spec=""
 
 # Compiler flag to generate shared objects directly from archives.
-whole_archive_flag_spec="\${wl}--whole-archive\$convenience \${wl}--no-whole-archive"
+whole_archive_flag_spec=""
 
 # Compiler flag to generate thread-safe objects.
 thread_safe_flag_spec=""
 
 # Library versioning type.
-version_type=windows
+version_type=darwin
 
 # Format of library name prefix.
 libname_spec="lib\$name"
 
 # List of archive names.  First name is the real one, the rest are links.
 # The last name is the one that the linker finds with -lNAME.
-library_names_spec="\$libname.dll.a"
+library_names_spec="\${libname}\${release}\${versuffix}\$shared_ext \${libname}\${release}\${major}\$shared_ext \${libname}\$shared_ext"
 
 # The coded name of the library, if different from the real name.
-soname_spec="\${libname}\`echo \${release} | \$SED -e s/[.]/-/g\`\${versuffix}\${shared_ext}"
+soname_spec="\${libname}\${release}\${major}\$shared_ext"
 
 # Commands used to build and install an old-style archive.
-RANLIB="i386-mingw32-ranlib"
+RANLIB="ranlib"
 old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$oldlib"
 old_postinstall_cmds="chmod 644 \$oldlib~\$RANLIB \$oldlib"
 old_postuninstall_cmds=""
@@ -7396,39 +7383,26 @@ old_archive_from_new_cmds=""
 old_archive_from_expsyms_cmds=""
 
 # Commands used to build and install a shared archive.
-archive_cmds="\$CC -shared -nostdlib \$predep_objects \$libobjs \$deplibs \$postdep_objects \$compiler_flags -o \$output_objdir/\$soname \${wl}--enable-auto-image-base -Xlinker --out-implib -Xlinker \$lib"
-archive_expsym_cmds="if test \\\"x\\\`\$SED 1q \$export_symbols\\\`\\\" = xEXPORTS; then
-	cp \$export_symbols \$output_objdir/\$soname.def;
-      else
-	echo EXPORTS > \$output_objdir/\$soname.def;
-	cat \$export_symbols >> \$output_objdir/\$soname.def;
-      fi~
-      \$CC -shared -nostdlib \$output_objdir/\$soname.def \$predep_objects \$libobjs \$deplibs \$postdep_objects \$compiler_flags -o \$output_objdir/\$soname \${wl}--enable-auto-image-base -Xlinker --out-implib -Xlinker \$lib"
-postinstall_cmds="base_file=\\\`basename \\\${file}\\\`~
-      dlpath=\\\`\$SHELL 2>&1 -c '. \$dir/'\\\${base_file}'i;echo \\\$dlname'\\\`~
-      dldir=\$destdir/\\\`dirname \\\$dlpath\\\`~
-      test -d \\\$dldir || mkdir -p \\\$dldir~
-      \$install_prog \$dir/\$dlname \\\$dldir/\$dlname~
-      chmod a+x \\\$dldir/\$dlname"
-postuninstall_cmds="dldll=\\\`\$SHELL 2>&1 -c '. \$file; echo \\\$dlname'\\\`~
-      dlpath=\$dir/\\\$dldll~
-       \$rm \\\$dlpath"
+archive_cmds="\$CC -dynamiclib \$allow_undefined_flag -o \$lib \$libobjs \$deplibs \$compiler_flags -install_name \$rpath/\$soname \$verstring \$single_module~dsymutil \$lib || :"
+archive_expsym_cmds="sed 's,^,_,' < \$export_symbols > \$output_objdir/\${libname}-symbols.expsym~\$CC -dynamiclib \$allow_undefined_flag -o \$lib \$libobjs \$deplibs \$compiler_flags -install_name \$rpath/\$soname \$verstring \$single_module \${wl}-exported_symbols_list,\$output_objdir/\${libname}-symbols.expsym~dsymutil \$lib || :"
+postinstall_cmds=""
+postuninstall_cmds=""
 
 # Commands used to build a loadable module (assumed same as above if empty)
-module_cmds=""
-module_expsym_cmds=""
+module_cmds="\$CC \$allow_undefined_flag -o \$lib -bundle \$libobjs \$deplibs \$compiler_flags~dsymutil \$lib || :"
+module_expsym_cmds="sed -e 's,^,_,' < \$export_symbols > \$output_objdir/\${libname}-symbols.expsym~\$CC \$allow_undefined_flag -o \$lib -bundle \$libobjs \$deplibs \$compiler_flags \${wl}-exported_symbols_list,\$output_objdir/\${libname}-symbols.expsym~dsymutil \$lib || :"
 
 # Commands to strip libraries.
-old_striplib="i386-mingw32-strip --strip-debug"
-striplib="i386-mingw32-strip --strip-unneeded"
+old_striplib="strip -S"
+striplib="strip -x"
 
 # Dependencies to place before the objects being linked to create a
 # shared library.
-predep_objects="/Users/jessek/mingw32/lib/gcc/i386-mingw32/4.2.1-sjlj/../../../../i386-mingw32/lib/dllcrt2.o /Users/jessek/mingw32/lib/gcc/i386-mingw32/4.2.1-sjlj/crtbegin.o"
+predep_objects=""
 
 # Dependencies to place after the objects being linked to create a
 # shared library.
-postdep_objects="/Users/jessek/mingw32/lib/gcc/i386-mingw32/4.2.1-sjlj/crtend.o"
+postdep_objects=""
 
 # Dependencies to place before the objects being linked to create a
 # shared library.
@@ -7436,24 +7410,24 @@ predeps=""
 
 # Dependencies to place after the objects being linked to create a
 # shared library.
-postdeps="-lstdc++ -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt -luser32 -lkernel32 -ladvapi32 -lshell32 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt"
+postdeps=""
 
 # The directories searched by this compiler when creating a shared
 # library
-compiler_lib_search_dirs="/Users/jessek/mingw32/lib/gcc/i386-mingw32/4.2.1-sjlj /Users/jessek/mingw32/lib/gcc/i386-mingw32/4.2.1-sjlj/../../../../i386-mingw32/lib"
+compiler_lib_search_dirs=""
 
 # The library search path used internally by the compiler when linking
 # a shared library.
-compiler_lib_search_path="-L/Users/jessek/mingw32/lib/gcc/i386-mingw32/4.2.1-sjlj -L/Users/jessek/mingw32/lib/gcc/i386-mingw32/4.2.1-sjlj/../../../../i386-mingw32/lib"
+compiler_lib_search_path=""
 
 # Method to check whether dependent libraries are shared objects.
-deplibs_check_method="file_magic ^x86 archive import|^x86 DLL"
+deplibs_check_method="pass_all"
 
 # Command to use when deplibs_check_method == file_magic.
-file_magic_cmd="func_win32_libid"
+file_magic_cmd="\$MAGIC_CMD"
 
 # Flag that allows shared libraries with undefined symbols to be built.
-allow_undefined_flag="unsupported"
+allow_undefined_flag="\${wl}-undefined \${wl}dynamic_lookup"
 
 # Flag that forces no undefined symbols.
 no_undefined_flag=""
@@ -7465,7 +7439,7 @@ finish_cmds=""
 finish_eval=""
 
 # Take the output of nm and produce a listing of raw symbols and C names.
-global_symbol_pipe="sed -n -e 's/^.*[ 	]\\([ABCDGIRSTW][ABCDGIRSTW]*\\)[ 	][ 	]*_\\([_A-Za-z][_A-Za-z0-9]*\\)\$/\\1 _\\2 \\2/p'"
+global_symbol_pipe="sed -n -e 's/^.*[ 	]\\([BCDEGRST][BCDEGRST]*\\)[ 	][ 	]*_\\([_A-Za-z][_A-Za-z0-9]*\\)\$/\\1 _\\2 \\2/p'"
 
 # Transform the output of nm in a proper C declaration
 global_symbol_to_cdecl="sed -n -e 's/^. .* \\(.*\\)\$/extern int \\1;/p'"
@@ -7474,10 +7448,10 @@ global_symbol_to_cdecl="sed -n -e 's/^. .* \\(.*\\)\$/extern int \\1;/p'"
 global_symbol_to_c_name_address="sed -n -e 's/^: \\([^ ]*\\) \$/  {\\\"\\1\\\", (lt_ptr) 0},/p' -e 's/^[BCDEGRST] \\([^ ]*\\) \\([^ ]*\\)\$/  {\"\\2\", (lt_ptr) \\&\\2},/p'"
 
 # This is the shared library runtime path variable.
-runpath_var=LD_RUN_PATH
+runpath_var=
 
 # This is the shared library path variable.
-shlibpath_var=PATH
+shlibpath_var=DYLD_LIBRARY_PATH
 
 # Is shlibpath searched before the hard-coded library search path?
 shlibpath_overrides_runpath=yes
@@ -7490,7 +7464,7 @@ hardcode_into_libs=no
 
 # Flag to hardcode $libdir into a binary during linking.
 # This must work even if $libdir does not exist.
-hardcode_libdir_flag_spec="-L\$libdir"
+hardcode_libdir_flag_spec=""
 
 # If ld is used when linking, flag to hardcode $libdir into
 # a binary during linking. This must work even if $libdir does
@@ -7514,20 +7488,20 @@ hardcode_shlibpath_var=unsupported
 
 # Set to yes if building a shared library automatically hardcodes DIR into the library
 # and all subsequent libraries and executables linked against it.
-hardcode_automatic=no
+hardcode_automatic=yes
 
 # Variables whose values should be saved in libtool wrapper scripts and
 # restored at relink time.
-variables_saved_for_relink="PATH PATH LD_RUN_PATH GCC_EXEC_PREFIX COMPILER_PATH LIBRARY_PATH"
+variables_saved_for_relink="PATH DYLD_LIBRARY_PATH  GCC_EXEC_PREFIX COMPILER_PATH LIBRARY_PATH"
 
 # Whether libtool must link a program against all its dependency libraries.
-link_all_deplibs=unknown
+link_all_deplibs=yes
 
 # Compile-time system search path for libraries
-sys_lib_search_path_spec=" /Users/jessek/mingw32/lib/gcc/i386-mingw32/4.2.1-sjlj/ /usr/lib/gcc/i386-mingw32/4.2.1-sjlj/ /Users/jessek/mingw32/lib/gcc/i386-mingw32/4.2.1-sjlj/../../../../i386-mingw32/lib/i386-mingw32/4.2.1-sjlj/ /Users/jessek/mingw32/lib/gcc/i386-mingw32/4.2.1-sjlj/../../../../i386-mingw32/lib/"
+sys_lib_search_path_spec="/usr/lib/powerpc-apple-darwin9/4.0.1 /usr/lib /usr/lib/gcc/powerpc-apple-darwin9/4.0.1 /usr/local/lib"
 
 # Run-time system search path for libraries
-sys_lib_dlsearch_path_spec="/lib /usr/lib"
+sys_lib_dlsearch_path_spec="/usr/local/lib /lib /usr/lib"
 
 # Fix the shell variable $srcfile for the compiler.
 fix_srcfile_path=""
@@ -7536,7 +7510,7 @@ fix_srcfile_path=""
 always_export_symbols=no
 
 # The commands to list exported symbols.
-export_symbols_cmds="\$NM \$libobjs \$convenience | \$global_symbol_pipe | \$SED -e '/^[BCDGRS][ ]/s/.*[ ]\\\\([^ ]*\\\\)/\\\\1 DATA/;/^.*[ ]__nm__/s/^.*[ ]__nm__\\\\([^ ]*\\\\)[ ][^ ]*/\\\\1 DATA/;/^I[ ]/d;/^[AITW][ ]/s/.*[ ]//' | sort | uniq > \$export_symbols"
+export_symbols_cmds="\$NM \$libobjs \$convenience | \$global_symbol_pipe | \$SED 's/.* //' | sort | uniq > \$export_symbols"
 
 # The commands to extract the exported symbol list from a shared archive.
 extract_expsyms_cmds=""

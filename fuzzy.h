@@ -21,6 +21,13 @@ extern int fuzzy_hash_buf(unsigned char *buf,
 extern int fuzzy_hash_file(FILE *handle,
 			   char *result);
 
+/* Opens, reads, and hashes the contents of the file 'filename' 
+   The result must be allocated to hold FUZZY_MAX_RESULT characters. 
+   Returns 0 on success, non-zero on error. */
+extern int fuzzy_hash_filename(char * filename,
+			       char * result);
+
+
 
 /* Returns a value from 0 to 100 indicating the match score of the 
    two signatures. A match score of zero indicates the sigantures

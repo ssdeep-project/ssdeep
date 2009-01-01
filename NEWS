@@ -1,3 +1,16 @@
+** Version 2.1 - 1 Jan 2009
+
+* New Features
+
+  - Added fuzzy_hash_filename function to hash an entire file given
+    only its filename. Avoids issues on Win32 systems.
+
+* Bug Fixes
+
+  - Fixed -p mode to display output 
+
+
+
 
 ** Version 2.0 - 2 Apr 2008
 
@@ -8,7 +21,7 @@
   - Added threshold mode
   - Added CSV mode
 
-* Bugs Fixes
+* Bug Fixes
 
   - Fixed extra characters appearing during verbose mode
 

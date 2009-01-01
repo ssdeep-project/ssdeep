@@ -271,6 +271,23 @@ int fuzzy_hash_file(FILE *handle,
 }
 
 
+extern int fuzzy_hash_filename(char * filename,
+			       char * result)
+{
+  int status;
+
+  FILE * handle = fopen(filename,"rb");
+  if (NULL == handle)
+    return TRUE;
+
+  status = fuzzy_hash_file(handle,result);
+  
+  fclose(handle);
+
+  return status;
+}
+
+
 int fuzzy_hash_buf(unsigned char *buf,
 		   uint32_t      buf_len,
 		   char          *result)

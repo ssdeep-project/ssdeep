@@ -1,3 +1,13 @@
+2009-01-01 Jesse Kornblum <research@jessekornblum.com>
+
+	* Added fuzzy_hash_filename function to hash a file given
+	  its filename. This avoids issues passing FILE * structures
+	  on Win32 systems in programs not using the fopen convention.
+	  See feature request 2142005.
+
+	* Reconfigured all files using latest autoconf tools
+	
+
 2008-09-23 Jesse Kornblum <research@jessekornblum.com>
 
 	* Reinstated the code to call match_pretty() at the end of

@@ -38,6 +38,9 @@ one on error.
 
 * Fuzzy hashing a file:
 
+There are in fact two ways to fuzzy hash a file. If you already 
+have an open file handle you can use:
+
 int fuzzy_hash_file(FILE *handle,
 	            char *result);
 
@@ -46,6 +49,15 @@ and stores the result in result. You MUST allocate result to hold
 FUZZY_MAX_RESULT characters before calling this function. It is the 
 user's responsibility to append the filename to the output. 
 The function returns zero on success, one on error.
+
+The other function to hash a file takes a file name:
+
+int fuzzy_hash_filename(char * filename,
+			char * result);
+
+Like the function above, this function stores the fuzzy hash result
+in the parameter result. You MUST allocate result to hold 
+FUZZY_MAX_RESULT characters before calling this function.
 
 
 * Compare two fuzzy hash signatures:

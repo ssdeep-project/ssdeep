@@ -1,3 +1,9 @@
+2009-01-09 Jesse Kornblum <research@jessekornblum.com>
+
+	* Updated README with documentation for new fuzzy_hash_filename
+	  function. 
+	
+
 2009-01-01 Jesse Kornblum <research@jessekornblum.com>
 
 	* Added fuzzy_hash_filename function to hash a file given

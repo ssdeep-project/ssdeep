@@ -1,3 +1,14 @@
+** Version 2.2 - RBF DATE
+
+* New Features
+
+  - Added -x mode to compare files of signatures only
+
+* Bug Fixes
+
+  - Changed default behavior to exit program on invalid command line flags
+
+
 ** Version 2.1 - 1 Jan 2009
 
 * New Features

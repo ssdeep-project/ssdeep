@@ -112,7 +112,7 @@ typedef struct _ss_context {
   uint32_t h, h2, h3;
   uint32_t j, n, i, k;
   uint32_t block_size;
-  unsigned char ret2[SPAMSUM_LENGTH/2 + 1];
+  char ret2[SPAMSUM_LENGTH/2 + 1];
 } ss_context;
 
 
@@ -260,8 +260,9 @@ int fuzzy_hash_file(FILE *handle,
 
   strncpy(result,ctx->ret,FUZZY_MAX_RESULT);
 
-  /* RBF - What do we do in this case? We have a valid result,
-     but we can't return the file pointer to its original position. */
+  // 'Never check for an error condition you don't know how to handle'
+  // If the fseeko call fails we have a valid result but can't reset
+  // the file pointer.
   fseeko(handle,filepos,SEEK_SET);
 
   ss_destroy(ctx);

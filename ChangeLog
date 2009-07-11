@@ -1,10 +1,20 @@
-2009-01-09 Jesse Kornblum <research@jessekornblum.com>
+2009-07-11 Jesse Kornblum
 
-	* Updated README with documentation for new fuzzy_hash_filename
-	  function. 
+	* Cleaned up -x mode to compare two (or more) files of
+	  signatures. 
+
+	* Cleaned up some code comments and Remove Before Flight tags
+
 	
+2009-04-18 Jesse Kornblum 
 
-2009-01-01 Jesse Kornblum <research@jessekornblum.com>
+	* Experimenting with -x mode to compare two (or more)
+	  files of signatures
+
+	* Added some parameter validation code
+
+	
+2009-01-01 Jesse Kornblum 
 
 	* Added fuzzy_hash_filename function to hash a file given
 	  its filename. This avoids issues passing FILE * structures
@@ -14,7 +24,7 @@
 	* Reconfigured all files using latest autoconf tools
 	
 
-2008-09-23 Jesse Kornblum <research@jessekornblum.com>
+2008-09-23 Jesse Kornblum 
 
 	* Reinstated the code to call match_pretty() at the end of
 	  main. This lets the -p and -d modes to display output and
@@ -23,22 +33,22 @@
 	* Version bump to 2.1.
 
 	
-2008-04-06 Jesse Kornblum <research@jessekornblum.com>
+2008-04-06 Jesse Kornblum 
 
 	* Updated man page to include -t and -c modes.
 
 
-2008-03-04 Jesse Kornblum <research@jessekornblum.com>
+2008-03-04 Jesse Kornblum 
 
 	* Made b64 variable static in fuzzy.c
 	
 
-2008-02-29 Jesse Kornblum <research@jessekornblum.com>
+2008-02-29 Jesse Kornblum 
 
 	* Version bump to 2.0, reconfigured.
 
 
-2008-02-22 Jesse Kornblum <research@jessekornblum.com>
+2008-02-22 Jesse Kornblum 
 
 	* Changed reading of known hash files back to using
 	  unsigned char values. This also required updating
@@ -48,7 +58,7 @@
 	* Flipped files in Win32 zip file to have CR/LF 
 	
 
-2008-02-18 Jesse Kornblum <research@jessekornblum.com>
+2008-02-18 Jesse Kornblum 
 
 	* Added man pages to the EXTRA_DIST Makefile variable.
 	  Still need to reconfigure.
@@ -59,7 +69,7 @@
 	* Removed extraneous recongfiguration from Makefile.am
 	
 
-2008-02-17 Jesse Kornblum <research@jessekornblum.com>
+2008-02-17 Jesse Kornblum 
 
 	* Updated build system to create Win32 DLL, documentation,
 	  and packages.
@@ -72,7 +82,7 @@
 	* Added signature comparison example to sample program.
 	
 
-2008-02-16 Jesse Kornblum <research@jessekornblum.com>
+2008-02-16 Jesse Kornblum 
 
 	* Removed block_size value from state variable. 
 	  Nobody was using it.
@@ -98,13 +108,13 @@
 	* Added sample program to demonstrate API features
 	
 
-2008-02-15 Jesse Kornblum <research@jessekornblum.com>
+2008-02-15 Jesse Kornblum 
 
 	* Changing Win32 build to create DLL. All other
 	  versions should have library/header files installed
 	
 
-2008-02-14 Jesse Kornblum <research@jessekornblum.com>
+2008-02-14 Jesse Kornblum 
 
 	* Moved to autotools structure
 	

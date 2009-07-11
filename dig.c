@@ -1,28 +1,35 @@
-
-/* MD5DEEP - dig.c
- *
- * By Jesse Kornblum
- *
- * This is a work of the US Government. In accordance with 17 USC 105,
- * copyright protection is not available for any work of the US Government.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- *
- */
-
-/* $Id$ */
+// MD5DEEP - dig.c
+//
+// By Jesse Kornblum
+//
+// This is a work of the US Government. In accordance with 17 USC 105,
+// copyright protection is not available for any work of the US Government.
+// 
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+//
+// $Id$
 
 #include "ssdeep.h"
 
+static TCHAR DOUBLE_DIR[4] = 
+  { (TCHAR)DIR_SEPARATOR, 
+    (TCHAR)DIR_SEPARATOR,
+    0
+  };
+
+// RBF - WTF is going on with removing double slash and Windows defines?!?
 
 #ifndef _WIN32
 static void remove_double_slash(TCHAR *fn)
 {
   size_t tsize = sizeof(TCHAR);
-  TCHAR DOUBLE_DIR[4], *tmp = fn, *new;
-  _sntprintf(DOUBLE_DIR,3,_TEXT("%c%c"),DIR_SEPARATOR,DIR_SEPARATOR);
+  //  TCHAR DOUBLE_DIR[4];
+  TCHAR *tmp = fn, *new;
+
+  // RBF - Why on earth do we generate DOUBLE_DIR dynamically *every time*?
+  //  _sntprintf(DOUBLE_DIR,3,_TEXT("%c%c"),DIR_SEPARATOR,DIR_SEPARATOR);
 
   new = _tcsstr(tmp,DOUBLE_DIR);
   while (NULL != new)
@@ -333,6 +340,9 @@ static int file_type(state *s, TCHAR *fn)
 {
   _tstat_t sb;
 
+  if (NULL == s || NULL == fn)
+    return file_unknown;
+
   if (_lstat(fn,&sb))
   {
     print_error_unicode(s,fn,"%s", strerror(errno));
@@ -349,9 +359,12 @@ static int should_hash_symlink(state *s, TCHAR *fn, int *link_type)
   int type;
   _tstat_t sb;
 
-  /* We must look at what this symlink points to before we process it.
-      The normal file_type function uses lstat to examine the file,
-      we use stat to examine what this symlink points to. */
+  if (NULL == s || NULL == fn)
+    fatal_error("%s: Null state passed into should_hash_symlink", __progname);
+
+  // We must look at what this symlink points to before we process it.
+  // The normal file_type function uses lstat to examine the file,
+  // we use stat to examine what this symlink points to. 
   if (_sstat(fn,&sb))
     {
       print_error_unicode(s,fn,"%s",strerror(errno));
@@ -390,7 +403,10 @@ break;
 static int should_hash(state *s, TCHAR *fn)
 {
   int type = file_type(s,fn);
-  
+
+  if (NULL == s || NULL == fn)
+    fatal_error("%s: Null state passed into should_hash", __progname);
+
   if (type == file_directory)
   {
     if (s->mode & mode_recursive)

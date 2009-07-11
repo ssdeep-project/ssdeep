@@ -134,6 +134,7 @@ memset(VAR,0,SIZE * sizeof(TYPE));
 typedef struct _lsh_node {
   char    *hash;
   TCHAR   *fn;
+  char    *match_file;
   struct _lsh_node *next;
 } lsh_node;
 
@@ -199,6 +200,7 @@ int getopt(int argc, char *const argv[], const char *optstring);
 #define mode_verbose      1<<7
 #define mode_csv          1<<8
 #define mode_threshold    1<<9
+#define mode_sigcompare   1<<10
 
 #define MODE(A)   (s->mode & A)
 
@@ -274,13 +276,13 @@ void display_filename(FILE *out, TCHAR *fn);
 int match_init(state *s);
 
 // See if the existing file and hash are in the set of known hashes
-int match_compare(state *s, TCHAR *fn, char *sum);
+int match_compare(state *s, char * match_file, TCHAR *fn, char *sum);
 
 // Load a file of known hashes
 int match_load(state *s, char *fn);
 
 // Add a single new hash to the set of known hashes
-int match_add(state *s, TCHAR *fn, char *hash);
+int match_add(state *s, char * match_file, TCHAR *fn, char *hash);
 
 // Display all matches in the set of known hashes nicely
 int match_pretty(state *s);

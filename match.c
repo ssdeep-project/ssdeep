@@ -31,6 +31,9 @@
 
 int lsh_list_init(lsh_list *l)
 {
+  if (NULL == l)
+    return TRUE;
+
   l->top    = NULL;
   l->bottom = NULL;
   return FALSE;
@@ -39,6 +42,9 @@ int lsh_list_init(lsh_list *l)
 
 int match_init(state *s)
 {
+  if (NULL == s)
+    return TRUE;
+
   s->known_hashes = (lsh_list *)malloc(sizeof(lsh_list));
   if (s->known_hashes == NULL)
     return TRUE;
@@ -51,8 +57,14 @@ int match_init(state *s)
 
 #define STRINGS_EQUAL(A,B)    !_tcsncmp(A,B,MAX(_tcslen(A),_tcslen(B)))
 
-int match_compare(state *s, TCHAR *fn, char *sum)
+// Match the file named fn with the hash sum against the set of knowns
+// Display any matches. 
+// Return FALSE is there are no matches, TRUE if at least one match
+int match_compare(state *s, char * match_file, TCHAR *fn, char *sum)
 {
+  if (NULL == s || NULL == fn || NULL == sum)
+    fatal_error("%s: Null values passed into match_compare", __progname);
+
   size_t fn_len  = _tcslen(fn);
   size_t sum_len = strlen(sum);
 
@@ -64,7 +76,7 @@ int match_compare(state *s, TCHAR *fn, char *sum)
   {
     if (s->mode & mode_match_pretty)
     {
-      /* Prevent printing the redundant "A matches A" */
+      // Prevent printing the redundant "A matches A"
       if (!(_tcsncmp(fn,tmp->fn,MAX(fn_len,_tcslen(tmp->fn)))) &&
 	  !(strncmp(sum,tmp->hash,MAX(sum_len,strlen(tmp->hash)))))
       {
@@ -85,14 +97,18 @@ int match_compare(state *s, TCHAR *fn, char *sum)
 	}
       else
 	{
+	  if (match_file != NULL)
+	    printf ("%s:", match_file);
 	  display_filename(stdout,fn);
 	  printf(" matches ");
+	  if (tmp->match_file != NULL)
+	    printf ("%s:", tmp->match_file);
 	  display_filename(stdout,tmp->fn);
 	  print_status(" (%"PRIu32")", score);
 	}
       
-      /* We don't return right away as this file could match more than
-	 one signature.  */
+      // We don't return right away as this file could match more than
+      // one signature. 
       status = TRUE;
     }
     
@@ -103,9 +119,12 @@ int match_compare(state *s, TCHAR *fn, char *sum)
 }
 
 
-static int lsh_list_insert(state *s, lsh_list *l, TCHAR *fn, char *sum)
+static int lsh_list_insert(state *s, char * match_file, lsh_list *l, TCHAR *fn, char *sum)
 {
   lsh_node *new;
+
+  if (NULL == s || NULL == l || NULL == fn || NULL == sum)
+    return TRUE;
 
   if ((new = (lsh_node *)malloc(sizeof(lsh_node))) == NULL)
     fatal_error("%s: Out of memory", __progname);
@@ -117,6 +136,17 @@ static int lsh_list_insert(state *s, lsh_list *l, TCHAR *fn, char *sum)
     print_error(s,"%s: out of memory", __progname);
     return TRUE;
   }
+  if (match_file != NULL)
+  {
+    new->match_file = strdup(match_file);
+    if (NULL == new->match_file)
+    {
+      print_error(s,"%s: out of memory", __progname);
+      return TRUE;
+    }
+  }
+  else
+    new->match_file = NULL;
 
   if (l->bottom == NULL)
   {
@@ -136,11 +166,14 @@ static int lsh_list_insert(state *s, lsh_list *l, TCHAR *fn, char *sum)
 
 int match_pretty(state *s)
 {
+  if (NULL == s)
+    return TRUE;
+
   lsh_node *tmp = s->known_hashes->top;
 
   while (tmp != NULL)
   {
-    if (match_compare(s,tmp->fn,tmp->hash))
+    if (match_compare(s,tmp->match_file,tmp->fn,tmp->hash))
       print_status("");
 
     tmp = tmp->next;
@@ -150,9 +183,9 @@ int match_pretty(state *s)
 }
 
 
-int match_add(state *s, TCHAR *fn, char *hash)
+int match_add(state *s, char * match_file, TCHAR *fn, char *hash)
 {
-  return (lsh_list_insert(s,s->known_hashes,fn,hash));
+  return (lsh_list_insert(s,match_file,s->known_hashes,fn,hash));
 }
 
 
@@ -162,6 +195,9 @@ int match_load(state *s, char *fn)
   TCHAR *known_file_name;
   char *str, *known_hash;
   FILE *handle;
+
+  if (NULL == s || NULL == fn)
+    return TRUE;
 
   if ((handle = fopen(fn,"rb")) == NULL)
   {
@@ -199,9 +235,8 @@ int match_load(state *s, char *fn)
   {
     chop_line(str);
 
-    /* The file format is:
-         hash,filename 
-    */
+    // The file format is:
+    //     hash,filename 
 
     strncpy(known_hash,str,MIN(MAX_STR_LEN,strlen(str)));
     find_comma_separated_string(known_hash,0);
@@ -220,7 +255,7 @@ int match_load(state *s, char *fn)
     }
     known_file_name[i] = 0;
     
-    if (match_add(s,known_file_name,known_hash))
+    if (match_add(s,fn,known_file_name,known_hash))
     {
       // If we can't insert this value, we're probably out of memory.
       // There's no sense trying to read the rest of the file.

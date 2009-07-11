@@ -1,5 +1,5 @@
 
-/* $Id$ */
+// $Id$ 
 
 #include "main.h"
 
@@ -63,15 +63,15 @@ int hash_file(state *s, TCHAR *fn)
 
   if (MODE(mode_match_pretty))
   {
-    if (match_add(s,fn,sum))
+    if (match_add(s,NULL,fn,sum))
       print_error_unicode(s,fn,"Unable to add hash to set of known hashes");
   }
   else if (MODE(mode_match) || MODE(mode_directory))
   {
-    match_compare(s,fn,sum);
+    match_compare(s,NULL,fn,sum);
 
     if (MODE(mode_directory))
-      if (match_add(s,fn,sum))
+      if (match_add(s,NULL,fn,sum))
 	print_error_unicode(s,fn,"Unable to add hash to set of known hashes");
   }
   else

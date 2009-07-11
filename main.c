@@ -1,11 +1,10 @@
-
-/* Fuzzy Hashing by Jesse Kornblum
-   Copyright (C) 2008 ManTech International Corporation
-
-   $Id: main.c 33 2008-02-16 18:37:47Z jessekornblum 
-
-   This program is licensed under version 2 of the GNU Public License.
-   See the file COPYING for details.  */
+// Fuzzy Hashing by Jesse Kornblum
+// Copyright (C) 2008,2009 ManTech International Corporation
+//
+// $Id: main.c 33 2008-02-16 18:37:47Z jessekornblum 
+//
+// This program is licensed under version 2 of the GNU Public License.
+// See the file COPYING for details. 
 
 
 #include "ssdeep.h"
@@ -24,14 +23,14 @@ static int initialize_state(state *s)
 }
 
 
-/* In order to fit on one Win32 screen this function should produce
-   no more than 22 lines of output. */
+// In order to fit on one Win32 screen this function should produce
+// no more than 22 lines of output.
 static void usage(void)
 {
   print_status ("%s version %s by Jesse Kornblum", __progname, VERSION);
   print_status ("Copyright (C) 2008 ManTech International Corporation");
   print_status ("");
-  print_status ("Usage: %s [-V|h] [-m file] [-vprdsblc] [-t val] [FILES]", 
+  print_status ("Usage: %s [-V|h] [-m file] [-vprdsblcx] [-t val] [FILES]", 
 	  __progname);
 
   print_status ("-v - Verbose mode. Displays filename as its being processed");
@@ -42,6 +41,7 @@ static void usage(void)
   print_status ("-b - Uses only the bare name of files; all path information omitted");
   print_status ("-l - Uses relative paths for filenames");
   print_status ("-c - Prints output in CSV format");
+  print_status ("-x - Compare FILES as signature files");
   print_status ("-t - Only displays matches above the given threshold");
   print_status ("-m - Match FILES against known hashes in file");
   print_status ("-h - Display this help message");
@@ -52,7 +52,7 @@ static void usage(void)
 static void process_cmd_line(state *s, int argc, char **argv)
 {
   int i, match_files_loaded = FALSE;
-  while ((i=getopt(argc,argv,"vhVpdsblct:rm:")) != -1) {
+  while ((i=getopt(argc,argv,"vhVpdsblcxt:rm:")) != -1) {
     switch(i) {
 
     case 'v': 
@@ -85,6 +85,9 @@ static void process_cmd_line(state *s, int argc, char **argv)
     case 'c':
       s->mode |= mode_csv; break;
 
+    case 'x':
+      s->mode |= mode_sigcompare; break;
+
     case 'r':
       s->mode |= mode_recursive; break;
 
@@ -111,6 +114,7 @@ static void process_cmd_line(state *s, int argc, char **argv)
       
     default:
       try();
+      exit (EXIT_FAILURE);
     }
   }
 
@@ -171,16 +175,16 @@ static void generate_filename(state *s, TCHAR *fn, TCHAR *cwd, TCHAR *input)
     _tcsncpy(fn,input,PATH_MAX);
   else
     {
-      /* Windows systems don't have symbolic links, so we don't
-       have to worry about carefully preserving the paths
-       they follow. Just use the system command to resolve the paths */   
+      // Windows systems don't have symbolic links, so we don't
+      // have to worry about carefully preserving the paths
+      // they follow. Just use the system command to resolve the paths
 #ifdef _WIN32
       _wfullpath(fn,input,PATH_MAX);
 #else     
       if (NULL == cwd)
-	/* If we can't get the current working directory, we're not
-         going to be able to build the relative path to this file anyway.
-         So we just call realpath and make the best of things */
+	// If we can't get the current working directory, we're not
+	// going to be able to build the relative path to this file anyway.
+	// So we just call realpath and make the best of things
 	realpath(input,fn);
       else
 	snprintf(fn,PATH_MAX,"%s%c%s",cwd,DIR_SEPARATOR,input);
@@ -216,9 +220,9 @@ int main(int argc, char **argv)
   s->argv = argv;
 #endif
 
-  /* Anything left on the command line at this point is a file
-     or directory we're supposed to process. If there's nothing
-     specified, we should tackle standard input */
+  // Anything left on the command line at this point is a file
+  // or directory we're supposed to process. If there's nothing
+  // specified, we should tackle standard input 
   if (optind == argc)
     fatal_error("%s: No input files", __progname);
 
@@ -234,20 +238,29 @@ int main(int argc, char **argv)
   while (count < s->argc)
     {  
       generate_filename(s,fn,cwd,s->argv[count]);
-      
+
+      if (s->mode & mode_sigcompare)
+	match_load(s,fn);
+      else
+      {
 #ifdef _WIN32
-      status = process_win32(s,fn);
+	status = process_win32(s,fn);
 #else
-      status = process_normal(s,fn);
+	status = process_normal(s,fn);
 #endif
-      
+      }
+
       ++count;
     }
 
+
+  // If the user has requested us to compare signature files, use
+  // our existng code to pretty-print directory matching to do the
+  // work for us.
+  if (s->mode & mode_sigcompare)
+    s->mode |= mode_match_pretty;
   if (s->mode & mode_match_pretty)
     match_pretty(s);
   
-  free(fn);
-  free(cwd);
   return (EXIT_SUCCESS);
 }

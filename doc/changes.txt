@@ -2,8 +2,7 @@
 
 * New Features
 
-  - Added capability to compare two or more files containing signatures
-    against one another. 
+  - Added -x mode to compare files of signatures only
 
 * Bug Fixes
 

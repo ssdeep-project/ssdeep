@@ -1,0 +1,426 @@
+<html>
+<head>
+  <title>Getting Started with ssdeep</title></head>
+
+  <!-- $Id$ -->
+  
+  <link rel="stylesheet" type="text/css" href="style.css">
+  
+  <style type="text/css">
+  td {text-align: center}
+  </style>
+
+</head>
+
+<body>
+
+<h1>
+
+Getting Started with ssdeep
+</h1>
+
+<p>
+This document provides an introduction to using 
+<a href="ssdeep.html">ssdeep</a> and was last updated on
+  <script type="text/javascript">
+  <!--
+    function mon_to_name(mon)
+    {
+      switch(mon)
+      {
+        case 0: return "Jan";
+        case 1: return "Feb";
+        case 2: return "Mar";
+        case 3: return "Apr";
+        case 4: return "May";
+        case 5: return "Jun";
+        case 6: return "Jul";
+        case 7: return "Aug";
+        case 8: return "Sep";
+        case 9: return "Oct";
+        case 10: return "Nov";
+        case 11: return "Dec";
+      }
+      return "";
+    }
+
+   var now = new Date(document.lastModified);
+   document.write(now.getDate() + " " + mon_to_name(now.getMonth()) + 
+                 " " + now.getFullYear() + ".");
+
+  // -->
+  </script>
+
+The current version of this document can be found on the
+ssdeep web site at
+<a href="http://ssdeep.sourceforge.net/">
+http://ssdeep.sourceforge.net/</a>. 
+
+</p>
+
+<p>
+This guide starts with an explanation of the basic functions of ssdeep
+and then gives some examples of using fuzzy hashing in real world
+situations.
+</p>
+
+<ul>
+<li> <a href="#install">Installing ssdeep</a></li>
+<li> <a href="#basic">Basic Operation</a></li>
+<li> <a href="#error">Error Messages</a></li>
+<li> <a href="#recursive">Recursive Mode</a></li>
+<li> <a href="#match">Matching Mode</a></li>
+<li> <a href="#reuse">Source Code Reuse</a></li>
+<li> <a href="#trunc">Truncated Files</a></li>
+<li> <a href="#needles">Needles in a Haystack</a></li>
+<li> <a href="#sigcompare">Comparing Files of Signatures</a>
+
+</ul>
+
+<hr>
+
+<h2 id="install">Installing ssdeep</h2>
+
+<h3 id="windowsinstall"> Microsoft Windows </h3>
+
+<p>
+Users running Microsoft Windows are strongly encouraged to download the precompiled binaries from <a href="http://ssdeep.sourceforge.net/">http://ssdeep.sourceforge.net/</a>. 
+
+Please note that these binaries are created using a MinGw cross compiler.
+Compiling the programs directly from Windows <em>is not supported</em>.
+
+</p>
+
+
+<h3 id="autoinstall"> Automatic Installation </h3>
+
+Before you try to install ssdeep manually, see if your operating system support
+s
+the programs via an automatic installation method. Some operating systems that
+provide this feature for ssdeep are:
+
+</p>
+<p>
+
+<strong> Linux: </strong>
+<a href="http://packages.ubuntu.com/karmic/ssdeep">Ubuntu</a>,
+<a href="http://packages.debian.org/search?keywords=ssdeep">Debian</a>
+
+<br>
+
+</p>
+
+<h3 id="manualinstall"> Manual installation </h3>
+
+<p>
+If your operating system does not support the automatic installation
+methods described above, you will have to download the source code
+and compile the programs yourself.
+First download the latest tarball of the program from 
+<a href="http://ssdeep.sourceforge.net/">http://ssdeep.sourceforge.net/</a>. This file
+should be named something like <tt>ssdeep-2.2.tar.gz</tt>. Uncompress the file with the
+following command:
+
+<pre>    $ tar zxvf ssdeep-2.2.tar.gz </pre>
+
+</p>
+<p>
+
+Change into the decompressed directory
+
+<pre>    $ cd ssdeep-2.2 </pre>
+
+and configure the program.
+
+<pre>    $ ./configure </pre>
+
+The configure script can accept lots of options. Run <tt>./configure --help</tt> for the
+complete list. The most common option used is the <tt>prefix</tt> option which installs
+the program in a location other than the default, <tt>/usr/local/bin</tt>. If you wanted
+to install the program elsewhere, for example, <tt>/tmp/ssdeep</tt>, you would
+run <tt> ./configure --prefix=/tmp/ssdeep</tt> instead.
+
+</p>
+<p>
+
+You can now compile the program using the make command:
+
+<pre>    $ make </pre>
+
+and install it:
+
+<pre>    $ make install </pre>
+
+Note that you must be root on most operating systems to install the program to its
+default location, <tt>/usr/local/bin</tt>. The tool <tt>sudo</tt> may help:
+
+<pre>    $ sudo make install </pre>
+
+<br>
+</p>
+
+
+
+
+
+
+<h2 id="basic"> Basic Operation </h2>
+
+By default, ssdeep generates context triggered piecewise hashes, or fuzzy hashes, 
+for each input file. The output is proceeded by a file header.
+
+<pre>C:\temp> ssdeep config.h INSTALL doc\README
+ssdeep,1.0--blocksize:hash:hash,filename
+96:KQhaGCVZGhr83h3bc0ok3892m12wzgnH5w2pw+sxNEI58:FIVkH4x73h39LH+2w+sxaD,"C:\temp\config.h"
+96:MD9fHjsEuddrg31904l8bgx5ROg2MQZHZqpAlycowOsexbHDbk:MJwz/l2PqGqqbr2yk6pVgrwPV,"C:\temp\INSTALL"
+96:EQOJvOl4ab3hhiNFXc4wwcweomr0cNJDBoqXjmAHKX8dEt001nfEhVIuX0dDcs:3mzpAsZpprbshfu3oujjdENdp21,"C:\temp\doc\README"</pre>
+
+Notice how the above output shows the full path in the filename.
+You can have ssdeep print relative filenames instead of absolute
+ones. That is, omit all of the path information except that specified 
+on the command line. To enable relative paths, use the <tt>-l</tt> flag. 
+Repeating our first example with the <tt>-l</tt> flag:
+
+<pre>C:\temp> ssdeep -l config.h INSTALL doc\README
+ssdeep,1.0--blocksize:hash:hash,filename
+96:KQhaGCVZGhr83h3bc0ok3892m12wzgnH5w2pw+sxNEI58:FIVkH4x73h39LH+2w+sxaD,"config.h"
+96:MD9fHjsEuddrg31904l8bgx5ROg2MQZHZqpAlycowOsexbHDbk:MJwz/l2PqGqqbr2yk6pVgrwPV,"INSTALL"
+96:EQOJvOl4ab3hhiNFXc4wwcweomr0cNJDBoqXjmAHKX8dEt001nfEhVIuX0dDcs:3mzpAsZpprbshfu3oujjdENdp21,"doc\README"</pre>
+
+You can have ssdeep only print out the basename of each 
+file it processes. That is, all directory information will be stripped
+off. To enable basename mode, use the <tt>-b</tt> flag:
+
+<pre>C:\temp> ssdeep -l config.h INSTALL \doc\README
+ssdeep,1.0--blocksize:hash:hash,filename
+96:KQhaGCVZGhr83h3bc0ok3892m12wzgnH5w2pw+sxNEI58:FIVkH4x73h39LH+2w+sxaD,"config.h"
+96:MD9fHjsEuddrg31904l8bgx5ROg2MQZHZqpAlycowOsexbHDbk:MJwz/l2PqGqqbr2yk6pVgrwPV,"INSTALL"
+96:EQOJvOl4ab3hhiNFXc4wwcweomr0cNJDBoqXjmAHKX8dEt001nfEhVIuX0dDcs:3mzpAsZpprbshfu3oujjdENdp21,"README"</pre>
+
+
+
+<h2 id="error"> Error messages </h2>
+
+If no input files are specified, an error is displayed.
+
+<pre>C:\temp> ssdeep 
+ssdeep: No input files</pre>
+
+Although some programs process standard input and thus allow you to pipe the output of
+other programs to them, ssdeep does not support this functionality.
+
+If an input file can't be found, an error message is normally printed.
+These, and all other error messages, can be surpressed by using the 
+<tt>-s</tt> flag.
+
+<pre>C:\temp> ssdeep doesnotexist.txt
+ssdeep: C:\temp\doesnotexist.txt: No such file or directory
+C:\temp> ssdeep -s doesnotexist.txt
+C:\temp> </pre>
+
+
+
+<h2 id="recursive">Recursive Mode</h2>
+
+Normally, attempting to process a directory will generate an error message.
+Under recursive mode, ssdeep will hash files in the current directory
+<em>and</em> file in subdirectories. 
+Recursive mode is activated by using 
+the <tt>-r</tt> flag.
+
+
+<pre>C:\temp> ssdeep *
+ssdeep: C:\temp\backups Is a directory
+ssdeep,1.0--blocksize:hash:hash,filename
+96:KQhaGCVZGhr83h3bc0ok3892m12wzgnH5w2pw+sxNEI58:FIVkH4x73h39LH+2w+sxaD,"config.h"
+ssdeep: C:\temp\www Is a directory
+
+C:\temp> ssdeep -r *
+ssdeep,1.0--blocksize:hash:hash,filename
+768:McAQ8tPlH25e85Q2OiYpD08NvHmjJ97UfPMO47sekO:uN9M553OiiN/OJ9MM+e3,"C:\temp\backups\mystuff.zip"
+384:bcEKuglk+GUYIk90a1lEF+Wfsy2solvW8mK1enQXP79:bmlFGUNk9L1roy4K1enQ,"C:\temp\backups\ssdeep.exe"
+96:CFzROqsgconvv7uUo6jTcEGEvpVCN116S:CNVnqj8cMVCv16,"C:\temp\backups\foo.doc"
+96:KQhaGCVZGhr83h3bc0ok3892m12wzgnH5w2pw+sxNEI58:FIVkH4x73h39LH+2w+sxaD,"config.h"
+96:aN0jOc0WlWW+LWQnjv7ufGcE5ESr5YaZ6uicEDEO9VCN116Sb5EutkB:aSeoF+L/zqfGtfr5YiWcsVCv16W5htk,"C:temp\www\index.html"</pre>
+
+
+<h2 id="match"> Matching mode </h2>
+
+<p>
+One of the more powerful features of ssdeep is the ability to match
+the hashes of input files against a list of known hashes. Because of 
+inexact nature of fuzzy hashing, note that just because ssdeep indicates
+that two files match, it does <em>not</em> mean that those files are
+related. You should examine every pair of matching files individually
+to see how well they correspond. 
+</p>
+
+<p> Here's a simple example of how ssdeep can match files that are
+not identical. We take an existing file, make a copy of it, and append
+a single character to it. 
+
+<pre>$ ls -l foo.txt
+-rw-r--r--   1 jessekor  jessekor  240 Oct 25 08:01 foo.txt
+
+$ cp foo.txt bar.txt
+$ echo 1 >> bar.txt
+</pre></p>
+
+<p>
+A cryptographic hashing algorithm like MD5
+can't be used to match these files; they have wildly different hashes.
+</p>
+<pre>$ md5deep foo.txt bar.txt
+7b3e9e08ecc391f2da684dd784c5af7c  /Users/jessekornblum/foo.txt
+32436c952f0f4c53bea1dc955a081de4  /Users/jessekornblum/bar.txt
+</pre>
+
+<p>But fuzzy hashing can! We compute the fuzzy hash of one file and use
+the matching mode to match the other one.
+
+<pre>$ ssdeep -b foo.txt > hashes.txt
+$ ssdeep -bm hashes.txt bar.txt
+bar.txt matches foo.txt (64)</pre>
+
+The number at the end of the line is a match score, or a weighted measure
+of how similar these files are. The higher the number, the more similar
+the files.
+
+</p>
+
+<h2 id="reuse"> Source Code Reuse </h2>
+
+As a more practical example of ssdeep's matching functionality, 
+you can use ssdeep's matching mode to help find source code reuse. 
+Let's say we have two folders, <tt>ssdeep-1.1</tt> and <tt>md5deep-1.12</tt>
+that contain the source code for each of those tools. 
+You can compare their contents by computing fuzzy hashes for one tree
+and then comparing them against the other:
+
+<pre>C:\> ssdeep -lr md5deep-1.12 > md5deep-hashes.txt
+
+C:\>ssdeep -lrm md5deep-hashes.txt ssdeep-1.1
+ssdeep-1.1\cycles.c matches md5deep-1.12\cycles.c (94)
+ssdeep-1.1\dig.c matches md5deep-1.12\dig.c (35)
+ssdeep-1.1\helpers.c matches md5deep-1.12\helpers.c (57)
+</pre>
+
+Ta da! You can see that I reused code from the md5deep project when writing ssdeep.
+
+</p>
+
+<h2 id="trunc"> Truncated Files </h2>
+
+<p>
+Along with source code reuse, you can also use fuzzy hashing to find 
+truncated files. Here's a sample using a fake filename. We'll compute the 
+fuzzy hash for the file, make a copy that contains only the first 29% of the 
+original, and then try to match the truncated version back to the original.
+
+<pre>$ ls -lsh
+-rwxr-xr-x   1 jvalenti  users  699M Sep 29  2006 all-the-kings-men.avi
+
+$ ssdeep -b all-the-kings-men.avi > sig.txt
+
+$ cat sig.txt 
+ssdeep,1.0--blocksize:hash:hash,filename
+12582912:fgQl/nUjQAbaBQvHf8yLr5CHJu3dyh+YJ27TuXyphJs3wHC6+rEfAV+wDrw6C/AT:fPl8cdAUyLr5CHJu3dyh8uzwHC6+reAS,"all-the-kings-men.avi"
+
+$ dd if=all-the-kings-men.avi of=partial.avi bs=1m count=200 
+200+0 records in
+200+0 records out
+209715200 bytes transferred in 14.510224 secs (14452926 bytes/sec)
+
+$ ls -lsh partial.avi 
+-rw-r--r--   1 jvalenti  users       200M Oct  6 06:40 partial.avi
+
+$ ssdeep -bm sig.txt partial.avi 
+partial.avi matches all-the-kings-men.avi (57)</pre>
+
+<h2 id="needles">Needles in a Haystack</h2>
+
+<p> You can also compare many without writing out any hashes to the disk
+using two different methods. Let's say that we have a whole bunch of files 
+in two or three directories and want to know which ones are similar
+to each other. We can use the -d mode to display these matches. The switch
+causes ssdeep to compute a fuzzy hash for each input file and compare it 
+against all of the other input files. 
+
+</p>
+
+<p> In this example, we've gathered a whole bunch of Microsoft Word documents
+in the folders <tt>Incoming</tt>, <tt>Outgoing</tt>, and <tt>Trash</tt>.
+Rather than go through all of the documents, 
+it would be nice to eliminate those are substantially the same.
+
+<pre>C:\temp> ssdeep -lrd Incoming Outgoing Trash
+Incoming\Budget 2007.doc matches Outgoing\Corporate Espionage\Our Budget.doc (99)
+Incoming\Salaries.doc matches Outgoing\Personnel Mayhem\Your Buddy Makes More Than You.doc (45)
+Outgoing\Plan for Hostile Takeover.doc matches Trash\DO NOT DISTRIBUTE.doc (88)
+</pre>
+
+Oh my!
+</p>
+
+<p>
+The -p mode works similarly, but displays the results in a slightly nicer
+format. If there are two input files A and B that match, the -d mode 
+will only display that "A matches B." The -p mode will display that
+"A matches B," skips a line, and then "B matches A." This greatly increases
+the length of the output, but can make files easier to find. Here's
+the above input again, this time using the -p flag.
+
+<pre>C:\temp> ssdeep -lrp Incoming Outgoing Trash
+Incoming\Budget 2007.doc matches Outgoing\Corporate Espionage\Our Budget.doc (99)
+
+Incoming\Salaries.doc matches Outgoing\Personnel Mayhem\Your Buddy Makes More Than You.doc  (45)
+
+Outgoing\Corporate Espionage\Our Budget.doc matches Incoming\Budget 2007.doc (99)
+
+Outgoing\Personnel Mayhem\Your Buddy Makes More Than You.doc matches Incoming\Salaries.doc (45)
+
+Outgoing\Plan for Hostile Takeover.doc matches Trash\DO NOT DISTRIBUTE.doc (88)
+
+Trash\DO NOT DISTRIBUTE.doc matches Outgoing\Plan for Hostile Takeover.doc (88)
+
+</pre>
+
+</p>
+
+<h2 id="sigcompare"> Comparing Files of Signatures </h2>
+
+<p>
+
+After you've generated several files of fuzzy hashes you may wish to 
+compare those signatures to each other. You can compare one or more files
+of signatures against each other using the <tt>-x</tt> flag.
+
+</p>
+
+<pre>
+$ ssdeep -r /etc > list1.txt
+$ ssdeep -r /usr > list2.txt
+$ ssdeep -lr ./known_malware > list3.txt
+$ ssdeep -x list1.txt list2.txt list3.txt
+
+list1:/etc/rcc.d/init.d matches list3:./known_malware/wlk_rootkit/dropper (86)
+
+list3:./known_malware/wlk_rootkit/dropper matches list1:/etc/rcc.d/init.d (86)
+</pre>
+
+
+
+
+
+
+<hr>
+<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=67079&type=2" alt="SourceForge.net Logo" /></a>
+
+
+</body>
+</html>
+
+
+
+
+

@@ -1,3 +1,8 @@
+2009-07-14 Jesse Kornblum
+
+	* Fixed bug that prevented -x mode from working on Win32
+	
+
 2009-07-11 Jesse Kornblum
 
 	* Cleaned up -x mode to compare two (or more) files of

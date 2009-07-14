@@ -4,6 +4,8 @@ bin_PROGRAMS=ssdeep
 ssdeep_LDADD=libfuzzy.la
 ssdeep_LDFLAGS=-static
 
+ACLOCAL_AMFLAGS = -I m4
+
 lib_LTLIBRARIES=libfuzzy.la
 libfuzzy_la_SOURCES=fuzzy.c edit_dist.c find-file-size.c
 libfuzzy_la_LDFLAGS=-no-undefined -version-info 2:0:0

@@ -1,29 +1,27 @@
-
-/* ssdeep
-   (C) Copyright 2006 ManTech International Corporation
-
-   $Id$
-
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
-   
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-   
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-*/
+// ssdeep
+// (C) Copyright 2009 ManTech International Corporation
+//
+// $Id$
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+//You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 #include "ssdeep.h"
 
 
-/* The longest line we should encounter when reading files of known hashes */
+// The longest line we should encounter when reading files of known hashes 
 #define MAX_STR_LEN  2048
 
 
@@ -80,8 +78,16 @@ int match_compare(state *s, char * match_file, TCHAR *fn, char *sum)
       if (!(_tcsncmp(fn,tmp->fn,MAX(fn_len,_tcslen(tmp->fn)))) &&
 	  !(strncmp(sum,tmp->hash,MAX(sum_len,strlen(tmp->hash)))))
       {
-	tmp = tmp->next;
-	continue;
+	// Unless these results from different matching files (such as
+	// what happens in sigcompare mode). That being said, we have to
+	// be careful to avoid NULL values such as when working in 
+	// normal pretty print mode.
+	if (NULL == match_file || NULL == tmp->match_file ||
+	    (!(strncmp(match_file, tmp->match_file, MAX(strlen(match_file),strlen(tmp->match_file))))))
+	{
+	  tmp = tmp->next;
+	  continue;
+	}
       }
     }
 

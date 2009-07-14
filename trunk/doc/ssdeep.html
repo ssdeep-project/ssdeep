@@ -1,0 +1,410 @@
+<html>
+<head>
+<title>
+Fuzzy Hashing and ssdeep
+</title>
+
+  <!-- $Id$ -->
+
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script type="text/javascript">
+
+     var versions_text; 
+     var old_link_text = "<a href=\"javascript:show_old()\">Show older versions</a>";
+     var new_link_text = "<a href=\"javascript:hide_old()\">Hide older versions</a>";
+
+     function show_old() 
+     {
+       document.getElementById("oldversions").innerHTML = versions_text;
+       document.getElementById("linktext").innerHTML = new_link_text;
+     }
+
+     function hide_old()
+     {
+       document.getElementById("oldversions").innerHTML = "";
+       document.getElementById("linktext").innerHTML = old_link_text;
+     }
+
+  </script>
+</head>
+
+<body>
+
+<h1>
+ssdeep - Latest version 2.2
+</h1>
+
+<hr>
+
+<h2> Quick Links </h2>
+<ul>
+<li> <a href="#download">Download ssdeep</a></li>
+<li> <a href="manpage.txt">The ssdeep man page</a></li>
+<li> <a href="changes.txt">Changelog</a></li>
+<li> <a href="usage.html">Quickstart Guide</a></li>
+<!--
+<li> <!a href="http://forensiczone.com/SSDeepFE/SSDeepFE.htm">GUI 
+frontend ssdeepFE</a> - 
+A graphical interface for 
+ssdeep on Windows. Not officially part of the ssdeep project. 
+(Appears to have gone dark)
+-->
+<li> <a href="http://sourceforge.net/projects/ssdeep/">Sourceforge project
+page</a> - Home to ssdeep development and feature requests
+</li></ul>
+
+<h2> Introduction </h2>
+
+<p>
+
+ssdeep is a program for computing context triggered piecewise hashes (CTPH).
+Also called fuzzy hashes, CTPH
+can match inputs that have homologies. Such inputs have sequences of 
+identical bytes in the same order, although bytes in between these sequences may 
+be different in both content and length. 
+
+</p>
+<p>
+
+A complete explanation of CTPH can be found in 
+<a href="http://dx.doi.org/10.1016/j.diin.2006.06.015">
+<em>Identifying almost identical files using context 
+triggered piecewise hashing</em></a> from the journal Digital Investigation.
+There is a free version of this paper available through the
+Digital Forensic Research Workshop conference, 
+<a href="http://dfrws.org/2006/proceedings/12-Kornblum.pdf">free
+version of <em>Identifying almost identical files using context 
+triggered piecewise hashing</em></a>.
+
+</p>
+
+<p>
+There are some usage scenarios in the 
+<a href="usage.html">Quickstart guide</a> and the 
+<a href="http://www.forensicswiki.org/wiki/Ssdeep">
+Forensics Wiki entry on ssdeep</a>.
+
+</p>
+
+<p>
+The package also includes a fuzzy hashing API. The API is
+documented in the file API.TXT in the Windows 
+distribution and README in the source code package.
+</p>
+
+<h3> See Also </h3> 
+
+<p>
+
+The math behind fuzzy hashing was originally developed by
+Dr. Andrew Trigdell in a spam dectector he called
+<a href="http://www.samba.org/ftp/unpacked/junkcode/spamsum/">spamsum</a>.
+
+</p>
+
+<br>
+
+
+<h2> Supported Platforms </h2>
+
+<h3> Microsoft Windows </h3>
+<p>
+The program runs on Microsoft Windows 2000, XP, 2003, and Vista. It is <em>not</em> supported
+on Windows 95, 98, Me, 3.1, 3.11, or 3.11 for Workgroups. 
+</p>
+
+<h3> *nix </h3>
+<p>
+The program has been tested on Open Solaris, FreeBSD, Linux, and Mac OS X. It should
+compile and run on any other platform that is supported by the GNU Build Tools.
+</p>
+
+
+
+<h2 id="download">
+Download
+</h2>
+
+
+
+<h3> Stable Version </h3>
+
+<p>
+The latest stable version of ssdeep is 
+version 2.2
+and was released on
+RBF DATE
+You can take a look at the 
+<a href="changes.txt">complete changelog</a>, but here are the 
+changes in the latest version:
+
+<ul>
+  <li> Added fuzzy_hash_filename function to the API.  </li>
+  <li> Fixed bug in -p, pretty printing mode. It works now. </li>
+</ul>
+
+
+</p>
+
+<table style="text-align: center;" border="1" width="100%">
+  <tbody>
+
+     <td rowspan="2">
+        Version 2.2
+     </td>
+
+     <td rowspan="3">
+       RBF DATE
+     </td>
+
+        <td><a href="http://downloads.sourceforge.net/ssdeep/ssdeep-2.2.zip">
+               Windows binary</a></td>
+        <td class="hash"> SHA256 
+     </tr>
+
+     <tr>
+        <td><a href="http://downloads.sourceforge.net/ssdeep/ssdeep-2.2.tar.gz">
+                 source code</a></td>
+         <td class="hash"> SHA256 
+     </tr>
+
+
+  </tbody>
+</table>
+
+
+<h3> Beta Version </h3>
+
+<p> 
+
+There is no beta version of ssdeep right now. If you have any
+problems or would like to see something added to ssdeep, please
+send mail to the developer at ssdeep (at) jessekornblum (dot) com or
+visit the 
+<a href="http://sourceforge.net/projects/ssdeep/">Sourceforge project
+page </a>.
+
+</p>
+
+
+<!--
+<p>
+
+A beta version of ssdeep 2.1 is now available. This version is for your
+<em>testing</em> purposes only and should <em>NOT BE USED</em> for any
+serious/official/meaningful work. Changes in this new version:
+
+<ul>
+ <li> Created fuzzy hashing API/DLL </li>
+ <li> Added support for filenames with Unicode characters on Win32 </li>
+ <li> Added threshold mode </li>
+ <li> Added CSV mode </li>
+ <li> Fixed extra characters appearing during verbose mode </li>
+</ul>
+
+<table style="text-align: center;" border="1" width="100%">
+  <tbody>
+
+     <td rowspan="2">
+        Version 2.1-alpha1
+     </td>
+
+     <td rowspan="2">
+         RBF DATE
+     </td>
+
+        <td><a href="ssdeep-2.0-beta2.zip">
+               Windows binary</a></td>
+        <td class="hash"> SHA256 
+        </td>
+     </tr>
+     <tr>
+         <td><a href="ssdeep-2.0-beta2.tar.gz">
+                 source code</a></td>
+         <td class="hash"> SHA256 
+         </td>
+     </tr>
+
+
+  </tbody>
+</table>
+
+
+</p>
+-->
+
+<h3> Older Versions </h3>
+
+<p>
+
+Although older versions of ssdeep are available for historical purposes,
+you shouldn't use these unless you have a truly compelling reason. 
+<br>
+
+<!-- This is a slightly ugly way to add our Javascript code to show/hide
+     the old versions. I used this method so that if Javascript is
+     enabled everything works well. If Javascript is disabled, however,
+     using the document.write below keeps any text from appearing about
+     the showing or hiding of data. -->
+
+<span id="linktext">
+<script type="text/javascript">
+document.write(old_link_text);
+</script>
+</span>
+</p>
+
+<div id="oldversions">
+<p>
+<table style="text-align: center;" border="1" width="100%">
+  <tbody>
+
+
+     <td rowspan="2">
+        Version 2.1
+     </td>
+
+     <td rowspan="3">
+        1 Jan 2009
+     </td>
+
+        <td><a href="http://downloads.sourceforge.net/ssdeep/ssdeep-2.1.zip">
+               Windows binary</a></td>
+        <td class="hash"> SHA256 182b9f06299fdd9c2029be0e5dcabae193f5bc61f2da744d93f45c4f72ded692
+     </tr>
+
+     <tr>
+        <td><a href="http://downloads.sourceforge.net/ssdeep/ssdeep-2.1.tar.gz">
+                 source code</a></td>
+         <td class="hash"> SHA256 6bd39b604547813511094deb3c79e183c4906869bf23ac0d4a714ea43cf8ac15
+     </tr>
+
+
+    <tr>
+     <td rowspan="2">
+        Version 2.0
+     </td>
+
+     <td rowspan="2">
+        2 Apr 2008
+     </td>
+
+        <td><a href="http://prdownloads.sourceforge.net/ssdeep/ssdeep-2.0.zip?download">
+               Windows binary</a></td>
+        <td class="hash"> SHA256 be93a7f288e2c798ae48234b2a05395035b2ade419b0c3da7acd909396a4b71c
+     </tr>
+
+     <tr>
+         <td><a href="http://prdownloads.sourceforge.net/ssdeep/ssdeep-2.0.tar.gz?download">
+                 source code</a></td>
+         <td class="hash"> SHA256 3fe8b8dea4ed52102f6cbcb00e7311ee1ccc19134d42f3525c10c8969543be58
+     </tr>
+
+
+     <td rowspan="2">
+        Version 1.1
+     </td>
+
+     <td rowspan="3">
+         14 August 2006
+     </td>
+
+        <td><a href="http://prdownloads.sourceforge.net/ssdeep/ssdeep-1.1.zip?download">
+               Windows binary</a></td>
+        <td class="hash"> SHA256 fb2390457b4a4ba7a63bb6c6f31da3e3d0001eede7e6344d7b60632747437166</td>
+     </tr>
+
+     <tr>
+         <td><a href="http://prdownloads.sourceforge.net/ssdeep/ssdeep-1.1.tar.gz?download">
+                 source code</a></td>
+         <td class="hash"> SHA256 79aafa665aa4d79134c2f585674229ebe2306b77e9184fcc28b1d79de2161c44</td>
+     </tr>
+
+
+  </tbody>
+</table>
+
+</p>
+</div>
+
+<script type="text/javascript">
+
+versions_text = document.getElementById("oldversions").innerHTML + 
+     new_link_text;
+document.getElementById("oldversions").innerHTML = "";
+</script>
+<br>
+
+<br>
+<h2> License </h2>
+
+<p>
+The ssdeep program and its API are licensed under the terms of version 2 of
+<a href="http://www.gnu.org/licenses/gpl.html">
+the GNU General Public License</a>.
+</p>
+
+<br>
+<h2>
+About the developer
+</h2>
+
+<p>
+ssdeep was written by Jesse Kornblum of the 
+<a href="http://www.mantech.com">
+ManTech International Corporation
+</a>. Please send all correspondence to 
+jesse (ddot] kornblum (at) mantech [dott) com. 
+</p>
+
+<br>
+<h2 id="ack">Acknowledgements</h2>
+
+<p>
+
+Code for the threshold mode contributed by Jason Sherman.
+
+The testing of this program was made possible in part thanks to the 
+generosity of the Computer Science Department at the University of Iowa.
+
+</p>
+
+
+<br>
+
+This page was last updated on
+<script type="text/javascript">
+ function mon_to_name(mon)
+    {
+      switch(mon)
+      {
+        case 0: return "Jany";
+        case 1: return "Feb";
+        case 2: return "Mar";
+        case 3: return "Apr";
+        case 4: return "May";
+        case 5: return "Jun";
+        case 6: return "Jul";
+        case 7: return "Aug";
+        case 8: return "Sep";
+        case 9: return "Oct";
+        case 10: return "Nov";
+        case 11: return "Dec";
+      }
+      return "";
+    }
+
+  var now = new Date(document.lastModified);
+  document.write(now.getDate() + " " + mon_to_name(now.getMonth()) + 
+                 " " + now.getFullYear() + ".");
+</script>
+
+<br>
+<hr>
+
+<a href="http://sourceforge.net">
+<img src="http://sflogo.sourceforge.net/sflogo.php?group_id=156390&type=2" width="125" height="37" border="0" alt="SourceForge.net Logo">
+</a>
+
+
+</body></html>

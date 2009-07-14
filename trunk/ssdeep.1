@@ -1,10 +1,10 @@
-.TH SSDEEP "1" "Version 2.0 \- 2 Apr 2008" "ManTech International" "ManTech International"
+.TH SSDEEP "1" "Version 2.2 \- RBF DATE" "ManTech International" "ManTech International"
 
 .SH NAME
 ssdeep - Computes context triggered piecewise hashes
 
 .SH SYNOPSIS
-.B ssdeep [-m <file>] [-vprdsblc] [-t val] [FILES]
+.B ssdeep [-m <file>] [-vprdsblcx] [-t val] [FILES]
 .br
 .B ssdeep [-V|h] 
 
@@ -13,7 +13,10 @@ ssdeep - Computes context triggered piecewise hashes
 Computes a checksum based on context triggered piecewise hashes
 for each input file. 
 If requested, the program matches those checksums against
-a file of known checksums and reports any possible matches. Output
+a file of known checksums and reports any possible matches. 
+It can also examine one or more of signatures and find any 
+matches in those signatures.
+Output
 is written to standard out and errors to standard error.
 Input from standard input is not supported.
 
@@ -78,6 +81,14 @@ line. This flag may not be used in conjunction with the \fB\-b\fR flag.
 Enables comma separated output mode. In any of the matching modes
 \-d, \-p, or \-m,
 displays the results as input file, known file, matching score.
+
+.TP
+\fB\-x\fR
+Enables signature file matching. The input FILES are assumed to contain
+ssdeep formatted signatures. All of the signatures in these FILES are
+loaded into memory and compared against each other. All matches are
+displayed, except for matches that have the same filename and
+come from the same input file.
 
 .TP
 \fB\-t <val>\fR

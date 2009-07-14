@@ -1,0 +1,18 @@
+body { color: black;
+       background-color: white; }
+
+h1,h2 {padding: .5em; background-color: #008888 ; color: white}
+
+h1 {font:x-large Arial;}
+h2 {font:large Arial;}
+
+a:visited {color: darkblue}
+a:link {color: blue}
+a:active {color: yellow}
+
+p.abstract {margin-left: 8ex; margin-right: 8ex; }
+
+span.papertitle {font-weight: bold;}
+span.journaltitle {font-style: italic;}
+
+td.hash {font-family: monospace;}

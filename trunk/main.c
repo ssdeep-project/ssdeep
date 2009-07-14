@@ -195,7 +195,7 @@ static void generate_filename(state *s, TCHAR *fn, TCHAR *cwd, TCHAR *input)
 
 int main(int argc, char **argv)
 {
-  int count, status;
+  int count, status, goal = argc;
   state *s;
   TCHAR *fn, *cwd;
 
@@ -235,23 +235,33 @@ int main(int argc, char **argv)
   
   count = optind;
   
-  while (count < s->argc)
-    {  
+  // The signature comparsion mode needs to use the command line
+  // arguments and argument count. We don't do wildcard expansion
+  // on it on Win32 (i.e. where it matters). The setting of 'goal'
+  // to the original argc occured at the start of main(), so we just
+  // need to update it if we're *not* in signature compare mode.
+  if (!(s->mode & mode_sigcompare))
+  {
+    goal = s->argc;
+  }
+
+  while (count < goal)
+  {
+    if (s->mode & mode_sigcompare)
+      match_load(s,argv[count]);
+    else
+    {
       generate_filename(s,fn,cwd,s->argv[count]);
 
-      if (s->mode & mode_sigcompare)
-	match_load(s,fn);
-      else
-      {
 #ifdef _WIN32
-	status = process_win32(s,fn);
+      status = process_win32(s,fn);
 #else
-	status = process_normal(s,fn);
+      status = process_normal(s,fn);
 #endif
-      }
-
-      ++count;
     }
+
+    ++count;
+  }
 
 
   // If the user has requested us to compare signature files, use

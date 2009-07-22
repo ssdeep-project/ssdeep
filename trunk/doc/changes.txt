@@ -1,8 +1,9 @@
-** Version 2.2 - RBF DATE
+** Version 2.2 - 22 Jul 2009
 
 * New Features
 
-  - Added -x mode to compare files of signatures only
+  - Added capability to compare two or more files containing signatures
+    against one another. 
 
 * Bug Fixes
 

@@ -1,3 +1,8 @@
+2009-10-20 Jesse Kornblum
+
+	* Added -a mode to display all matches regardless of score.
+	
+
 2009-10-11 Jesse Kornblum
 
 	* Fixed typo in usage page.

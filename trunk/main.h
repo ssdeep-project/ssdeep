@@ -201,6 +201,7 @@ int getopt(int argc, char *const argv[], const char *optstring);
 #define mode_csv          1<<8
 #define mode_threshold    1<<9
 #define mode_sigcompare   1<<10
+#define mode_display_all  1<<11
 
 #define MODE(A)   (s->mode & A)
 

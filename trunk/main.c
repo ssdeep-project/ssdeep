@@ -30,7 +30,7 @@ static void usage(void)
   print_status ("%s version %s by Jesse Kornblum", __progname, VERSION);
   print_status ("Copyright (C) 2008 ManTech International Corporation");
   print_status ("");
-  print_status ("Usage: %s [-V|h] [-m file] [-vprdsblcx] [-t val] [FILES]", 
+  print_status ("Usage: %s [-V|h] [-m file] [-vprdsblcxa] [-t val] [FILES]", 
 	  __progname);
 
   print_status ("-v - Verbose mode. Displays filename as its being processed");
@@ -42,6 +42,7 @@ static void usage(void)
   print_status ("-l - Uses relative paths for filenames");
   print_status ("-c - Prints output in CSV format");
   print_status ("-x - Compare FILES as signature files");
+  print_status ("-a - Display all matches, regardless of score");
   print_status ("-t - Only displays matches above the given threshold");
   print_status ("-m - Match FILES against known hashes in file");
   print_status ("-h - Display this help message");
@@ -52,8 +53,12 @@ static void usage(void)
 static void process_cmd_line(state *s, int argc, char **argv)
 {
   int i, match_files_loaded = FALSE;
-  while ((i=getopt(argc,argv,"vhVpdsblcxt:rm:")) != -1) {
+  while ((i=getopt(argc,argv,"avhVpdsblcxt:rm:")) != -1) {
     switch(i) {
+
+    case 'a':
+      s->mode |= mode_display_all;
+      break;
 
     case 'v': 
       if (MODE(mode_verbose))

@@ -4,7 +4,7 @@
 ssdeep - Computes context triggered piecewise hashes
 
 .SH SYNOPSIS
-.B ssdeep [-m <file>] [-vprdsblcx] [-t val] [FILES]
+.B ssdeep [-m <file>] [-vprdsblcxa] [-t val] [FILES]
 .br
 .B ssdeep [-V|h] 
 
@@ -89,6 +89,11 @@ ssdeep formatted signatures. All of the signatures in these FILES are
 loaded into memory and compared against each other. All matches are
 displayed, except for matches that have the same filename and
 come from the same input file.
+
+.TP
+\fB\-a\fR
+Displays all matches in any of the matching mode, regardless of score.
+Yes, this displays all 'matches', even if the match score is zero.
 
 .TP
 \fB\-t <val>\fR

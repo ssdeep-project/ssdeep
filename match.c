@@ -92,7 +92,7 @@ int match_compare(state *s, char * match_file, TCHAR *fn, char *sum)
     }
 
     score = fuzzy_compare(sum,tmp->hash);
-    if (score > s->threshold)
+    if (score > s->threshold || MODE(mode_display_all))
     {
       if (s->mode & mode_csv)
 	{

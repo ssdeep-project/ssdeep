@@ -1,17 +1,18 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 <head>
-<title>
-Fuzzy Hashing and ssdeep
-</title>
 
   <!-- $Id$ -->
+  <title>Fuzzy Hashing and ssdeep</title>
 
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
   <link rel="stylesheet" type="text/css" href="style.css">
-  <script type="text/javascript">
 
+  <script type="text/javascript">
+  <!--
      var versions_text; 
-     var old_link_text = "<a href=\"javascript:show_old()\">Show older versions</a>";
-     var new_link_text = "<a href=\"javascript:hide_old()\">Hide older versions</a>";
+     var old_link_text = "<a href=\"javascript:show_old()\">Show older versions<\/a>";
+     var new_link_text = "<a href=\"javascript:hide_old()\">Hide older versions<\/a>";
 
      function show_old() 
      {
@@ -24,14 +25,14 @@ Fuzzy Hashing and ssdeep
        document.getElementById("oldversions").innerHTML = "";
        document.getElementById("linktext").innerHTML = old_link_text;
      }
-
+  -->
   </script>
 </head>
 
 <body>
 
 <h1>
-ssdeep - Latest version 2.2
+ssdeep - Latest version 2.3
 </h1>
 
 <hr>
@@ -39,7 +40,7 @@ ssdeep - Latest version 2.2
 <h2> Quick Links </h2>
 <ul>
 <li> <a href="#download">Download ssdeep</a></li>
-<li> <a href="manpage.txt">The ssdeep man page</a></li>
+<li> <a href="manpage.html">The ssdeep man page</a></li>
 <li> <a href="changes.txt">Changelog</a></li>
 <li> <a href="usage.html">Quickstart Guide</a></li>
 <!--
@@ -100,10 +101,10 @@ The math behind fuzzy hashing was originally developed by
 Dr. Andrew Trigdell in a spam dectector he called
 <a href="http://www.samba.org/ftp/unpacked/junkcode/spamsum/">spamsum</a>.
 
-</p>
+
 
 <br>
-
+</p>
 
 <h2> Supported Platforms </h2>
 
@@ -131,9 +132,9 @@ Download
 
 <p>
 The latest stable version of ssdeep is 
-version 2.2
+version 2.3
 and was released on
-22 Jul 2009
+10 Jan 2010
 You can take a look at the 
 <a href="changes.txt">complete changelog</a>, but here are the 
 changes in the latest version:
@@ -147,26 +148,33 @@ against one another.</li>
 
 </p>
 
+
+
+
 <table style="text-align: center;" border="1" width="100%">
   <tbody>
+
     <tr>
      <td rowspan="2">
-        Version 2.2
+        Version 2.3
      </td>
 
-     <td rowspan="3">
-       22 Jul 2009
+     <td rowspan="2">
+        10 Jan 2010
      </td>
 
-        <td><a href="http://downloads.sourceforge.net/ssdeep/ssdeep-2.2.zip">
+        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.3/ssdeep-2.3.zip/download">
                Windows binary</a></td>
-        <td class="hash"> SHA256 00cf0ecf78babca526cdcb8b1f245f5f4694def918e95ed7634e7b4b6fd17967 </td>
+        <td class="hash"> SHA256 bb44a3ee8c4e2c5ada6da2f4500f93762852993e9c6e9779ddb12026cc541a45  </td>
      </tr>
 
+
+    
+
      <tr>
-        <td><a href="http://downloads.sourceforge.net/ssdeep/ssdeep-2.2.tar.gz">
+        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.3/ssdeep-2.3.tar.gz/download">
                  source code</a></td>
-         <td class="hash"> SHA256 9d17dfe29aad4cee8f91d9d1f28b2d1c27a4cae8b25cb23d6d89609ad4a8ee1b </td>
+        <td class="hash"> SHA256 32a81cac4cc3509c1739cae5e1e3cd6764adda0f8d3ae8b40313e7fdfcb47f6d  </td>
      </tr>
 
 
@@ -258,23 +266,57 @@ document.write(old_link_text);
 <div id="oldversions">
 <p>
 <table style="text-align: center;" border="1" width="100%">
+
+  <thead>
+    <tr>
+      <th>Version</th>
+      <th>Date</th>
+      <th>Format</th>
+      <th>Hash</th>
+    </tr>
+  </thead>
+
+
   <tbody>
+
     <tr>
      <td rowspan="2">
-        Version 2.1
+        2.2
+     </td>
+
+     <td rowspan="2">
+       22 Jul 2009
+     </td>
+
+        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.2/ssdeep-2.2.zip/download">
+               Windows binary</a></td>
+        <td class="hash"> SHA256 00cf0ecf78babca526cdcb8b1f245f5f4694def918e95ed7634e7b4b6fd17967 </td>
+     </tr>
+
+     <tr>
+        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.2/ssdeep-2.2.tar.gz/download">
+
+                 source code</a></td>
+         <td class="hash"> SHA256 9d17dfe29aad4cee8f91d9d1f28b2d1c27a4cae8b25cb23d6d89609ad4a8ee1b </td>
+     </tr>
+
+
+    <tr>
+     <td rowspan="2">
+        2.1
      </td>
 
      <td rowspan="2">
         1 Jan 2009
      </td>
 
-        <td><a href="http://downloads.sourceforge.net/ssdeep/ssdeep-2.1.zip">
+        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.1/ssdeep-2.1.zip/download">
                Windows binary</a></td>
         <td class="hash"> SHA256 182b9f06299fdd9c2029be0e5dcabae193f5bc61f2da744d93f45c4f72ded692 </td>
      </tr>
 
      <tr>
-        <td><a href="http://downloads.sourceforge.net/ssdeep/ssdeep-2.1.tar.gz">
+        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.1/ssdeep-2.1.tar.gz/download">
                  source code</a></td>
          <td class="hash"> SHA256 6bd39b604547813511094deb3c79e183c4906869bf23ac0d4a714ea43cf8ac15 </td>
      </tr>
@@ -282,40 +324,41 @@ document.write(old_link_text);
 
     <tr>
      <td rowspan="2">
-        Version 2.0
+        2.0
      </td>
 
      <td rowspan="2">
         2 Apr 2008
      </td>
 
-        <td><a href="http://prdownloads.sourceforge.net/ssdeep/ssdeep-2.0.zip?download">
+        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.0/ssdeep-2.0.zip/download">
                Windows binary</a></td>
         <td class="hash"> SHA256 be93a7f288e2c798ae48234b2a05395035b2ade419b0c3da7acd909396a4b71c </td>
      </tr>
 
      <tr>
-         <td><a href="http://prdownloads.sourceforge.net/ssdeep/ssdeep-2.0.tar.gz?download">
+        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.0/ssdeep-2.0.tar.gz/download">
                  source code</a></td>
          <td class="hash"> SHA256 3fe8b8dea4ed52102f6cbcb00e7311ee1ccc19134d42f3525c10c8969543be58 </td>
      </tr>
 
 
+     <tr>
      <td rowspan="2">
-        Version 1.1
+        1.1
      </td>
 
      <td rowspan="3">
-         14 August 2006
+         14 Aug 2006
      </td>
 
-        <td><a href="http://prdownloads.sourceforge.net/ssdeep/ssdeep-1.1.zip?download">
+        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-1.1/ssdeep-1.1.zip/download">
                Windows binary</a></td>
         <td class="hash"> SHA256 fb2390457b4a4ba7a63bb6c6f31da3e3d0001eede7e6344d7b60632747437166</td>
      </tr>
 
      <tr>
-         <td><a href="http://prdownloads.sourceforge.net/ssdeep/ssdeep-1.1.tar.gz?download">
+        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-1.1/ssdeep-1.1.tar.gz/download">
                  source code</a></td>
          <td class="hash"> SHA256 79aafa665aa4d79134c2f585674229ebe2306b77e9184fcc28b1d79de2161c44</td>
      </tr>
@@ -372,31 +415,38 @@ generosity of the Computer Science Department at the University of Iowa.
 
 <br>
 
-This page was last updated on
+<!-- We use a span to keep this text blank if Javascript is not enabled,
+     but to display a nice message if it is. -->
+<span id="lastupdated">
+
+</span>
+
 <script type="text/javascript">
- function mon_to_name(mon)
+  function mon_to_name(mon)
+  {
+    switch(mon)
     {
-      switch(mon)
-      {
-        case 0: return "Jany";
-        case 1: return "Feb";
-        case 2: return "Mar";
-        case 3: return "Apr";
-        case 4: return "May";
-        case 5: return "Jun";
-        case 6: return "Jul";
-        case 7: return "Aug";
-        case 8: return "Sep";
-        case 9: return "Oct";
-        case 10: return "Nov";
-        case 11: return "Dec";
-      }
-      return "";
+  case 0: return "Jan";
+  case 1: return "Feb";
+  case 2: return "Mar";
+  case 3: return "Apr";
+  case 4: return "May";
+  case 5: return "Jun";
+  case 6: return "Jul";
+  case 7: return "Aug";
+  case 8: return "Sep";
+  case 9: return "Oct";
+  case 10: return "Nov";
+  case 11: return "Dec";
     }
+  return "";
+  }
 
   var now = new Date(document.lastModified);
-  document.write(now.getDate() + " " + mon_to_name(now.getMonth()) + 
-                 " " + now.getFullYear() + ".");
+  var update_text = "This page was last updated on " +
+       now.getDate() + " " + mon_to_name(now.getMonth()) + 
+       " " + now.getFullYear() + ".";
+  document.getElementById("lastupdated").innerHTML = update_text;
 </script>
 
 <br>

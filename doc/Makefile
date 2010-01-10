@@ -5,7 +5,7 @@
 # $Id$
 #
 
-ALL_FILES = manpage.txt ssdeep.html usage.html changes.txt style.css
+ALL_FILES = manpage.html index.html usage.html changes.txt style.css
 
 USERNAME = jessekornblum,ssdeep
 DESTDIR  = web.sourceforge.net:htdocs/

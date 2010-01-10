@@ -1,11 +1,28 @@
-clean:
+# This Makefile is separate from the autotools files in the
+# top level directory. It is used only to clean up and
+# publish files for the public web site.
+#
+# $Id$
+#
+
+ALL_FILES = manpage.txt ssdeep.html usage.html changes.txt style.css
+
+USERNAME = jessekornblum,ssdeep
+DESTDIR  = web.sourceforge.net:htdocs/
+
+RMAN = /sw/bin/rman
+
+preflight:
 	rm -f *~
+	grep RBF *.html *.txt
+
+manpages:
+	$(RMAN) -f HTML -S -l "ssdeep man page" ../ssdeep.1 > manpage.html
+
+changes:
 	cp ../NEWS changes.txt
-	man ../ssdeep.1 | col -bx > manpage.txt
 
 publish:
-	scp ssdeep.html jessekornblum@ssh.sf.net:/home/groups/s/ss/ssdeep/htdocs/
+	rsync -avP -e ssh $(ALL_FILES) $(USERNAME)@$(DESTDIR)
 
-all: 
-	scp changes.txt manpage.txt *.css *.html jessekornblum@ssh.sf.net:/home/groups/s/ss/ssdeep/htdocs/
-
+all: manpages changes publish

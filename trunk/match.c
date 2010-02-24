@@ -58,6 +58,11 @@ int match_init(state *s)
 // Match the file named fn with the hash sum against the set of knowns
 // Display any matches. 
 // Return FALSE is there are no matches, TRUE if at least one match
+/// @param s State variable
+/// @param match_file Filename where we got the hash of the unknown file.
+///                   May be NULL.
+/// @param fn Filename of the unknown file we are comparing
+/// @param sum Fuzzy hash of the unknown file we are comparing
 int match_compare(state *s, char * match_file, TCHAR *fn, char *sum)
 {
   if (NULL == s || NULL == fn || NULL == sum)
@@ -125,7 +130,11 @@ int match_compare(state *s, char * match_file, TCHAR *fn, char *sum)
 }
 
 
-static int lsh_list_insert(state *s, char * match_file, lsh_list *l, TCHAR *fn, char *sum)
+static int lsh_list_insert(state *s, 
+			   char * match_file, 
+			   lsh_list *l, 
+			   TCHAR *fn, 
+			   char *sum)
 {
   lsh_node *new;
 
@@ -194,88 +203,136 @@ int match_add(state *s, char * match_file, TCHAR *fn, char *hash)
   return (lsh_list_insert(s,match_file,s->known_hashes,fn,hash));
 }
 
+typedef struct _file_info_t
+{  
+  FILE  * handle;
+  TCHAR known_file_name[MAX_STR_LEN];
+  char  known_hash[MAX_STR_LEN];
+} file_info_t;
 
-int match_load(state *s, char *fn)
+int sig_file_open(state *s, char * fn, file_info_t * info)
 {
-  size_t tchar_sz = sizeof(TCHAR);
-  TCHAR *known_file_name;
-  char *str, *known_hash;
-  FILE *handle;
+  char str[MAX_STR_LEN];
 
-  if (NULL == s || NULL == fn)
+  if (NULL == s || NULL == fn || NULL == info)
     return TRUE;
 
-  if ((handle = fopen(fn,"rb")) == NULL)
+  if ((info->handle = fopen(fn,"rb")) == NULL)
   {
-    if (!(s->mode & mode_silent))
+    if (!(MODE(mode_silent)))
       perror(fn);
     return TRUE;
   }
 
-  str = (char *)malloc(sizeof(char) * MAX_STR_LEN);
-  if (str == NULL)
-  {
-    print_error(s,"%s: out of memory", __progname);
-    return TRUE;
-  }
-  
   // The first line should be the header. We don't need to chop it
   // as we're only comparing it to the length of the known header.
-  fgets(str,MAX_STR_LEN,handle);
+  // RBF - We're ignoring the return value here
+  if (NULL == fgets(str,MAX_STR_LEN,info->handle))
+  {
+    perror(fn);
+    return TRUE;
+  }
+
   if (strncmp(str,SSDEEPV1_HEADER,strlen(SSDEEPV1_HEADER)))
   {
-    free(str);
     print_error(s,"%s: invalid file header", fn);
     return TRUE;
   }
+
+  return FALSE;
+}
   
-  known_file_name = (TCHAR *)malloc(tchar_sz * MAX_STR_LEN);
-  if (known_file_name == NULL)
-    fatal_error("%s: Out of memory", __progname);
 
-  known_hash = (char *)malloc(sizeof(char) * MAX_STR_LEN);
-  if (NULL == known_hash)
-    fatal_error("%s: Out of memory", __progname);
+void sig_file_close(file_info_t * info)
+{
+  if (NULL == info)
+    return;
 
-  while (fgets(str,MAX_STR_LEN,handle))
+  fclose(info->handle);
+}
+
+
+int sig_file_next(state *s, file_info_t * info)
+{
+  char str[MAX_STR_LEN];
+
+  if (NULL == s || NULL == info)
+    return TRUE;
+
+  if (NULL == fgets(str,MAX_STR_LEN,info->handle))
+    return TRUE;
+  
+  chop_line(str);
+
+  // The file format is:
+  //     hash,filename 
+
+  strncpy(info->known_hash,str,MIN(MAX_STR_LEN,strlen(str)));
+  find_comma_separated_string(info->known_hash,0);
+
+  //    memset(known_file_name,0,tchar_sz * MAX_STR_LEN);
+  find_comma_separated_string(str,1);
+
+  // On Win32 we have to do a kludgy cast from ordinary char 
+  // values to the TCHAR values we use internally.
+  size_t i, sz = strlen(str);
+  for (i = 0 ; i < sz ; i++)
   {
-    chop_line(str);
-
-    // The file format is:
-    //     hash,filename 
-
-    strncpy(known_hash,str,MIN(MAX_STR_LEN,strlen(str)));
-    find_comma_separated_string(known_hash,0);
-
-    //    memset(known_file_name,0,tchar_sz * MAX_STR_LEN);
-    find_comma_separated_string(str,1);
-
-    size_t i, sz = strlen(str);
-    for (i = 0 ; i < sz ; i++)
-    {
 #ifdef _WIN32
-      known_file_name[i] = (TCHAR)(str[i]);
+    info->known_file_name[i] = (TCHAR)(str[i]);
 #else
-      known_file_name[i] = str[i];
+    info->known_file_name[i] = str[i];
 #endif
-    }
-    known_file_name[i] = 0;
-    
-    if (match_add(s,fn,known_file_name,known_hash))
-    {
-      // If we can't insert this value, we're probably out of memory.
-      // There's no sense trying to read the rest of the file.
-      free(known_file_name);
-      free(str);
-      print_error(s,fn,"unable to insert hash");
-      fclose(handle);
-      return TRUE;
-    }
   }
-
-  free(known_file_name);
-  free(str);
-  fclose(handle);
+  info->known_file_name[i] = 0;
+   
   return FALSE;
 }
 
+  
+int match_load(state *s, char *fn)
+{
+  file_info_t info;
+  int status = FALSE;
+
+  if (NULL == s || NULL == fn)
+    return TRUE;
+
+  if (sig_file_open(s,fn,&info))
+    return TRUE;
+
+  while ( ! sig_file_next(s,&info))
+  {
+    if (match_add(s,fn,info.known_file_name,info.known_hash))
+    {
+      // If we can't insert this value, we're probably out of memory.
+      // There's no sense trying to read the rest of the file.
+      print_error(s,fn,"unable to insert hash");
+      status = TRUE;
+      break;
+    }
+  }
+
+  sig_file_close(&info);
+
+  return status;
+}
+
+
+int match_compare_unknown(state *s, char * fn)
+{ 
+  file_info_t info;
+
+  if (NULL == s || NULL == fn)
+    return TRUE;
+
+  if (sig_file_open(s,fn,&info))
+    return TRUE;
+
+  while ( ! sig_file_next(s,&info))
+    match_compare(s,fn,info.known_file_name,info.known_hash);
+
+  sig_file_close(&info);
+
+  return FALSE;
+}

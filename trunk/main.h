@@ -203,6 +203,8 @@ int getopt(int argc, char *const argv[], const char *optstring);
 #define mode_sigcompare   1<<10
 #define mode_display_all  1<<11
 
+#define mode_compare_unknown 1<<12
+
 #define MODE(A)   (s->mode & A)
 
 #define BLANK_LINE   \
@@ -287,5 +289,9 @@ int match_add(state *s, char * match_file, TCHAR *fn, char *hash);
 
 // Display all matches in the set of known hashes nicely
 int match_pretty(state *s);
+
+// Load the known hashes from the file fn and compare them to the
+// set of known hashes
+int match_compare_unknown(state *s, char * fn);
 
 #endif   // #ifndef __MAIN_H

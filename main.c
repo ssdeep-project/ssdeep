@@ -25,12 +25,13 @@ static int initialize_state(state *s)
 
 // In order to fit on one Win32 screen this function should produce
 // no more than 22 lines of output.
+// RBF - Document -k mode in man page, getting started guide
 static void usage(void)
 {
   print_status ("%s version %s by Jesse Kornblum", __progname, VERSION);
   print_status ("Copyright (C) 2008 ManTech International Corporation");
   print_status ("");
-  print_status ("Usage: %s [-V|h] [-m file] [-vprdsblcxa] [-t val] [FILES]", 
+  print_status ("Usage: %s [-V|h] [-m file] [-k file] [-vprdsblcxa] [-t val] [FILES]", 
 	  __progname);
 
   print_status ("-v - Verbose mode. Displays filename as its being processed");
@@ -45,6 +46,7 @@ static void usage(void)
   print_status ("-a - Display all matches, regardless of score");
   print_status ("-t - Only displays matches above the given threshold");
   print_status ("-m - Match FILES against known hashes in file");
+  print_status ("-k - Match signatures in FILES against signatures in file");
   print_status ("-h - Display this help message");
   print_status ("-V - Display version number and exit");
 }
@@ -53,7 +55,7 @@ static void usage(void)
 static void process_cmd_line(state *s, int argc, char **argv)
 {
   int i, match_files_loaded = FALSE;
-  while ((i=getopt(argc,argv,"avhVpdsblcxt:rm:")) != -1) {
+  while ((i=getopt(argc,argv,"avhVpdsblcxt:rm:k:")) != -1) {
     switch(i) {
 
     case 'a':
@@ -91,6 +93,8 @@ static void process_cmd_line(state *s, int argc, char **argv)
       s->mode |= mode_csv; break;
 
     case 'x':
+      if (MODE(mode_match) || MODE(mode_sigcompare))
+	fatal_error("Cannot combine modes - RBF better error message");
       s->mode |= mode_sigcompare; break;
 
     case 'r':
@@ -104,11 +108,21 @@ static void process_cmd_line(state *s, int argc, char **argv)
       break;
       
     case 'm':
+      if (MODE(mode_compare_unknown) || MODE(mode_sigcompare))
+	fatal_error("Cannot combine modes - RBF better error message");
       s->mode |= mode_match;
       if (!match_load(s,optarg))
 	match_files_loaded = TRUE;
       break;
       
+    case 'k':
+      if (MODE(mode_match) || MODE(mode_sigcompare))
+	fatal_error("Cannot combine modes - RBF better error message");
+      s->mode |= mode_compare_unknown;
+      if (!match_load(s,optarg))
+	match_files_loaded = TRUE;
+      break;
+
     case 'h':
       usage(); 
       exit (EXIT_SUCCESS);
@@ -123,6 +137,7 @@ static void process_cmd_line(state *s, int argc, char **argv)
     }
   }
 
+  // RBF - Update this check for other modes where known files are needed
   sanity_check(s,
 	       ((s->mode & mode_match) && !match_files_loaded),
 	       "No matching files loaded");
@@ -252,8 +267,10 @@ int main(int argc, char **argv)
 
   while (count < goal)
   {
-    if (s->mode & mode_sigcompare)
+    if (MODE(mode_sigcompare))
       match_load(s,argv[count]);
+    else if (MODE(mode_compare_unknown))
+      match_compare_unknown(s,argv[count]);
     else
     {
       generate_filename(s,fn,cwd,s->argv[count]);

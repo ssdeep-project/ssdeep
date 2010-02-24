@@ -1,5 +1,4 @@
-
-AC_INIT([SSDEEP],[2.3],[research@jessekornblum.com])
+AC_INIT([SSDEEP],[2.4],[research@jessekornblum.com])
 AM_INIT_AUTOMAKE
 
 AC_CONFIG_FILES([Makefile])

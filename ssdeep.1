@@ -1,10 +1,10 @@
-.TH SSDEEP "1" "Version 2.3 \- 10 Jan 2010" "ManTech International" "ManTech International"
+.TH SSDEEP "1" "Version 2.4 \- RBF 2010" "ManTech International" "ManTech International"
 
 .SH NAME
 ssdeep - Computes context triggered piecewise hashes
 
 .SH SYNOPSIS
-.B ssdeep [-m <file>] [-vprdsblcxa] [-t val] [FILES]
+.B ssdeep [-m <file>] [-k <file>] [-vprdsblcxa] [-t val] [FILES]
 .br
 .B ssdeep [-V|h] 
 
@@ -26,7 +26,16 @@ Load the file of known hashes to be used for matching. This file must
 be a previous output of the program and have the correct header. Displays
 only those files that match a known file and what file they matched
 against. Although filenames may not contain Unicode characters, they
-can hold hashes with Unicode filenames.
+can hold hashes with Unicode filenames. May not be used with the 
+\-k or \-x flags.
+
+.TP
+\fB\-k <file>\fR
+Compare the known signatures in the specified file to the pre-computed
+signatures in FILES. That is, both the file specified here and the
+input FILES should contain fuzzy hashes already. This flag can be 
+used multiple times to load more known signatures.
+May not be used with the \-m or \-x flags.
 
 .TP
 \fB\-v\fR
@@ -89,6 +98,7 @@ ssdeep formatted signatures. All of the signatures in these FILES are
 loaded into memory and compared against each other. All matches are
 displayed, except for matches that have the same filename and
 come from the same input file.
+May not be used with the \-m or \-k flags.
 
 .TP
 \fB\-a\fR
@@ -119,14 +129,13 @@ both bare and relative paths, etc.
 .SH AUTHOR
 ssdeep was written by Jesse Kornblum, ManTech International Corporation
 .br
-jesse DoT kornblum =-=at mantech dot com
+research (%at%) jessekornblum dott com
 
 .PP
 .SH COPYRIGHT
-This program is Copyright (C) 2006-2008 ManTech International Corporation
-and is licensed under
-the terms of the General Public License. See the file COPYING for
-details.
+This program is Copyright (C) 2006-2010 ManTech International Corporation
+and is licensed under the terms of the General Public License. See the 
+file COPYING for details.
 
 .SH SEE ALSO
 This program is based on SpamSum by Dr. Andrews Tridgell.

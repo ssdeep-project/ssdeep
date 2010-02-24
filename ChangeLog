@@ -1,3 +1,11 @@
+2010-02-24 Jesse Kornblum
+
+	* Experimenting with mode to compare unknown hashes to known
+	  without comparing the unknown against each other.
+
+	* Version bump to 2.4
+	
+
 2009-10-20 Jesse Kornblum
 
 	* Added -a mode to display all matches regardless of score.

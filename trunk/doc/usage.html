@@ -121,14 +121,14 @@ First download the latest tarball of the program from
 should be named something like <tt>ssdeep-2.2.tar.gz</tt>. Uncompress the file with the
 following command:
 
-<pre>    $ tar zxvf ssdeep-2.2.tar.gz </pre>
+<pre>    $ tar zxvf ssdeep-2.4.tar.gz </pre>
 
 </p>
 <p>
 
 Change into the decompressed directory
 
-<pre>    $ cd ssdeep-2.2 </pre>
+<pre>    $ cd ssdeep-2.4 </pre>
 
 and configure the program.
 
@@ -394,7 +394,6 @@ Trash\DO NOT DISTRIBUTE.doc matches Outgoing\Plan for Hostile Takeover.doc (88)
 After you've generated several files of fuzzy hashes you may wish to 
 compare those signatures to each other. You can compare one or more files
 of signatures against each other using the <tt>-x</tt> flag.
-
 </p>
 
 <pre>
@@ -408,6 +407,23 @@ list1:/etc/rcc.d/init.d matches list3:./known_malware/wlk_rootkit/dropper (86)
 list3:./known_malware/wlk_rootkit/dropper matches list1:/etc/rcc.d/init.d (86)
 </pre>
 
+<p> 
+The above method compares all of the signatures against each other.
+This can take some time, especially if the files are large. If you'd rather
+compare some unknown signatures against a set of known signatures, you can
+use the <tt>-k</tt> flag. Let's say you have some signatures for malicious
+programs, badfiles.txt and worsefiles.txt. You then compute the fuzzy hashes
+for programs on some workstations, which are saved to comp1.txt, comp2.txt,
+and comp3.txt. You can compare these unknowns to the knows like this:
+</p>
+
+<pre>
+C:\> ssdeep -k badfiles.txt -k worsefiles.txt comp1.txt comp2.txt comp3.txt
+
+comp1.txt:WINWORD2.EXE matches badfiles.txt:some_trojan.exe (84)
+
+comp3:txt:ntoskrrnl.exe matches worsefiles.txt:delete_all_data.exe (77)
+</pre>
 
 
 

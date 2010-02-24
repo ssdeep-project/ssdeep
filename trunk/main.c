@@ -1,7 +1,7 @@
 // Fuzzy Hashing by Jesse Kornblum
 // Copyright (C) 2008,2009 ManTech International Corporation
 //
-// $Id: main.c 33 2008-02-16 18:37:47Z jessekornblum 
+// $Id$
 //
 // This program is licensed under version 2 of the GNU Public License.
 // See the file COPYING for details. 
@@ -25,7 +25,6 @@ static int initialize_state(state *s)
 
 // In order to fit on one Win32 screen this function should produce
 // no more than 22 lines of output.
-// RBF - Document -k mode in man page, getting started guide
 static void usage(void)
 {
   print_status ("%s version %s by Jesse Kornblum", __progname, VERSION);
@@ -66,7 +65,9 @@ static void process_cmd_line(state *s, int argc, char **argv)
       if (MODE(mode_verbose))
       {
 	print_error(s,"%s: Already at maximum verbosity", __progname);
-	print_error(s,"%s: Error message display to user correctly", __progname);
+	print_error(s,
+		    "%s: Error message display to user correctly", 
+		    __progname);
       }
       else
 	s->mode |= mode_verbose;
@@ -94,7 +95,7 @@ static void process_cmd_line(state *s, int argc, char **argv)
 
     case 'x':
       if (MODE(mode_match) || MODE(mode_sigcompare))
-	fatal_error("Cannot combine modes - RBF better error message");
+	fatal_error("Signature matching cannot be combined with other matching modes");
       s->mode |= mode_sigcompare; break;
 
     case 'r':
@@ -109,7 +110,7 @@ static void process_cmd_line(state *s, int argc, char **argv)
       
     case 'm':
       if (MODE(mode_compare_unknown) || MODE(mode_sigcompare))
-	fatal_error("Cannot combine modes - RBF better error message");
+	fatal_error("Positive matching cannot be combined with other matching modes");
       s->mode |= mode_match;
       if (!match_load(s,optarg))
 	match_files_loaded = TRUE;
@@ -117,7 +118,7 @@ static void process_cmd_line(state *s, int argc, char **argv)
       
     case 'k':
       if (MODE(mode_match) || MODE(mode_sigcompare))
-	fatal_error("Cannot combine modes - RBF better error message");
+	fatal_error("Signature matching cannot be combined with other matching modes");
       s->mode |= mode_compare_unknown;
       if (!match_load(s,optarg))
 	match_files_loaded = TRUE;
@@ -137,9 +138,12 @@ static void process_cmd_line(state *s, int argc, char **argv)
     }
   }
 
-  // RBF - Update this check for other modes where known files are needed
+  // We don't include mode_sigcompare in this list as we haven't loaded
+  // the matching files yet. In that mode the matching files are in fact 
+  // the command line arguments.
   sanity_check(s,
-	       ((s->mode & mode_match) && !match_files_loaded),
+	       ((MODE(mode_match) || MODE(mode_compare_unknown))
+		&& !match_files_loaded),
 	       "No matching files loaded");
   
   sanity_check(s,

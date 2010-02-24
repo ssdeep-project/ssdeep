@@ -25,8 +25,11 @@
 #define MAX_STR_LEN  2048
 
 
+// ------------------------------------------------------------------
+// LINKED LIST FUNCTIONS
+// ------------------------------------------------------------------
 
-
+static
 int lsh_list_init(lsh_list *l)
 {
   if (NULL == l)
@@ -37,6 +40,159 @@ int lsh_list_init(lsh_list *l)
   return FALSE;
 }
 
+// Insert a signature from the file match_file into the list l.
+// The value consists of the filename fn and the hash value sum.
+static 
+int lsh_list_insert(state *s, 
+		    char * match_file, 
+		    lsh_list *l, 
+		    TCHAR *fn, 
+		    char *sum)
+{
+  lsh_node *new;
+
+  if (NULL == s || NULL == l || NULL == fn || NULL == sum)
+    return TRUE;
+
+  if ((new = (lsh_node *)malloc(sizeof(lsh_node))) == NULL)
+    fatal_error("%s: Out of memory", __progname);
+
+  new->next = NULL;
+  if (((new->hash = strdup(sum)) == NULL) ||
+      ((new->fn   = _tcsdup(fn))  == NULL))
+  {
+    print_error(s,"%s: out of memory", __progname);
+    return TRUE;
+  }
+  if (match_file != NULL)
+  {
+    new->match_file = strdup(match_file);
+    if (NULL == new->match_file)
+    {
+      print_error(s,"%s: out of memory", __progname);
+      return TRUE;
+    }
+  }
+  else
+    new->match_file = NULL;
+
+  if (l->bottom == NULL)
+  {
+    if (l->top != NULL)
+      fatal_error("%s: internal data structure inconsistency", fn);
+
+    l->top = new;
+    l->bottom = new;
+    return FALSE;
+  }
+  
+  l->bottom->next = new;
+  l->bottom = new;
+  return FALSE;
+}
+
+// ------------------------------------------------------------------
+// SIGNATURE FILE FUNCTIONS
+// ------------------------------------------------------------------
+
+typedef struct _file_info_t
+{  
+  FILE  * handle;
+  TCHAR known_file_name[MAX_STR_LEN];
+  char  known_hash[MAX_STR_LEN];
+} file_info_t;
+
+// Open a signature file and determine if it contains a valid header
+// Returns TRUE on an error, otherwise FALSE.
+int sig_file_open(state *s, char * fn, file_info_t * info)
+{
+  char str[MAX_STR_LEN];
+
+  if (NULL == s || NULL == fn || NULL == info)
+    return TRUE;
+
+  info->handle = fopen(fn,"rb");
+  if (NULL == info->handle)
+  {
+    if (!(MODE(mode_silent)))
+      perror(fn);
+    return TRUE;
+  }
+
+  // The first line should be the header. We don't need to chop it
+  // as we're only comparing it to the length of the known header.
+  if (NULL == fgets(str,MAX_STR_LEN,info->handle))
+  {
+    if (!(MODE(mode_silent)))
+      perror(fn);
+    fclose(info->handle);
+    return TRUE;
+  }
+
+  if (strncmp(str,SSDEEPV1_HEADER,strlen(SSDEEPV1_HEADER)))
+  {
+    if (!MODE(mode_silent))
+      print_error(s,"%s: invalid file header", fn);
+    fclose(info->handle);
+    return TRUE;
+  }
+
+  return FALSE;
+}
+  
+
+// Close a signature file
+void sig_file_close(file_info_t * info)
+{
+  if (NULL == info)
+    return;
+
+  fclose(info->handle);
+}
+
+
+// Read the next entry in a signature file and store it in the structure 'info'
+// If there is no next entry (EOF) or an error occurs, returns TRUE,
+// otherwise FALSE.
+int sig_file_next(state *s, file_info_t * info)
+{
+  char str[MAX_STR_LEN];
+
+  if (NULL == s || NULL == info)
+    return TRUE;
+
+  if (NULL == fgets(str,MAX_STR_LEN,info->handle))
+    return TRUE;
+  
+  chop_line(str);
+
+  // The file format is:
+  //     hash,filename 
+
+  strncpy(info->known_hash,str,MIN(MAX_STR_LEN,strlen(str)));
+  find_comma_separated_string(info->known_hash,0);
+  find_comma_separated_string(str,1);
+
+  // On Win32 we have to do a kludgy cast from ordinary char 
+  // values to the TCHAR values we use internally.
+  size_t i, sz = strlen(str);
+  for (i = 0 ; i < sz ; i++)
+  {
+#ifdef _WIN32
+    info->known_file_name[i] = (TCHAR)(str[i]);
+#else
+    info->known_file_name[i] = str[i];
+#endif
+  }
+  info->known_file_name[i] = 0;
+   
+  return FALSE;
+}
+
+
+// ------------------------------------------------------------------
+// MATCHING FUNCTIONS
+// ------------------------------------------------------------------
 
 int match_init(state *s)
 {
@@ -50,8 +206,6 @@ int match_init(state *s)
   lsh_list_init(s->known_hashes);  
   return FALSE;
 }
-
-
 
 #define STRINGS_EQUAL(A,B)    !_tcsncmp(A,B,MAX(_tcslen(A),_tcslen(B)))
 
@@ -129,56 +283,6 @@ int match_compare(state *s, char * match_file, TCHAR *fn, char *sum)
   return status;
 }
 
-
-static int lsh_list_insert(state *s, 
-			   char * match_file, 
-			   lsh_list *l, 
-			   TCHAR *fn, 
-			   char *sum)
-{
-  lsh_node *new;
-
-  if (NULL == s || NULL == l || NULL == fn || NULL == sum)
-    return TRUE;
-
-  if ((new = (lsh_node *)malloc(sizeof(lsh_node))) == NULL)
-    fatal_error("%s: Out of memory", __progname);
-
-  new->next = NULL;
-  if (((new->hash = strdup(sum)) == NULL) ||
-      ((new->fn   = _tcsdup(fn))  == NULL))
-  {
-    print_error(s,"%s: out of memory", __progname);
-    return TRUE;
-  }
-  if (match_file != NULL)
-  {
-    new->match_file = strdup(match_file);
-    if (NULL == new->match_file)
-    {
-      print_error(s,"%s: out of memory", __progname);
-      return TRUE;
-    }
-  }
-  else
-    new->match_file = NULL;
-
-  if (l->bottom == NULL)
-  {
-    if (l->top != NULL)
-      fatal_error("%s: internal data structure inconsistency", fn);
-
-    l->top = new;
-    l->bottom = new;
-    return FALSE;
-  }
-  
-  l->bottom->next = new;
-  l->bottom = new;
-  return FALSE;
-}
-
-
 int match_pretty(state *s)
 {
   if (NULL == s)
@@ -197,97 +301,11 @@ int match_pretty(state *s)
   return FALSE;
 }
 
-
 int match_add(state *s, char * match_file, TCHAR *fn, char *hash)
 {
   return (lsh_list_insert(s,match_file,s->known_hashes,fn,hash));
 }
 
-typedef struct _file_info_t
-{  
-  FILE  * handle;
-  TCHAR known_file_name[MAX_STR_LEN];
-  char  known_hash[MAX_STR_LEN];
-} file_info_t;
-
-int sig_file_open(state *s, char * fn, file_info_t * info)
-{
-  char str[MAX_STR_LEN];
-
-  if (NULL == s || NULL == fn || NULL == info)
-    return TRUE;
-
-  if ((info->handle = fopen(fn,"rb")) == NULL)
-  {
-    if (!(MODE(mode_silent)))
-      perror(fn);
-    return TRUE;
-  }
-
-  // The first line should be the header. We don't need to chop it
-  // as we're only comparing it to the length of the known header.
-  // RBF - We're ignoring the return value here
-  if (NULL == fgets(str,MAX_STR_LEN,info->handle))
-  {
-    perror(fn);
-    return TRUE;
-  }
-
-  if (strncmp(str,SSDEEPV1_HEADER,strlen(SSDEEPV1_HEADER)))
-  {
-    print_error(s,"%s: invalid file header", fn);
-    return TRUE;
-  }
-
-  return FALSE;
-}
-  
-
-void sig_file_close(file_info_t * info)
-{
-  if (NULL == info)
-    return;
-
-  fclose(info->handle);
-}
-
-
-int sig_file_next(state *s, file_info_t * info)
-{
-  char str[MAX_STR_LEN];
-
-  if (NULL == s || NULL == info)
-    return TRUE;
-
-  if (NULL == fgets(str,MAX_STR_LEN,info->handle))
-    return TRUE;
-  
-  chop_line(str);
-
-  // The file format is:
-  //     hash,filename 
-
-  strncpy(info->known_hash,str,MIN(MAX_STR_LEN,strlen(str)));
-  find_comma_separated_string(info->known_hash,0);
-
-  //    memset(known_file_name,0,tchar_sz * MAX_STR_LEN);
-  find_comma_separated_string(str,1);
-
-  // On Win32 we have to do a kludgy cast from ordinary char 
-  // values to the TCHAR values we use internally.
-  size_t i, sz = strlen(str);
-  for (i = 0 ; i < sz ; i++)
-  {
-#ifdef _WIN32
-    info->known_file_name[i] = (TCHAR)(str[i]);
-#else
-    info->known_file_name[i] = str[i];
-#endif
-  }
-  info->known_file_name[i] = 0;
-   
-  return FALSE;
-}
 
   
 int match_load(state *s, char *fn)

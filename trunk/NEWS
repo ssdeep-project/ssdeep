@@ -1,3 +1,10 @@
+** Version 2.4 - RBF DATE 2010
+
+* New Features
+
+  - Added -k mode to compare unknown signatures against known signatures.
+
+
 ** Version 2.3 - 10 Jan 2010
 
 * New Features

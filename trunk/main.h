@@ -1,23 +1,21 @@
-
-/* ssdeep
-   (C) Copyright 2006 ManTech International Corporation.
-
-   $Id$
-
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
-   
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-   
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-*/
+// ssdeep
+// Copyright (C) 2010 ManTech International Corporation.
+//
+// $Id$
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #ifndef __MAIN_H
 #define __MAIN_H
@@ -80,10 +78,10 @@
 #endif
 
 
-/* This allows us to open standard input in binary mode by default 
-   See http://gnuwin32.sourceforge.net/compile.html for more.
-   Technically it isn't needed in ssdeep as we don't process standard
-   input. But it was part of Jesse's template, so in it goes! */
+// This allows us to open standard input in binary mode by default 
+// See http://gnuwin32.sourceforge.net/compile.html for more.
+// Technically it isn't needed in ssdeep as we don't process standard
+// input. But it was part of Jesse's template, so in it goes!
 #ifdef HAVE_FCNTL_H
 # include <fcntl.h>
 #endif
@@ -120,7 +118,7 @@ if (NULL == VAR)  \
 memset(VAR,0,SIZE * sizeof(TYPE));
 
 
-/* These are the types of files we can encounter while hashing */
+// These are the types of files we can encounter while hashing
 #define file_regular    0
 #define file_directory  1
 #define file_door       2
@@ -157,8 +155,8 @@ typedef struct {
 // Things required when cross compiling for Microsoft Windows
 #ifdef _WIN32
 
-/* We create macros for the Windows equivalent UNIX functions.
-   No worries about lstat to stat; Windows doesn't have symbolic links */
+// We create macros for the Windows equivalent UNIX functions.
+// No worries about lstat to stat; Windows doesn't have symbolic links 
 #define lstat(A,B)      stat(A,B)
 #define realpath(A,B)   _fullpath(B,A,PATH_MAX)
 #define snprintf        _snprintf
@@ -168,10 +166,10 @@ extern char *optarg;
 extern int optind;
 int getopt(int argc, char *const argv[], const char *optstring);
 
-/* Although newlines on Win32 are supposed to \r\n, when this program
-   is compiled with mingw and run on WindowsXP, the program seems to 
-   use \r\n anyway. I'm not complaining, just curious what's going on.
-   In the meantime, however, we can just use \n for the NEWLINE */
+// Although newlines on Win32 are supposed to \r\n, when this program
+// is compiled with mingw and run on WindowsXP, the program seems to 
+// use \r\n anyway. I'm not complaining, just curious what's going on.
+// In the meantime, however, we can just use \n for the NEWLINE 
 #define NEWLINE        "\n"
 #define DIR_SEPARATOR  '\\'
 
@@ -187,8 +185,8 @@ int getopt(int argc, char *const argv[], const char *optstring);
 
 
 
-/* Because the modes are stored in a uint64_t variable, they must
-   be less than or equal to 1<<63 */
+// Because the modes are stored in a uint64_t variable, they must
+// be less than or equal to 1<<63
 #define mode_none            0
 #define mode_recursive       1
 #define mode_match        1<<1
@@ -202,7 +200,6 @@ int getopt(int argc, char *const argv[], const char *optstring);
 #define mode_threshold    1<<9
 #define mode_sigcompare   1<<10
 #define mode_display_all  1<<11
-
 #define mode_compare_unknown 1<<12
 
 #define MODE(A)   (s->mode & A)
@@ -235,16 +232,16 @@ int hash_file(state *s, TCHAR *fn);
 void try(void);
 void sanity_check(state *s, int condition, char *msg);
 
-/* The basename function kept misbehaving on OS X, so I rewrote it.
-   This function isn't perfect, nor is it designed to be. Because
-   we're guarenteed to be working with a filename here, there's no way
-   that s will end with a DIR_SEPARATOR (e.g. /foo/bar/). This function
-   will not work properly for a string that ends in a DIR_SEPARATOR */
+// The basename function kept misbehaving on OS X, so I rewrote it.
+// This function isn't perfect, nor is it designed to be. Because
+// we're guarenteed to be working with a filename here, there's no way
+// that s will end with a DIR_SEPARATOR (e.g. /foo/bar/). This function
+// will not work properly for a string that ends in a DIR_SEPARATOR 
 int my_basename(TCHAR *s);
 int my_dirname(TCHAR *s);
 
-/* Remove the newlines, if any, from the string. Works with both
-   \r and \r\n style newlines */
+// Remove the newlines, if any, from the string. Works with both
+// \r and \r\n style newlines 
 void chop_line_tchar(TCHAR *s);
 void chop_line(char *s);
 
@@ -257,7 +254,7 @@ void shift_string(char *fn, size_t start, size_t new_start);
 
 void prepare_filename(state *s, TCHAR *fn);
 
-/* Returns the size of the given file, in bytes. */
+// Returns the size of the given file, in bytes.
 off_t find_file_size(FILE *h);
 
 

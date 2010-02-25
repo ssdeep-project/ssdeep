@@ -1,8 +1,9 @@
-** Version 2.4 - RBF DATE 2010
+** Version 2.4 - 25 Feb 2010
 
 * New Features
 
   - Added -k mode to compare unknown signatures against known signatures.
+
 
 
 ** Version 2.3 - 10 Jan 2010
@@ -23,6 +24,7 @@
 * Bug Fixes
 
   - Changed default behavior to exit program on invalid command line flags
+
 
 
 ** Version 2.1 - 1 Jan 2009

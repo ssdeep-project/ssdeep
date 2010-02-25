@@ -1,5 +1,5 @@
 // Fuzzy Hashing by Jesse Kornblum
-// Copyright (C) 2008,2009 ManTech International Corporation
+// Copyright (C) 2010 ManTech International Corporation
 //
 // $Id$
 //
@@ -28,10 +28,13 @@ static int initialize_state(state *s)
 static void usage(void)
 {
   print_status ("%s version %s by Jesse Kornblum", __progname, VERSION);
-  print_status ("Copyright (C) 2008 ManTech International Corporation");
+  print_status ("Copyright (C) 2010 ManTech International Corporation");
   print_status ("");
-  print_status ("Usage: %s [-V|h] [-m file] [-k file] [-vprdsblcxa] [-t val] [FILES]", 
+  print_status ("Usage: %s [-m file] [-k file] [-vprdsblcxa] [-t val] [-h|-V] [FILES]", 
 	  __progname);
+
+  print_status ("-m - Match FILES against known hashes in file");
+  print_status ("-k - Match signatures in FILES against signatures in file");
 
   print_status ("-v - Verbose mode. Displays filename as its being processed");
   print_status ("-p - Pretty matching mode. Similar to -d but includes all matches");
@@ -43,9 +46,9 @@ static void usage(void)
   print_status ("-c - Prints output in CSV format");
   print_status ("-x - Compare FILES as signature files");
   print_status ("-a - Display all matches, regardless of score");
+
   print_status ("-t - Only displays matches above the given threshold");
-  print_status ("-m - Match FILES against known hashes in file");
-  print_status ("-k - Match signatures in FILES against signatures in file");
+
   print_status ("-h - Display this help message");
   print_status ("-V - Display version number and exit");
 }

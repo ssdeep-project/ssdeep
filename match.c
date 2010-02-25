@@ -1,5 +1,5 @@
 // ssdeep
-// (C) Copyright 2009 ManTech International Corporation
+// (C) Copyright 2010 ManTech International Corporation
 //
 // $Id$
 //
@@ -43,11 +43,11 @@ int lsh_list_init(lsh_list *l)
 // Insert a signature from the file match_file into the list l.
 // The value consists of the filename fn and the hash value sum.
 static 
-int lsh_list_insert(state *s, 
-		    char * match_file, 
-		    lsh_list *l, 
-		    TCHAR *fn, 
-		    char *sum)
+int lsh_list_insert(state    * s, 
+		    char     * match_file, 
+		    lsh_list * l, 
+		    TCHAR    * fn, 
+		    char     * sum)
 {
   lsh_node *new;
 
@@ -104,6 +104,7 @@ typedef struct _file_info_t
 
 // Open a signature file and determine if it contains a valid header
 // Returns TRUE on an error, otherwise FALSE.
+static
 int sig_file_open(state *s, char * fn, file_info_t * info)
 {
   char str[MAX_STR_LEN];
@@ -142,6 +143,7 @@ int sig_file_open(state *s, char * fn, file_info_t * info)
   
 
 // Close a signature file
+static
 void sig_file_close(file_info_t * info)
 {
   if (NULL == info)
@@ -154,6 +156,7 @@ void sig_file_close(file_info_t * info)
 // Read the next entry in a signature file and store it in the structure 'info'
 // If there is no next entry (EOF) or an error occurs, returns TRUE,
 // otherwise FALSE.
+static
 int sig_file_next(state *s, file_info_t * info)
 {
   char str[MAX_STR_LEN];

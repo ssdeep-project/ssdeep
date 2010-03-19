@@ -146,7 +146,7 @@ static int ss_init(ss_context *ctx, FILE *handle)
 static const char *b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 static void ss_engine(ss_context *ctx, 
-		      unsigned char *buffer, 
+		      const unsigned char *buffer, 
 		      uint32_t buffer_size)
 {
   uint32_t i;
@@ -287,7 +287,7 @@ int fuzzy_hash_file(FILE *handle,
 }
 
 
-extern int fuzzy_hash_filename(char * filename,
+extern int fuzzy_hash_filename(const char * filename,
 			       char * result)
 {
   int status;
@@ -307,7 +307,7 @@ extern int fuzzy_hash_filename(char * filename,
 }
 
 
-int fuzzy_hash_buf(unsigned char *buf,
+int fuzzy_hash_buf(const unsigned char *buf,
 		   uint32_t      buf_len,
 		   char          *result)
 {

@@ -229,7 +229,7 @@ int hash_file(state *s, TCHAR *fn);
 // *********************************************************************
 // Helper functions
 // *********************************************************************
-void try(void);
+void try_msg(void);
 void sanity_check(state *s, int condition, char *msg);
 
 // The basename function kept misbehaving on OS X, so I rewrote it.

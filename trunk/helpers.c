@@ -21,7 +21,7 @@
 
 #include "ssdeep.h"
 
-void try(void)
+void try_msg(void)
 {
   fprintf (stderr,"Try `%s -h` for more information.%s", __progname, NEWLINE);
 }
@@ -34,7 +34,7 @@ void sanity_check(state *s, int condition, char *msg)
       if (!(s->mode & mode_silent))
 	{
 	  print_status("%s: %s", __progname, msg);
-	  try();
+	  try_msg();
 	}
       exit (EXIT_FAILURE);
     }

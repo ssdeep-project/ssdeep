@@ -254,16 +254,22 @@ int match_compare(state *s, char * match_file, TCHAR *fn, char *sum)
     }
 
     score = fuzzy_compare(sum,tmp->hash);
-    if (score > s->threshold || MODE(mode_display_all))
+    if (-1 == score)
     {
-      if (s->mode & mode_csv)
+      print_error(s, "%s: Bad hashes in comparison", __progname);
+    }
+    else
+    {
+      if (score > s->threshold || MODE(mode_display_all))
+      {
+	if (s->mode & mode_csv)
 	{
 	  display_filename(stdout,fn);
 	  printf(",");
 	  display_filename(stdout,tmp->fn);
 	  print_status(",%"PRIu32, score);
 	}
-      else
+	else
 	{
 	  if (match_file != NULL)
 	    printf ("%s:", match_file);
@@ -275,9 +281,10 @@ int match_compare(state *s, char * match_file, TCHAR *fn, char *sum)
 	  print_status(" (%"PRIu32")", score);
 	}
       
-      // We don't return right away as this file could match more than
-      // one signature. 
-      status = TRUE;
+	// We don't return right away as this file could match more than
+	// one signature. 
+	status = TRUE;
+      }
     }
     
     tmp = tmp->next;
@@ -328,7 +335,7 @@ int match_load(state *s, char *fn)
     {
       // If we can't insert this value, we're probably out of memory.
       // There's no sense trying to read the rest of the file.
-      print_error(s,fn,"unable to insert hash");
+      print_error(s,"%s: unable to insert hash", fn);
       status = TRUE;
       break;
     }

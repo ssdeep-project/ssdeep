@@ -1,8 +1,7 @@
-
-/* Fuzzy Hashing by Jesse Kornblum
-   Copyright (C) ManTech International Corporation 2010
-
-   $Id$ */
+// Fuzzy Hashing by Jesse Kornblum
+// Copyright (C) ManTech International Corporation 2010
+//
+// $Id$ 
 
 /// @mainpage
 /// This is the documentation for the fuzzy hashing API from ssdeep.
@@ -33,20 +32,29 @@
 /// @link fuzzy_compare() compute the
 /// similarity between any two fuzzy signatures @endlink.
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef _INTTYPES_H_
 # include <inttypes.h>
 #endif
 
+#ifndef _FUZZY_H_
+# define _FUZZY_H_
+#endif
+
 /// @brief Compute the fuzzy hash of a buffer
 ///
-/// It is the user's responsibility to append the filename,
+/// The computes the fuzzy hash of the first buf_len bytes of the buffer.
+/// It is the caller's responsibility to append the filename,
 /// if any, to result after computation. 
 /// @param buf The data to be fuzzy hashed
 /// @param buf_len The length of the data being hashed
 /// @param result Where the fuzzy hash of buf is stored. This variable
 /// must be allocated to hold at least FUZZY_MAX_RESULT bytes.
 /// @return Returns zero on success, non-zero on error.
-extern int fuzzy_hash_buf(unsigned char *buf,
+extern int fuzzy_hash_buf(const unsigned char *buf,
 			  uint32_t      buf_len,
 			  char          *result);
 
@@ -57,9 +65,9 @@ extern int fuzzy_hash_buf(unsigned char *buf,
 /// at the beginning of the file. When finished, the file pointer is
 /// returned to its original position. If an error occurs, the file 
 /// pointer's value is undefined.
-/// It is the user's responsibility to append the filename,
-/// if any, to result after computation.
-/// @param handle File handle to hashed
+/// It is the callers's responsibility to append the filename
+/// to the result after computation.
+/// @param handle Open handle to the file to be hashed
 /// @param result Where the fuzzy hash of the file is stored. This 
 /// variable must be allocated to hold at least FUZZY_MAX_RESULT bytes.
 /// @return Returns zero on success, non-zero on error
@@ -70,10 +78,13 @@ extern int fuzzy_hash_file(FILE *handle,
 ///
 /// Opens, reads, and hashes the contents of the file 'filename' 
 /// The result must be allocated to hold FUZZY_MAX_RESULT characters. 
+/// It is the caller's responsibility to append the filename
+/// to the result after computation. 
+/// @param filename The file to be hashed
 /// @param result Where the fuzzy hash of the file is stored. This 
 /// variable must be allocated to hold at least FUZZY_MAX_RESULT bytes.
 /// @return Returns zero on success, non-zero on error. 
-extern int fuzzy_hash_filename(char * filename,
+extern int fuzzy_hash_filename(const char * filename,
 			       char * result);
 
 
@@ -87,8 +98,6 @@ extern int fuzzy_hash_filename(char * filename,
 extern int fuzzy_compare(const char *sig1, const char *sig2);
 
 
-/* -----------------------------------------------------------------
-   You shouldn't have to mess with anything below this line         */
 
 /// The longest possible length for a fuzzy hash signature (without the filename)
 #define FUZZY_MAX_RESULT    (SPAMSUM_LENGTH + (SPAMSUM_LENGTH/2 + 20))
@@ -97,3 +106,7 @@ extern int fuzzy_compare(const char *sig1, const char *sig2);
 #define SPAMSUM_LENGTH 64
 
 
+// To end our 'extern "C" {'
+#ifdef __cplusplus
+} 
+#endif

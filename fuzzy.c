@@ -125,6 +125,9 @@ static void ss_destroy(ss_context *ctx)
 
 static int ss_init(ss_context *ctx, FILE *handle)
 {
+  if (NULL == ctx)
+    return TRUE;
+
   ctx->ret = (char *)malloc(sizeof(char) * FUZZY_MAX_RESULT);
   if (ctx->ret == NULL)
     return TRUE;
@@ -142,9 +145,14 @@ static int ss_init(ss_context *ctx, FILE *handle)
 
 static const char *b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-static void ss_engine(ss_context *ctx, unsigned char *buffer, uint32_t buffer_size)
+static void ss_engine(ss_context *ctx, 
+		      unsigned char *buffer, 
+		      uint32_t buffer_size)
 {
   uint32_t i;
+
+  if (NULL == ctx || NULL == buffer)
+    return;
 
   for ( i = 0 ; i < buffer_size ; ++i)
   {
@@ -199,6 +207,9 @@ static int ss_update(ss_context *ctx, FILE *handle)
   uint32_t bytes_read;
   unsigned char *buffer; 
 
+  if (NULL == ctx || NULL == handle)
+    return TRUE;
+
   buffer = (unsigned char *)malloc(sizeof(unsigned char) * BUFFER_SIZE);
   if (buffer == NULL)
     return TRUE;
@@ -235,12 +246,18 @@ static int ss_update(ss_context *ctx, FILE *handle)
 int fuzzy_hash_file(FILE *handle,
 		    char *result)
 {
-  uint64_t filepos = ftello(handle);
-  int done         = FALSE;
-  ss_context *ctx  = (ss_context *)malloc(sizeof(ss_context));
+  ss_context *ctx;  
+  uint64_t filepos;
+  int done = FALSE;
   
+  if (NULL == handle || NULL == result)
+    return TRUE;
+  
+  ctx = (ss_context *)malloc(sizeof(ss_context));
   if (ctx == NULL)
     return TRUE;
+
+  filepos = ftello(handle);
 
   ss_init(ctx, handle);
 
@@ -251,7 +268,7 @@ int fuzzy_hash_file(FILE *handle,
 
     ss_update(ctx,handle);
 
-    /* our blocksize guess may have been way off - repeat if necessary */
+    // our blocksize guess may have been way off - repeat if necessary
     if (ctx->block_size > MIN_BLOCKSIZE && ctx->j < SPAMSUM_LENGTH/2) 
       ctx->block_size = ctx->block_size / 2;
     else
@@ -260,14 +277,12 @@ int fuzzy_hash_file(FILE *handle,
 
   strncpy(result,ctx->ret,FUZZY_MAX_RESULT);
 
-  // 'Never check for an error condition you don't know how to handle'
-  // If the fseeko call fails we have a valid result but can't reset
-  // the file pointer.
-  fseeko(handle,filepos,SEEK_SET);
-
   ss_destroy(ctx);
-
   free(ctx);
+
+  if (fseeko(handle,filepos,SEEK_SET))
+    return TRUE;
+
   return FALSE;
 }
 
@@ -276,6 +291,9 @@ extern int fuzzy_hash_filename(char * filename,
 			       char * result)
 {
   int status;
+
+  if (NULL == filename || NULL == result)
+    return TRUE;
 
   FILE * handle = fopen(filename,"rb");
   if (NULL == handle)
@@ -293,9 +311,13 @@ int fuzzy_hash_buf(unsigned char *buf,
 		   uint32_t      buf_len,
 		   char          *result)
 {
+  ss_context *ctx;
   int done = FALSE;
-  ss_context *ctx  = (ss_context *)malloc(sizeof(ss_context));
-  
+
+  if (NULL == buf || NULL == result)
+    return TRUE;
+
+  ctx = (ss_context *)malloc(sizeof(ss_context));  
   if (ctx == NULL)
     return TRUE;
 
@@ -403,18 +425,17 @@ static int has_common_substring(const char *s1, const char *s2)
 }
 
 
-/*
-  eliminate sequences of longer than 3 identical characters. These
-  sequences contain very little information so they tend to just bias
-  the result unfairly
-*/
+// eliminate sequences of longer than 3 identical characters. These
+// sequences contain very little information so they tend to just bias
+// the result unfairly
 static char *eliminate_sequences(const char *str)
 {
   char *ret;
   int i, j, len;
   
   ret = strdup(str);
-  if (!ret) return NULL;
+  if (!ret) 
+    return NULL;
   
   len = strlen(str);
   
@@ -503,39 +524,43 @@ int fuzzy_compare(const char *str1, const char *str2)
   char *s1_1, *s1_2;
   char *s2_1, *s2_2;
   
-  /* each spamsum is prefixed by its block size */
+  if (NULL == str1 || NULL == str2)
+    return -1;
+
+  // each spamsum is prefixed by its block size
   if (sscanf(str1, "%u:", &block_size1) != 1 ||
       sscanf(str2, "%u:", &block_size2) != 1) {
-    return 0;
+    return -1;
   }
   
-  /* if the blocksizes don't match then we are comparing
-     apples to oranges ... */
+  // if the blocksizes don't match then we are comparing
+  // apples to oranges. This isn't an 'error' per se. We could
+  // have two valid signatures, but they can't be compared. 
   if (block_size1 != block_size2 && 
       block_size1 != block_size2*2 &&
       block_size2 != block_size1*2) {
     return 0;
   }
   
-  /* move past the prefix */
+  // move past the prefix
   str1 = strchr(str1, ':');
   str2 = strchr(str2, ':');
   
   if (!str1 || !str2) {
-    /* badly formed ... */
-    return 0;
+    // badly formed ... 
+    return -1;
   }
   
-  /* there is very little information content is sequences of
-     the same character like 'LLLLL'. Eliminate any sequences
-     longer than 3. This is especially important when combined
-     with the has_common_substring() test below. */
+  // there is very little information content is sequences of
+  // the same character like 'LLLLL'. Eliminate any sequences
+  // longer than 3. This is especially important when combined
+  // with the has_common_substring() test below. 
   s1 = eliminate_sequences(str1+1);
   s2 = eliminate_sequences(str2+1);
   
   if (!s1 || !s2) return 0;
   
-  /* now break them into the two pieces */
+  // now break them into the two pieces 
   s1_1 = s1;
   s2_1 = s2;
   
@@ -543,7 +568,7 @@ int fuzzy_compare(const char *str1, const char *str2)
   s2_2 = strchr(s2, ':');
   
   if (!s1_2 || !s2_2) {
-    /* a signature is malformed - it doesn't have 2 parts */
+    // a signature is malformed - it doesn't have 2 parts 
     free(s1); free(s2);
     return 0;
   }
@@ -551,9 +576,9 @@ int fuzzy_compare(const char *str1, const char *str2)
   *s1_2++ = 0;
   *s2_2++ = 0;
   
-  /* each signature has a string for two block sizes. We now
-     choose how to combine the two block sizes. We checked above
-     that they have at least one block size in common */
+  // each signature has a string for two block sizes. We now
+  // choose how to combine the two block sizes. We checked above
+  // that they have at least one block size in common 
   if (block_size1 == block_size2) {
     uint32_t score1, score2;
     score1 = score_strings(s1_1, s2_1, block_size1);

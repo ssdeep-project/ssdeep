@@ -1,5 +1,7 @@
 2010-03-19 Jesse Kornblum
 
+	* Added 'extern "C"' definitions to fuzzy.h for C++ compatibility
+	
 	* Added return values indicating errors to API functions.
 
 	* Modified sample program to use errors on return values

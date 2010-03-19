@@ -136,7 +136,7 @@ static void process_cmd_line(state *s, int argc, char **argv)
       exit (EXIT_SUCCESS);
       
     default:
-      try();
+      try_msg();
       exit (EXIT_FAILURE);
     }
   }

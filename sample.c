@@ -1,4 +1,3 @@
-
 /* Fuzzy Hashing by Jesse Kornblum
    Copyright (C) 2010 ManTech International Corporation
 
@@ -35,7 +34,7 @@
    SPECIFICALLY DISCLAIMS ANY EXPRESS OR IMPLIED WARRANTY OF FITNESS FOR
    HIGH RISK ACTIVITIES.   */
 
-/* $Id$ */
+// $Id$
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -57,7 +56,9 @@ void generate_random(unsigned char *buf, uint32_t sz)
 }
 
 
-int write_data(unsigned char *buf, uint32_t sz, char *fn)
+int write_data(const unsigned char *buf, 
+	       const uint32_t sz, 
+	       const char *fn)
 {
   printf ("Writing to %s\n", fn);
   FILE * handle = fopen(fn,"wb");
@@ -82,10 +83,10 @@ int main(int argc, char **argv)
   result  = (char *)malloc(FUZZY_MAX_RESULT);
   result2 = (char *)malloc(FUZZY_MAX_RESULT);
   if (NULL == result || NULL == buf || NULL == result2)
-    {
-      fprintf (stderr,"%s: Out of memory\n",argv[0]);
-      return -1;
-    }
+  {
+    fprintf (stderr,"%s: Out of memory\n", argv[0]);
+    return EXIT_FAILURE;
+  }
 
   generate_random(buf,SIZE);
 

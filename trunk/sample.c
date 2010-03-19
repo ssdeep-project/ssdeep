@@ -1,6 +1,6 @@
 
 /* Fuzzy Hashing by Jesse Kornblum
-   Copyright (C) 2008 ManTech International Corporation
+   Copyright (C) 2010 ManTech International Corporation
 
    This program demonstrates some of the capabilities of 
    the fuzzy hashing library.
@@ -126,10 +126,15 @@ int main(int argc, char **argv)
     printf ("%s\n", result2);
 
   i = fuzzy_compare(result,result2);
-  if (i != 0)
-    printf ("MATCH: score = %d\n", i);
+  if (-1 == i)
+    printf ("An error occured during matching\n");
   else
-    printf ("did not match\n");
+  {
+    if (i != 0)
+      printf ("MATCH: score = %d\n", i);
+    else
+      printf ("did not match\n");
+  }
 
   return EXIT_SUCCESS;
 }

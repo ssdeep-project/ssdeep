@@ -1,3 +1,18 @@
+2010-03-19 Jesse Kornblum
+
+	* Added return values indicating errors to API functions.
+
+	* Modified sample program to use errors on return values
+	
+	* Added Doxygen documentation for API function.
+
+	* Added inttypes.h include to fuzzy.h.
+
+	* Added error checking for NULL strings in API functions.
+
+	* Version bump to 2.5
+	
+
 2010-02-24 Jesse Kornblum
 
 	* Experimenting with mode to compare unknown hashes to known

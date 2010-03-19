@@ -1,3 +1,16 @@
+** Version 2.5 - RBF DATE
+
+* New Features
+
+  - Added API documentation
+
+  - Added return values indicating errors in API functions
+
+* Bug Fixes
+
+  - Added error checking to API functions
+
+
 ** Version 2.4 - 25 Feb 2010
 
 * New Features

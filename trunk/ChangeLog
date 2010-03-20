@@ -1,3 +1,8 @@
+2010-03-20 Jesse Kornblum
+
+	* Fixed define in fuzzy.h to only allow one compilation
+	
+
 2010-03-19 Jesse Kornblum
 
 	* Added 'extern "C"' definitions to fuzzy.h for C++ compatibility

@@ -42,7 +42,7 @@ extern "C" {
 
 #ifndef _FUZZY_H_
 # define _FUZZY_H_
-#endif
+
 
 /// @brief Compute the fuzzy hash of a buffer
 ///
@@ -110,3 +110,6 @@ extern int fuzzy_compare(const char *sig1, const char *sig2);
 #ifdef __cplusplus
 } 
 #endif
+
+
+#endif   // ifndef _FUZZY_H_

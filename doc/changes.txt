@@ -1,3 +1,20 @@
+** Version 2.5 - 6 May 2010
+
+* New Features
+
+  - Added API documentation
+
+  - Added return values indicating errors in API functions
+
+  - Added compatibility for compiling with C++
+
+* Bug Fixes
+
+  - Added parameter validation to API functions
+
+  - Fixed some cosmetic errors in error handling
+
+
 ** Version 2.4 - 25 Feb 2010
 
 * New Features

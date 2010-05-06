@@ -130,7 +130,7 @@ int sig_file_open(state *s, char * fn, file_info_t * info)
     return TRUE;
   }
 
-  if (strncmp(str,SSDEEPV1_HEADER,strlen(SSDEEPV1_HEADER)))
+  if (strncmp(str,OUTPUT_FILE_HEADER,strlen(OUTPUT_FILE_HEADER)))
   {
     if (!MODE(mode_silent))
       print_error(s,"%s: invalid file header", fn);

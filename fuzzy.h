@@ -14,7 +14,7 @@
 /// @copydoc fuzzy.h
 ///
 /// @version 2.5
-/// @date March 2010
+/// @date May 2010
 ///
 /// @author Jesse Kornblum, research {at jessekornblum dot} com. 
 

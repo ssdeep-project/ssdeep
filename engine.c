@@ -82,7 +82,7 @@ int hash_file(state *s, TCHAR *fn)
       s->first_file_processed = FALSE;
     }
     printf ("%s,\"", sum);
-    display_filename(stdout,fn);
+    display_filename(stdout,fn,TRUE);
     print_status("\"");
   }
 

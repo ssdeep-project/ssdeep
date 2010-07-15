@@ -52,7 +52,7 @@ void print_error_unicode(state *s, TCHAR *fn, char *fmt, ...)
 
   if (!(s->mode & mode_silent))
     {
-      display_filename(stderr,fn);
+      display_filename(stderr,fn,FALSE);
       fprintf(stderr,": ");
       MD5DEEP_PRINT_MSG(stderr,fmt);
     }
@@ -86,28 +86,48 @@ void fatal_error(char *fmt, ... )
 
 
 #ifdef _WIN32
-void display_filename(FILE *out, TCHAR *fn)
+void display_filename(FILE *out, TCHAR *fn, int escape_quotes)
 {
   size_t pos,len;
 
-  if (NULL == fn)
+  if (NULL == fn || NULL == out)
     return;
 
   len = _tcslen(fn);
 
   for (pos = 0 ; pos < len ; ++pos)
+  {
+    // If desired, escape quotation marks. Used for CSV modes 
+    if (escape_quotes && ('"' == ((fn[pos] & 0xff00) >> 16)))
     {
-      /* Windows can only display the English (00) code page
-	 on the command line. */
+      _fprintf(out, _TEXT("\\\""));
+    }
+    else
+    {
+      // Windows can only display the English (00) code page
+      // on the command line. 
       if (0 == (fn[pos] & 0xff00))
 	_ftprintf(out, _TEXT("%c"), fn[pos]);
-      else
+      else 
 	_ftprintf(out, _TEXT("?"));
     }
+  }
 }
 #else
-void display_filename(FILE *out, TCHAR *fn)
+void display_filename(FILE *out, TCHAR *fn, int escape_quotes)
 {
-  fprintf (out,"%s", fn);
+  size_t pos, len;
+
+  if (NULL == fn || NULL == out)
+    return;
+
+  len = _tcslen(fn);
+  for (pos = 0 ; pos < len ; ++pos)
+  {
+    if (escape_quotes && '"' == fn[pos])
+      _ftprintf(out, _TEXT("\\\""));
+    else
+      _ftprintf(out, _TEXT("%c"), fn[pos]);
+  } 
 }
 #endif

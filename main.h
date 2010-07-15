@@ -108,8 +108,10 @@
 
 #define MM_INIT  printf
 
-#define SSDEEPV1_HEADER        "ssdeep,1.0--blocksize:hash:hash,filename"
-#define OUTPUT_FILE_HEADER     SSDEEPV1_HEADER
+#define SSDEEPV1_0_HEADER        "ssdeep,1.0--blocksize:hash:hash,filename"
+#define SSDEEPV1_1_HEADER        "ssdeep,1.1--blocksize:hash:hash,filename"
+#define OUTPUT_FILE_HEADER     SSDEEPV1_1_HEADER
+
 
 #define MD5DEEP_ALLOC(TYPE,VAR,SIZE)     \
 VAR = (TYPE *)malloc(sizeof(TYPE) * SIZE);  \
@@ -251,6 +253,7 @@ void shift_string_tchar(TCHAR *fn, unsigned int start, unsigned int new_start);
 int find_comma_separated_string(char *s, unsigned int n);
 void shift_string(char *fn, size_t start, size_t new_start);
 
+int remove_escaped_quotes(char * str);
 
 void prepare_filename(state *s, TCHAR *fn);
 
@@ -266,7 +269,7 @@ void print_error(state *s, char *fmt, ...);
 void print_error_unicode(state *s, TCHAR *fn, char *fmt, ...);
 void internal_error(char *fmt, ... );
 void fatal_error(char *fmt, ... );
-void display_filename(FILE *out, TCHAR *fn);
+void display_filename(FILE *out, TCHAR *fn, int escape_quotes);
 
 
 // *********************************************************************

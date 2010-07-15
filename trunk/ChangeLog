@@ -1,3 +1,16 @@
+2010-07-15 Jesse Kornblum
+
+	* Added quotes and quote escaping to filenames when
+	  displayed in CSV matching mode.
+
+	* Modified FILEFORMAT to reflect quotation marks in filenames.
+	
+
+2010-06-24 Jesse Kornblum
+
+	* Added parameter checking to my_basename.
+	
+
 2010-05-05 Jesse Kornblum
 
 	* Changed logic for reading files of known hashes to look for

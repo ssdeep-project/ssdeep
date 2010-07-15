@@ -130,10 +130,11 @@ int sig_file_open(state *s, char * fn, file_info_t * info)
     return TRUE;
   }
 
-  if (strncmp(str,OUTPUT_FILE_HEADER,strlen(OUTPUT_FILE_HEADER)))
+  if (strncmp(str,SSDEEPV1_0_HEADER,strlen(SSDEEPV1_0_HEADER)) &&
+      strncmp(str,SSDEEPV1_1_HEADER,strlen(SSDEEPV1_1_HEADER)))
   {
     if (!MODE(mode_silent))
-      print_error(s,"%s: invalid file header", fn);
+      print_error(s,"%s: invalid file header: %s!!", fn, str);
     fclose(info->handle);
     return TRUE;
   }
@@ -170,14 +171,18 @@ int sig_file_next(state *s, file_info_t * info)
   chop_line(str);
 
   // The file format is:
-  //     hash,filename 
+  //     hash,"filename"
 
   strncpy(info->known_hash,str,MIN(MAX_STR_LEN,strlen(str)));
   find_comma_separated_string(info->known_hash,0);
   find_comma_separated_string(str,1);
 
+  // Remove escaped quotes from the filename
+  remove_escaped_quotes(str);
+  
   // On Win32 we have to do a kludgy cast from ordinary char 
-  // values to the TCHAR values we use internally.
+  // values to the TCHAR values we use internally. Because we may have
+  // reset the string length, get it again.
   size_t i, sz = strlen(str);
   for (i = 0 ; i < sz ; i++)
   {
@@ -264,20 +269,23 @@ int match_compare(state *s, char * match_file, TCHAR *fn, char *sum)
       {
 	if (s->mode & mode_csv)
 	{
-	  display_filename(stdout,fn);
-	  printf(",");
-	  display_filename(stdout,tmp->fn);
-	  print_status(",%"PRIu32, score);
+	  printf("\"");
+	  // RBF - Need to quote these filenames
+	  display_filename(stdout,fn,TRUE);
+	  printf("\",\"");
+	  // RBF - Need to quote these filenames
+	  display_filename(stdout,tmp->fn,TRUE);
+	  print_status("\",%"PRIu32, score);
 	}
 	else
 	{
 	  if (match_file != NULL)
 	    printf ("%s:", match_file);
-	  display_filename(stdout,fn);
+	  display_filename(stdout,fn,FALSE);
 	  printf(" matches ");
 	  if (tmp->match_file != NULL)
 	    printf ("%s:", tmp->match_file);
-	  display_filename(stdout,tmp->fn);
+	  display_filename(stdout,tmp->fn,FALSE);
 	  print_status(" (%"PRIu32")", score);
 	}
       

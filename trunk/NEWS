@@ -1,3 +1,15 @@
+** Version 2.6 - RBF DATE
+
+* New Features
+
+  - Modified the output file format to allow for proper escaping of
+    filenames with quotation marks in them.
+
+* Bug Fixes
+
+  - Added quotation marks to filenames in CSV matching mode.
+
+
 ** Version 2.5 - 6 May 2010
 
 * New Features

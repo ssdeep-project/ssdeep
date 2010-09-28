@@ -270,10 +270,8 @@ int match_compare(state *s, char * match_file, TCHAR *fn, char *sum)
 	if (s->mode & mode_csv)
 	{
 	  printf("\"");
-	  // RBF - Need to quote these filenames
 	  display_filename(stdout,fn,TRUE);
 	  printf("\",\"");
-	  // RBF - Need to quote these filenames
 	  display_filename(stdout,tmp->fn,TRUE);
 	  print_status("\",%"PRIu32, score);
 	}

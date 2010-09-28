@@ -29,6 +29,9 @@ void try_msg(void)
 
 void sanity_check(state *s, int condition, char *msg)
 {
+  if (NULL == s)
+    exit(EXIT_FAILURE);
+  
   if (condition)
     {
       if (!(s->mode & mode_silent))
@@ -49,7 +52,12 @@ void sanity_check(state *s, int condition, char *msg)
 int my_basename(TCHAR *s)
 {
   size_t len;
-  TCHAR *tmp = _tcsrchr(s,DIR_SEPARATOR);
+  TCHAR * tmp;
+
+  if (NULL == s)
+    return TRUE;
+
+  tmp = _tcsrchr(s,DIR_SEPARATOR);
 
   if (NULL == tmp)
     return FALSE;
@@ -319,5 +327,23 @@ int find_comma_separated_string(char *s, unsigned int n)
 }
 
 
+
+int remove_escaped_quotes(char * str)
+{
+  if (NULL == str)
+    return TRUE;
+  
+  size_t pos = 0;
+  while (str[pos] != 0)
+  {
+    if ('\\' == str[pos] && '"' == str[pos+1])
+      shift_string(str,pos,pos+1);
+    
+    ++pos;
+  }
+  
+  return FALSE;
+}
+  
 
 

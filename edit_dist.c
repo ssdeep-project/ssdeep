@@ -14,7 +14,6 @@
  */
 
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
 
 /* edit_dist -- returns the minimum edit distance between two strings
@@ -51,11 +50,16 @@ HISTORY
 
 #define SAFE_ASSIGN(x,y) (((x) != NULL) ? (*(x) = (y)) : (y))
 
-#define swap_int(x,y)  (_iswap = (x), (x) = (y), (y) = _iswap)
-#define swap_char(x,y) (_cswap = (x), (x) = (y), (y) = _cswap)
-#define min3(x,y,z) (_mx = (x), _my = (y), _mz = (z), (_mx < _my ? (_mx < _mz ? _mx : _mz) : (_mz < _my) ? _mz : _my))
-#define min2(x,y) (_mx = (x), _my = (y), (_mx < _my ? _mx : _my))
+#define swap_int(x,y)  do { int _iswap = (x); (x) = (y); (y) = _iswap; } while (0)
+#define swap_char(x,y) do { const char *_cswap = (x); (x) = (y); (y) = _cswap; } while (0)
 
+static inline int min3(int x, int y, int z) {
+	return x < y ? (x < z ? x : z) : (z < y) ? z : y;
+}
+static inline int min2(int x, int y)
+{
+	return x < y ? x : y;
+}
 
 static int insert_cost = 1;
 static int delete_cost = 1;
@@ -64,19 +68,11 @@ static int change_cost = 1;
 static int swap_cost   = 1;
 #endif
 
-static int _iswap;			/* swap_int temp variable */
-static char *_cswap;			/* swap_char temp variable */
-static int _mx, _my, _mz;		/* min2, min3 temp variables */
-
-
-
 /* edit_distn -- returns the edit distance between two strings, or -1 on
    failure */
 
 int
-edit_distn(from, from_len, to, to_len)
-char *from, *to;
-register int from_len, to_len;
+edit_distn(const char *from, int from_len, const char *to, int to_len)
 {
 #ifndef TRN_SPEEDUP
     register int ins, del, ch;	  	/* local copies of edit costs */
@@ -88,7 +84,7 @@ register int from_len, to_len;
 #endif
     int *buffer;			/* pointer to storage for one row
 					   of the d.p. array */
-    static int store[THRESHOLD / sizeof (int)];
+    int store[THRESHOLD / sizeof (int)];
 					/* a small amount of static
 					   storage, to be used when the
 					   input strings are small enough */

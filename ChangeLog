@@ -1,3 +1,9 @@
+2011-08-19 Jesse Kornblum
+
+	* edit_dist.c: Accepted patch from Brad Spengler to make
+	  thread safe.
+	
+
 2010-07-15 Jesse Kornblum
 
 	* Added quotes and quote escaping to filenames when

@@ -251,45 +251,49 @@ int main(int argc, char **argv)
   // or directory we're supposed to process. If there's nothing
   // specified, we should tackle standard input 
   if (optind == argc)
-    fatal_error("%s: No input files", __progname);
-
-  MD5DEEP_ALLOC(TCHAR,fn,PATH_MAX);
-  MD5DEEP_ALLOC(TCHAR,cwd,PATH_MAX);
-
-  cwd = _tgetcwd(cwd,PATH_MAX);
-  if (NULL == cwd)
-    fatal_error("%s: %s", __progname, strerror(errno));
-  
-  count = optind;
-  
-  // The signature comparsion mode needs to use the command line
-  // arguments and argument count. We don't do wildcard expansion
-  // on it on Win32 (i.e. where it matters). The setting of 'goal'
-  // to the original argc occured at the start of main(), so we just
-  // need to update it if we're *not* in signature compare mode.
-  if (!(s->mode & mode_sigcompare))
   {
-    goal = s->argc;
+    status = process_stdin(s);
   }
-
-  while (count < goal)
+  else
   {
-    if (MODE(mode_sigcompare))
-      match_load(s,argv[count]);
-    else if (MODE(mode_compare_unknown))
-      match_compare_unknown(s,argv[count]);
-    else
+    MD5DEEP_ALLOC(TCHAR,fn,PATH_MAX);
+    MD5DEEP_ALLOC(TCHAR,cwd,PATH_MAX);
+    
+    cwd = _tgetcwd(cwd,PATH_MAX);
+    if (NULL == cwd)
+      fatal_error("%s: %s", __progname, strerror(errno));
+  
+    count = optind;
+  
+    // The signature comparsion mode needs to use the command line
+    // arguments and argument count. We don't do wildcard expansion
+    // on it on Win32 (i.e. where it matters). The setting of 'goal'
+    // to the original argc occured at the start of main(), so we just
+    // need to update it if we're *not* in signature compare mode.
+    if (!(s->mode & mode_sigcompare))
     {
-      generate_filename(s,fn,cwd,s->argv[count]);
+      goal = s->argc;
+    }
+    
+    while (count < goal)
+    {
+      if (MODE(mode_sigcompare))
+	match_load(s,argv[count]);
+      else if (MODE(mode_compare_unknown))
+	match_compare_unknown(s,argv[count]);
+      else
+      {
+	generate_filename(s,fn,cwd,s->argv[count]);
 
 #ifdef _WIN32
-      status = process_win32(s,fn);
+	status = process_win32(s,fn);
 #else
-      status = process_normal(s,fn);
+	status = process_normal(s,fn);
 #endif
+      }
+      
+      ++count;
     }
-
-    ++count;
   }
 
 

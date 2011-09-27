@@ -5,6 +5,35 @@
 
 #define MAX_STATUS_MSG   78
 
+void display_result(state *s, TCHAR * fn, char * sum)
+{
+  if (MODE(mode_match_pretty))
+  {
+    if (match_add(s,NULL,fn,sum))
+      print_error_unicode(s,fn,"Unable to add hash to set of known hashes");
+  }
+  else if (MODE(mode_match) || MODE(mode_directory))
+  {
+    match_compare(s,NULL,fn,sum);
+
+    if (MODE(mode_directory))
+      if (match_add(s,NULL,fn,sum))
+	print_error_unicode(s,fn,"Unable to add hash to set of known hashes");
+  }
+  else
+  {
+    if (s->first_file_processed)
+    {
+      printf ("%s%s", OUTPUT_FILE_HEADER,NEWLINE);
+      s->first_file_processed = FALSE;
+    }
+    printf ("%s,\"", sum);
+    display_filename(stdout,fn,TRUE);
+    print_status("\"");
+  }
+}
+
+
 int hash_file(state *s, TCHAR *fn)
 {
   size_t fn_length;
@@ -60,31 +89,7 @@ int hash_file(state *s, TCHAR *fn)
 
   fuzzy_hash_file(handle,sum);
   prepare_filename(s,fn);
-
-  if (MODE(mode_match_pretty))
-  {
-    if (match_add(s,NULL,fn,sum))
-      print_error_unicode(s,fn,"Unable to add hash to set of known hashes");
-  }
-  else if (MODE(mode_match) || MODE(mode_directory))
-  {
-    match_compare(s,NULL,fn,sum);
-
-    if (MODE(mode_directory))
-      if (match_add(s,NULL,fn,sum))
-	print_error_unicode(s,fn,"Unable to add hash to set of known hashes");
-  }
-  else
-  {
-    if (s->first_file_processed)
-    {
-      printf ("%s%s", OUTPUT_FILE_HEADER,NEWLINE);
-      s->first_file_processed = FALSE;
-    }
-    printf ("%s,\"", sum);
-    display_filename(stdout,fn,TRUE);
-    print_status("\"");
-  }
+  display_result(s,fn,sum);
 
   fclose(handle);
   free(sum);

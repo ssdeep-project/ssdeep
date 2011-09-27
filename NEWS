@@ -1,3 +1,11 @@
+** Version 2.7 - RBF DATE
+
+* New Features
+
+  - Added the capability to process the first 100MB of data
+    from standard input.
+
+
 ** Version 2.6 - 28 Sep 2010
 
 * New Features

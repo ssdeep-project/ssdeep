@@ -220,12 +220,14 @@ int have_processed_dir(TCHAR *fn);
 
 int process_win32(state *s, TCHAR *fn);
 int process_normal(state *s, TCHAR *fn);
+int process_stdin(state *s);
 
 
 // *********************************************************************
 // Fuzzy Hashing Engine
 // *********************************************************************
 int hash_file(state *s, TCHAR *fn);
+void display_result(state *s, TCHAR * fn, char * sum);
 
 
 // *********************************************************************

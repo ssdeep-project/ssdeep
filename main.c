@@ -6,8 +6,15 @@
 // This program is licensed under version 2 of the GNU Public License.
 // See the file COPYING for details. 
 
-
 #include "ssdeep.h"
+
+#ifdef _WIN32 
+// This can't go in main.h or we get multiple definitions of it
+// Allows us to open standard input in binary mode by default 
+// See http://gnuwin32.sourceforge.net/compile.html for more 
+int _CRT_fmode = _O_BINARY;
+#endif
+
 
 static int initialize_state(state *s)
 {

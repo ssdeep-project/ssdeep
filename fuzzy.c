@@ -108,7 +108,8 @@ static inline uint32_t sum_hash(unsigned char c, uint32_t h)
 
 typedef struct _ss_context {
   char *ret, *p;
-  // RBF - This is the file size. Should it be uint64_t?
+  // This is the file size, which should be uint64_t, but we
+  // generally do not process files that large here.
   uint32_t total_chars;
   uint32_t h, h2, h3;
   uint32_t j, n, i, k;

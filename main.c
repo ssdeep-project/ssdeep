@@ -21,8 +21,10 @@ static int initialize_state(state *s)
   if (match_init(s))
     return TRUE;
 
-  s->first_file_processed = TRUE;
-  s->mode                 = mode_none;
+  s->mode                  = mode_none;
+  s->first_file_processed  = TRUE;
+  s->found_meaningful_file = FALSE;
+  s->processed_file        = FALSE;
 
   s->threshold = 0;
 
@@ -300,6 +302,15 @@ int main(int argc, char **argv)
       }
       
       ++count;
+    }
+
+    // If we processed files, but didn't find anything large enough
+    // to be meaningful, we should display a warning message to the user.
+    // This happens mostly when people are testing very small files
+    // e.g. $ echo "hello world" > foo && ssdeep foo
+    if ( ! s->found_meaningful_file && s->processed_file)
+    {
+      print_error(s,"%s: Did not process files large enough to produce meaningful results", __progname);
     }
   }
 

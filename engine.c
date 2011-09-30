@@ -27,6 +27,7 @@ void display_result(state *s, TCHAR * fn, char * sum)
       printf ("%s%s", OUTPUT_FILE_HEADER,NEWLINE);
       s->first_file_processed = FALSE;
     }
+
     printf ("%s,\"", sum);
     display_filename(stdout,fn,TRUE);
     print_status("\"");
@@ -90,6 +91,10 @@ int hash_file(state *s, TCHAR *fn)
   fuzzy_hash_file(handle,sum);
   prepare_filename(s,fn);
   display_result(s,fn,sum);
+
+  if (find_file_size(handle) > SSDEEP_MIN_FILE_SIZE)
+    s->found_meaningful_file = TRUE;
+  s->processed_file = TRUE;
 
   fclose(handle);
   free(sum);

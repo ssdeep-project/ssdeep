@@ -1,3 +1,10 @@
+2011-09-30 Jesse Kornblum:
+
+	* ui.c: Redirected error messages to stderr instead of stdout
+	* main.c: Added warning message when the program does not
+	process any file large enough to produce meaningful results.
+	
+
 2011-09-27 Jesse Kornblum
 
 	* main.c: Added support to process stdin.

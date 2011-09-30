@@ -112,6 +112,8 @@
 #define SSDEEPV1_1_HEADER        "ssdeep,1.1--blocksize:hash:hash,filename"
 #define OUTPUT_FILE_HEADER     SSDEEPV1_1_HEADER
 
+// We print a warning for files smaller than this size
+#define SSDEEP_MIN_FILE_SIZE   4096
 
 #define MD5DEEP_ALLOC(TYPE,VAR,SIZE)     \
 VAR = (TYPE *)malloc(sizeof(TYPE) * SIZE);  \
@@ -148,6 +150,8 @@ typedef struct {
   uint64_t  mode;
   lsh_list  *known_hashes;
   uint8_t   threshold;
+  int       found_meaningful_file;
+  int       processed_file;
   int       argc;
   TCHAR     **argv;
 } state;

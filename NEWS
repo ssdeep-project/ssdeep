@@ -1,9 +1,16 @@
-** Version 2.7 - RBF DATE
+** Version 2.7 - 30 Sep 2011
 
 * New Features
 
   - Added the capability to process the first 100MB of data
     from standard input.
+
+  - Added a warning message when the program does not process
+    any file large enough to produce a meaningful result.
+
+* Bug Fixes
+  
+  - Standard errors are now sent to stderr, not stdout.
 
 
 ** Version 2.6 - 28 Sep 2010

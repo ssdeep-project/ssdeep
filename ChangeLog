@@ -1,3 +1,17 @@
+2011-09-30 Jesse Kornblum:
+
+	* ui.c: Redirected error messages to stderr instead of stdout
+	* main.c: Added warning message when the program does not
+	process any file large enough to produce meaningful results.
+	
+
+2011-09-27 Jesse Kornblum
+
+	* main.c: Added support to process stdin.
+	* dig.c: Added process_stdin function
+	* engine.c: Generalized display functions in display_result.
+	
+
 2011-08-19 Jesse Kornblum
 
 	* edit_dist.c: Accepted patch from Brad Spengler to make

@@ -431,6 +431,35 @@ static int should_hash(state *s, TCHAR *fn)
 }
 
 
+#define MAX_STDIN_BUFFER  104857600
+
+int process_stdin(state *s)
+{
+  if (NULL == s)
+    return TRUE;
+
+  char sum[FUZZY_MAX_RESULT];  
+  unsigned char * buffer = (unsigned char *)malloc(sizeof(unsigned char ) * MAX_STDIN_BUFFER);
+  if (NULL == buffer)
+    return TRUE;
+  memset(buffer,0,MAX_STDIN_BUFFER);
+
+  size_t sz = fread(buffer, 1, MAX_STDIN_BUFFER, stdin);
+  int status = fuzzy_hash_buf(buffer, (uint32_t)sz, sum);
+  free(buffer);
+
+  if (status != 0)
+  {
+    print_error_unicode(s,_TEXT("stdin"),"Error processing stdin");
+    return TRUE;
+  }
+
+  display_result(s,_TEXT("stdin"),sum);
+
+  return FALSE;
+}
+
+
 int process_normal(state *s, TCHAR *fn)
 {
   clean_name(s,fn);

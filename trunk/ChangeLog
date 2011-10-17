@@ -1,3 +1,9 @@
+2011-10-17 Jesse Kornblum:
+
+	* configure.ac: Added AC_SYS_LARGEFILE to handle large files
+	on 32-bit platforms. See bug 3416762.
+
+	
 2011-09-30 Jesse Kornblum:
 
 	* ui.c: Redirected error messages to stderr instead of stdout

@@ -1,3 +1,10 @@
+** Version 2.8 - RBF DATE
+
+* Bug Fixes
+
+  - Fixed support for large files on some platforms.
+
+
 ** Version 2.7 - 30 Sep 2011
 
 * New Features

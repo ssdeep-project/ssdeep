@@ -1,4 +1,4 @@
-AC_INIT([SSDEEP],[2.7],[research@jessekornblum.com])
+AC_INIT([SSDEEP],[2.8-001],[research@jessekornblum.com])
 AM_INIT_AUTOMAKE
 
 AC_CONFIG_FILES([Makefile])
@@ -31,6 +31,7 @@ for spfx in /usr/local /opt/local /sw ; do
 done
 
 AC_C_BIGENDIAN
+AC_SYS_LARGEFILE
 
 AC_CHECK_HEADERS([libgen.h])
 AC_CHECK_HEADERS([dirent.h])

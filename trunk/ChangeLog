@@ -1,3 +1,10 @@
+2012-02-16 Jesse Kornblum <research@jessekornblum.com>:
+
+	* main.c: Bump copyright to 2012 in usage message. Add flag for clustering
+	* main.h: Added mode_cluster
+	* ui.c: Changed Win32 to use fputc instead of _tfprintf for filenames
+	
+
 2012-01-12 Jesse Kornblum <research@jessekornblum>:
 
 	* ChangeLog: Clean up

@@ -1,5 +1,5 @@
 // ssdeep
-// (C) Copyright 2010 ManTech International Corporation
+// (C) Copyright 2012 ManTech International Corporation
 //
 // $Id$
 //
@@ -35,6 +35,7 @@ int lsh_list_init(lsh_list *l)
   if (NULL == l)
     return TRUE;
 
+  l->size   = 0;
   l->top    = NULL;
   l->bottom = NULL;
   return FALSE;
@@ -57,7 +58,8 @@ int lsh_list_insert(state    * s,
   if ((new = (lsh_node *)malloc(sizeof(lsh_node))) == NULL)
     fatal_error("%s: Out of memory", __progname);
 
-  new->next = NULL;
+  new->cluster = 0;
+  new->next    = NULL;
   if (((new->hash = strdup(sum)) == NULL) ||
       ((new->fn   = _tcsdup(fn))  == NULL))
   {
@@ -83,11 +85,13 @@ int lsh_list_insert(state    * s,
 
     l->top = new;
     l->bottom = new;
+    l->size += 1;
     return FALSE;
   }
   
   l->bottom->next = new;
   l->bottom = new;
+  l->size += 1;
   return FALSE;
 }
 
@@ -367,6 +371,95 @@ int match_compare_unknown(state *s, char * fn)
     match_compare(s,fn,info.known_file_name,info.known_hash);
 
   sig_file_close(&info);
+
+  return FALSE;
+}
+
+
+int combine_clusters(state *s, lsh_node *a, lsh_node *b, uint64_t next_cluster)
+{
+  // We are guaranteed that both a->cluster and b->cluster are not zero.
+  // One or the other maybe, but not both.
+  if (0 == b->cluster)
+  {
+    // RBF - Debugging
+    printf ("Adding to a cluster %"PRIu64"\n", a->cluster);
+    b->cluster = a->cluster;
+    return FALSE;
+  }
+  if (0 == a->cluster)
+  {
+    // RBF - Debugging
+    printf ("Adding to b cluster %"PRIu64"\n", b->cluster);
+    a->cluster = b->cluster;
+    return FALSE;
+  }
+
+  // RBF - Debugging
+  printf ("Combining clusters %"PRIu64" and %"PRIu64"\n", a->cluster, b->cluster);
+  uint64_t dest = a->cluster;
+  uint64_t src = b->cluster;
+  lsh_node * tmp = s->known_hashes->top;
+  while (tmp != NULL)
+  {
+    if (tmp->cluster == src)
+      tmp->cluster = dest;
+  }
+
+  return FALSE;
+}
+
+
+int display_clusters(state *s)
+{
+  if (NULL == s)
+    return TRUE;
+
+  uint64_t next_cluster = 0;
+
+  // Iterate through all files
+  lsh_node *a = s->known_hashes->top;
+  while (a != NULL)
+  {
+    lsh_node *b = a->next;
+    while (b != NULL)
+    {
+      // If these two are already in the same cluster, we don't
+      // need to do anything. But we should compare if one of them
+      // is unassigned.
+      if (a->cluster != b->cluster || a->cluster == 0)
+      {
+	int score = fuzzy_compare(a->hash, b->hash);
+	if (-1 == score)
+	{
+	  // RBF - Error handling
+	  b = b->next;
+	  continue;
+	}
+	
+	if (score > s->threshold)
+	{
+	  printf ("Found match of %s and %s %d\n", a->fn, b->fn, score);
+	  if (0 == a->cluster && 0 == b->cluster)
+	  {
+	    // Neither file is assigned so far. Easy! Make a new cluster
+	    ++next_cluster;
+	    a->cluster = next_cluster;
+	    b->cluster = next_cluster;
+	  }
+	  else
+	  {
+	    // Combine existing clusters
+	    combine_clusters(s,a,b,next_cluster);
+	  }
+	}
+      }
+
+      b = b->next;
+    }
+
+    a = a->next;
+  }
 
   return FALSE;
 }

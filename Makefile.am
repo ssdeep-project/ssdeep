@@ -14,8 +14,8 @@ include_HEADERS=fuzzy.h
 
 man_MANS=ssdeep.1
 
-ssdeep_SOURCES = main.c match.c engine.c                 \
-                 dig.c cycles.c helpers.c ui.c           \
+ssdeep_SOURCES = main.c match.c engine.c                  \
+                 dig.c cycles.c helpers.c ui.c 	          \
                  main.h fuzzy.h tchar-local.h ssdeep.h
 
 dll: $(libfuzzy_la_SOURCES)

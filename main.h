@@ -137,11 +137,13 @@ typedef struct _lsh_node {
   char    *hash;
   TCHAR   *fn;
   char    *match_file;
+  uint64_t cluster;
   struct _lsh_node *next;
 } lsh_node;
 
 typedef struct {
   lsh_node  *top, *bottom;
+  uint64_t size;
 } lsh_list;
 
 
@@ -207,6 +209,7 @@ int getopt(int argc, char *const argv[], const char *optstring);
 #define mode_sigcompare   1<<10
 #define mode_display_all  1<<11
 #define mode_compare_unknown 1<<12
+#define mode_cluster      1<<13
 
 #define MODE(A)   (s->mode & A)
 
@@ -299,5 +302,8 @@ int match_pretty(state *s);
 // Load the known hashes from the file fn and compare them to the
 // set of known hashes
 int match_compare_unknown(state *s, char * fn);
+
+// Display the results of clustering operations
+int display_clusters(state *s);
 
 #endif   // #ifndef __MAIN_H

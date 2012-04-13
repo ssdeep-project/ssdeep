@@ -100,16 +100,18 @@ void display_filename(FILE *out, TCHAR *fn, int escape_quotes)
     // If desired, escape quotation marks. Used for CSV modes 
     if (escape_quotes && ('"' == ((fn[pos] & 0xff00) >> 16)))
     {
-      _fprintf(out, _TEXT("\\\""));
+      fprintf(out,"\\\"");
     }
     else
     {
       // Windows can only display the English (00) code page
       // on the command line. 
       if (0 == (fn[pos] & 0xff00))
-	_ftprintf(out, _TEXT("%c"), fn[pos]);
+	fputc(fn[pos]);
+      //	_ftprintf(out, _TEXT("%c"), fn[pos]);
       else 
-	_ftprintf(out, _TEXT("?"));
+	fputc("?");
+      //	_ftprintf(out, _TEXT("?"));
     }
   }
 }

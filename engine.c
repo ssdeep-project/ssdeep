@@ -7,7 +7,7 @@
 
 void display_result(state *s, TCHAR * fn, char * sum)
 {
-  if (MODE(mode_match_pretty))
+  if (MODE(mode_match_pretty) || MODE(mode_cluster))
   {
     if (match_add(s,NULL,fn,sum))
       print_error_unicode(s,fn,"Unable to add hash to set of known hashes");

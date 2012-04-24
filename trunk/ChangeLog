@@ -1,3 +1,8 @@
+2012-04-24 Jesse Kornblum <research@jessekornblum.com>:
+	
+	* ssdeep.1: Updating support for stdin, clarifying modes
+	
+
 2012-02-16 Jesse Kornblum <research@jessekornblum.com>:
 
 	* main.c: Bump copyright to 2012 in usage message. Add flag for clustering

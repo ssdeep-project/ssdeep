@@ -1,16 +1,15 @@
-
-/* Fuzzy Hashing by Jesse Kornblum
-   Copyright (C) 2008 ManTech International Corporation
-   
-*/
-
-/* $Id$  */
+// Fuzzy Hashing by Jesse Kornblum
+// Copyright (C) 2012 Kyrus
+// Copyright (C) 2008 ManTech International Corporation
+//
+// $Id$ 
+//
 
 #include "main.h"
 
 #ifndef _WIN32
 
-/* Return the size, in bytes of an open file stream. On error, return 0 */
+// Return the size, in bytes of an open file stream. On error, return 0 
 #if defined (__LINUX__)
 
 
@@ -70,9 +69,9 @@ off_t find_file_size(FILE *f) {
   uint32_t blocksize = 0;
   uint64_t blockcount = 0;
 
-  /* I'd prefer not to use fstat as it will follow symbolic links. We don't
-     follow symbolic links. That being said, all symbolic links *should*
-     have been caught before we got here. */
+  // I'd prefer not to use fstat as it will follow symbolic links. We don't
+  // follow symbolic links. That being said, all symbolic links *should*
+  // have been caught before we got here. 
 
   if (fstat(fd, &info))
   {
@@ -80,21 +79,21 @@ off_t find_file_size(FILE *f) {
   }
 
 #ifdef HAVE_SYS_IOCTL_H
-  /* Block devices, like /dev/hda, don't return a normal filesize.
-     If we are working with a block device, we have to ask the operating
-     system to tell us the true size of the device. 
-     
-     This isn't the recommended way to do check for block devices, 
-     but using S_ISBLK(info.stmode) wasn't working. */
+  // Block devices, like /dev/hda, don't return a normal filesize.
+  // If we are working with a block device, we have to ask the operating
+  // system to tell us the true size of the device. 
+  //
+  // This isn't the recommended way to do check for block devices, 
+  // but using S_ISBLK(info.stmode) wasn't working. 
   if (info.st_mode & S_IFBLK)
   {    
-    /* Get the block size */
+    // Get the block size 
     if (ioctl(fd, DKIOCGETBLOCKSIZE,&blocksize) < 0) 
     {
       return 0;
     } 
     
-    /* Get the number of blocks */
+    // Get the number of blocks
     if (ioctl(fd, DKIOCGETBLOCKCOUNT, &blockcount) < 0) 
     {
     }
@@ -118,8 +117,8 @@ off_t find_file_size(FILE *f) {
 
 #else   // ifdef __APPLE__
 
-/* This is code for general UNIX systems 
-   (e.g. NetBSD, FreeBSD, OpenBSD, etc) */
+// This is code for general UNIX systems 
+// (e.g. NetBSD, FreeBSD, OpenBSD, etc) 
 
 static off_t
 midpoint (off_t a, off_t b, long blksize)
@@ -165,7 +164,7 @@ off_t find_dev_size(int fd, int blk_size)
 	  curr = midpoint(amount, curr, blk_size);
 	}
       else 
-	{ /* 0 < nread < blk_size */
+	{ // 0 < nread < blk_size 
 	  free(buf);
 	  lseek(fd, 0, SEEK_SET);
 	  return amount + nread;
@@ -208,8 +207,8 @@ off_t find_file_size(FILE *f)
 {
   off_t total = 0, original = ftello(f);
   
-  /* Windows does not support running fstat on block devices,
-     so there's no point in mucking about with them. */
+  // Windows does not support running fstat on block devices,
+  // so there's no point in mucking about with them. 
 
   if ((fseeko(f,0,SEEK_END)))
     return 0;
@@ -220,4 +219,4 @@ off_t find_file_size(FILE *f)
   
   return total;
 }
-#endif /* ifdef _WIN32 */
+#endif // ifdef _WIN32 

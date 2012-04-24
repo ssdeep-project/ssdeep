@@ -1,5 +1,6 @@
 // Fuzzy Hashing by Jesse Kornblum
-// Copyright (C) 2012 ManTech International Corporation
+// Copyright (C) 2012 Kyrus
+// Copyright (C) 2010 ManTech International Corporation
 //
 // $Id$
 //
@@ -16,10 +17,10 @@ int _CRT_fmode = _O_BINARY;
 #endif
 
 
-static int initialize_state(state *s)
+static bool initialize_state(state *s)
 {
-  if (match_init(s))
-    return TRUE;
+  if (NULL == s)
+    return true;
 
   s->mode                  = mode_none;
   s->first_file_processed  = TRUE;
@@ -28,7 +29,9 @@ static int initialize_state(state *s)
 
   s->threshold = 0;
 
-  return FALSE;
+  s->next_match_id = 0;
+
+  return false;
 }
 
 
@@ -39,14 +42,13 @@ static void usage(void)
   print_status ("%s version %s by Jesse Kornblum", __progname, VERSION);
   print_status ("Copyright (C) 2012 ManTech International Corporation");
   print_status ("");
-  print_status ("Usage: %s [-m file] [-k file] [-gvprdsblcxa] [-t val] [-h|-V] [FILES]", 
+  print_status ("Usage: %s [-m file] [-k file] [-vprdsblcxa] [-t val] [-h|-V] [FILES]", 
 	  __progname);
 
   print_status ("-m - Match FILES against known hashes in file");
   print_status ("-k - Match signatures in FILES against signatures in file");
 
-  // RBF - Document -g mode in man page
-  print_status ("-g - Generate clusters of similar files");
+  //  print_status ("-g - Generate clusters of similar files");
 
   print_status ("-v - Verbose mode. Displays filename as its being processed");
   print_status ("-p - Pretty matching mode. Similar to -d but includes all matches");
@@ -69,12 +71,12 @@ static void usage(void)
 static void process_cmd_line(state *s, int argc, char **argv)
 {
   int i, match_files_loaded = FALSE;
-  while ((i=getopt(argc,argv,"gavhVpdsblcxt:rm:k:")) != -1) {
+  while ((i=getopt(argc,argv,"avhVpdsblcxt:rm:k:")) != -1) {
     switch(i) {
       
-    case 'g':
-      s->mode |= mode_cluster;
-      break;
+      //    case 'g':
+      //      s->mode |= mode_cluster;
+      //      break;
 
     case 'a':
       s->mode |= mode_display_all;
@@ -85,7 +87,7 @@ static void process_cmd_line(state *s, int argc, char **argv)
       {
 	print_error(s,"%s: Already at maximum verbosity", __progname);
 	print_error(s,
-		    "%s: Error message display to user correctly", 
+		    "%s: Error message displayed to user correctly", 
 		    __progname);
       }
       else
@@ -131,7 +133,7 @@ static void process_cmd_line(state *s, int argc, char **argv)
       if (MODE(mode_compare_unknown) || MODE(mode_sigcompare))
 	fatal_error("Positive matching cannot be combined with other matching modes");
       s->mode |= mode_match;
-      if (!match_load(s,optarg))
+      if (not match_load(s,optarg))
 	match_files_loaded = TRUE;
       break;
       
@@ -139,7 +141,7 @@ static void process_cmd_line(state *s, int argc, char **argv)
       if (MODE(mode_match) || MODE(mode_sigcompare))
 	fatal_error("Signature matching cannot be combined with other matching modes");
       s->mode |= mode_compare_unknown;
-      if (!match_load(s,optarg))
+      if (not match_load(s,optarg))
 	match_files_loaded = TRUE;
       break;
 
@@ -162,7 +164,7 @@ static void process_cmd_line(state *s, int argc, char **argv)
   // the command line arguments.
   sanity_check(s,
 	       ((MODE(mode_match) || MODE(mode_compare_unknown))
-		&& !match_files_loaded),
+		&& not match_files_loaded),
 	       "No matching files loaded");
   
   sanity_check(s,
@@ -173,10 +175,10 @@ static void process_cmd_line(state *s, int argc, char **argv)
 	       ((s->mode & mode_match_pretty) && (s->mode & mode_directory)),
 	       "Directory mode and pretty matching are mutallty exclusive");
 
-  sanity_check(s,
-	       ((s->mode & mode_cluster) && (s->mode & mode_directory)) ||
-	       ((s->mode & mode_cluster) && (s->mode & mode_match_pretty)),
-	       "Clustering cannot be combined with directory or pretty matching");
+  //  sanity_check(s,
+  //	       ((s->mode & mode_cluster) && (s->mode & mode_directory)) ||
+  //	       ((s->mode & mode_cluster) && (s->mode & mode_match_pretty)),
+  //	       "Clustering cannot be combined with directory or pretty matching");
 
 }
 
@@ -249,13 +251,10 @@ int main(int argc, char **argv)
   TCHAR *fn, *cwd;
 
 #ifndef __GLIBC__
-  __progname  = basename(argv[0]);
+  //  __progname  = basename(argv[0]);
 #endif
 
-  s = (state *)malloc(sizeof(state));
-  if (NULL == s)
-    fatal_error("%s: Unable to allocate state variable", __progname);
-
+  s = new state;
   if (initialize_state(s))
     fatal_error("%s: Unable to initialize state variable", __progname);
 
@@ -292,7 +291,7 @@ int main(int argc, char **argv)
     // on it on Win32 (i.e. where it matters). The setting of 'goal'
     // to the original argc occured at the start of main(), so we just
     // need to update it if we're *not* in signature compare mode.
-    if (!(s->mode & mode_sigcompare))
+    if (not (s->mode & mode_sigcompare))
     {
       goal = s->argc;
     }
@@ -321,7 +320,7 @@ int main(int argc, char **argv)
     // to be meaningful, we should display a warning message to the user.
     // This happens mostly when people are testing very small files
     // e.g. $ echo "hello world" > foo && ssdeep foo
-    if ( ! s->found_meaningful_file && s->processed_file)
+    if ( not s->found_meaningful_file && s->processed_file)
     {
       print_error(s,"%s: Did not process files large enough to produce meaningful results", __progname);
     }
@@ -335,8 +334,8 @@ int main(int argc, char **argv)
     s->mode |= mode_match_pretty;
   if (s->mode & mode_match_pretty)
     match_pretty(s);
-  if (s->mode & mode_cluster)
-    display_clusters(s);
+  //  if (s->mode & mode_cluster)
+  //    display_clusters(s);
 
   return (EXIT_SUCCESS);
 }

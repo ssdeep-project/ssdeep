@@ -4,7 +4,7 @@
 #include "ssdeep.h"
 #include <stdarg.h>
 
-void print_status(char *fmt, ...)
+void print_status(const char *fmt, ...)
 {
   va_list(ap);
   
@@ -16,7 +16,7 @@ void print_status(char *fmt, ...)
 }
 
 
-void print_error(state *s, char *fmt, ...)
+void print_error(state *s, const char *fmt, ...)
 {
   if (NULL == s)
     internal_error("%s: NULL state passed to print_error", __progname);
@@ -45,7 +45,7 @@ if (vfprintf(HANDLE,MSG,ap) < 0)  \
 va_end(ap); fprintf (HANDLE,"%s", NEWLINE);
 
 
-void print_error_unicode(state *s, TCHAR *fn, char *fmt, ...)
+void print_error_unicode(state *s, const TCHAR *fn, const char *fmt, ...)
 {
   if (NULL == s)
     internal_error("%s: NULL state passed to print_error_unicode", __progname);
@@ -63,7 +63,7 @@ void print_error_unicode(state *s, TCHAR *fn, char *fmt, ...)
 /* Internal errors are so serious that we ignore the user's wishes 
    about silent mode. Our need to debug the program outweighs their
    preferences. Besides, the program is probably crashing anyway... */
-void internal_error(char *fmt, ... )
+void internal_error(const char *fmt, ... )
 {
   MD5DEEP_PRINT_MSG(stderr,fmt);  
   print_status ("%s: Internal error. Contact developer!", __progname);  
@@ -72,7 +72,7 @@ void internal_error(char *fmt, ... )
 
 
 
-void fatal_error(char *fmt, ... )
+void fatal_error(const char *fmt, ... )
 {
   va_list(ap);
   
@@ -86,7 +86,7 @@ void fatal_error(char *fmt, ... )
 
 
 #ifdef _WIN32
-void display_filename(FILE *out, TCHAR *fn, int escape_quotes)
+void display_filename(FILE *out, const TCHAR *fn, int escape_quotes)
 {
   size_t pos,len;
 
@@ -107,16 +107,16 @@ void display_filename(FILE *out, TCHAR *fn, int escape_quotes)
       // Windows can only display the English (00) code page
       // on the command line. 
       if (0 == (fn[pos] & 0xff00))
-	fputc(fn[pos]);
+	fputc(fn[pos],out);
       //	_ftprintf(out, _TEXT("%c"), fn[pos]);
       else 
-	fputc("?");
+	fputc('?',out);
       //	_ftprintf(out, _TEXT("?"));
     }
   }
 }
 #else
-void display_filename(FILE *out, TCHAR *fn, int escape_quotes)
+void display_filename(FILE *out, const TCHAR *fn, int escape_quotes)
 {
   size_t pos, len;
 

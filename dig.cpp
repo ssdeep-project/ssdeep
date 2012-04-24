@@ -26,13 +26,13 @@ static void remove_double_slash(TCHAR *fn)
 {
   size_t tsize = sizeof(TCHAR);
   //  TCHAR DOUBLE_DIR[4];
-  TCHAR *tmp = fn, *new;
+  TCHAR *tmp = fn, *new_str;
 
   // RBF - Why on earth do we generate DOUBLE_DIR dynamically *every time*?
   //  _sntprintf(DOUBLE_DIR,3,_TEXT("%c%c"),DIR_SEPARATOR,DIR_SEPARATOR);
 
-  new = _tcsstr(tmp,DOUBLE_DIR);
-  while (NULL != new)
+  new_str = _tcsstr(tmp,DOUBLE_DIR);
+  while (NULL != new_str)
   {
 #ifdef _WIN32
     /* On Windows, we have to allow the first two characters to be slashes
@@ -45,13 +45,13 @@ static void remove_double_slash(TCHAR *fn)
     {
 #endif  // ifdef _WIN32
     
-      _tmemmove(new,new+tsize,_tcslen(new));
+      _tmemmove(new_str,new_str+tsize,_tcslen(new_str));
 
 #ifdef _WIN32
     }
 #endif  // ifdef _WIN32
 
-    new = _tcsstr(tmp,DOUBLE_DIR);
+    new_str = _tcsstr(tmp,DOUBLE_DIR);
 
   }
 }

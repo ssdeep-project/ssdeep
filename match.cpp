@@ -1,5 +1,5 @@
 // ssdeep
-// (C) Copyright 2012 ManTech International Corporation
+// (C) Copyright 2012 Kyrus
 //
 // $Id$
 //

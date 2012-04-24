@@ -113,7 +113,7 @@ static void process_cmd_line(state *s, int argc, char **argv)
       s->mode |= mode_csv; break;
 
     case 'x':
-      if (MODE(mode_match) || MODE(mode_sigcompare))
+      if (MODE(mode_match) || MODE(mode_compare_unknown))
 	fatal_error("Signature matching cannot be combined with other matching modes");
       s->mode |= mode_sigcompare; break;
 

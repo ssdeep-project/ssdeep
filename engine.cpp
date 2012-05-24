@@ -26,7 +26,7 @@ void display_result(state *s, const TCHAR * fn, const char * sum)
     if (s->first_file_processed)
     {
       printf ("%s%s", OUTPUT_FILE_HEADER,NEWLINE);
-      s->first_file_processed = FALSE;
+      s->first_file_processed = false;
     }
 
     printf ("%s,\"", sum);
@@ -94,8 +94,8 @@ int hash_file(state *s, TCHAR *fn)
   display_result(s,fn,sum);
 
   if (find_file_size(handle) > SSDEEP_MIN_FILE_SIZE)
-    s->found_meaningful_file = TRUE;
-  s->processed_file = TRUE;
+    s->found_meaningful_file = true;
+  s->processed_file = true;
 
   fclose(handle);
   free(sum);

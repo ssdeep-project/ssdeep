@@ -71,7 +71,7 @@ typedef struct
 typedef struct {
   uint64_t  mode;
 
-  int       first_file_processed;
+  bool       first_file_processed;
 
   // Known hashes
   uint64_t    next_match_id;
@@ -80,8 +80,8 @@ typedef struct {
   /// Display files who score above the threshold
   uint8_t   threshold;
 
-  int       found_meaningful_file;
-  int       processed_file;
+  bool       found_meaningful_file;
+  bool       processed_file;
 
   int       argc;
   TCHAR     **argv;
@@ -105,11 +105,7 @@ extern char *optarg;
 extern int optind;
 int getopt(int argc, char *const argv[], const char *optstring);
 
-// Although newlines on Win32 are supposed to \r\n, when this program
-// is compiled with mingw and run on WindowsXP, the program seems to 
-// use \r\n anyway. I'm not complaining, just curious what's going on.
-// In the meantime, however, we can just use \n for the NEWLINE 
-#define NEWLINE        "\n"
+#define NEWLINE        "\r\n"
 #define DIR_SEPARATOR  '\\'
 
 #else   // ifdef _WIN32

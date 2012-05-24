@@ -23,9 +23,9 @@ static bool initialize_state(state *s)
     return true;
 
   s->mode                  = mode_none;
-  s->first_file_processed  = TRUE;
-  s->found_meaningful_file = FALSE;
-  s->processed_file        = FALSE;
+  s->first_file_processed  = true;
+  s->found_meaningful_file = false;
+  s->processed_file        = false;
 
   s->threshold = 0;
 
@@ -320,7 +320,7 @@ int main(int argc, char **argv)
     // to be meaningful, we should display a warning message to the user.
     // This happens mostly when people are testing very small files
     // e.g. $ echo "hello world" > foo && ssdeep foo
-    if ( not s->found_meaningful_file && s->processed_file)
+    if ((not s->found_meaningful_file) and s->processed_file)
     {
       print_error(s,"%s: Did not process files large enough to produce meaningful results", __progname);
     }

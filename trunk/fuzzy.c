@@ -45,6 +45,7 @@
 #include "main.h"
 #include "fuzzy.h"
 
+off_t find_file_size(FILE *h);
 
 #define MIN_BLOCKSIZE  3
 #define ROLLING_WINDOW 7

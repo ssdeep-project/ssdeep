@@ -1,3 +1,7 @@
+2012-05-24 Jesse Kornblum <research@jessekornblum.com>:
+
+	* match.cpp: Convert to C++
+
 2012-04-24 Jesse Kornblum <research@jessekornblum.com>:
 	
 	* ssdeep.1: Updating support for stdin, clarifying modes

@@ -40,7 +40,7 @@ static bool initialize_state(state *s)
 static void usage(void)
 {
   print_status ("%s version %s by Jesse Kornblum", __progname, VERSION);
-  print_status ("Copyright (C) 2012 ManTech International Corporation");
+  print_status ("Copyright (C) 2012 Kyrus");
   print_status ("");
   print_status ("Usage: %s [-m file] [-k file] [-vprdsblcxa] [-t val] [-h|-V] [FILES]", 
 	  __progname);

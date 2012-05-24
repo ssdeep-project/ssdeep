@@ -1,9 +1,13 @@
 ** Version 2.8 - RBF DATE
 
+* New Features
+
+  - Converted to C++
+
 * Bug Fixes
 
   - Fixed support for large files on some platforms.
-  - Fixed error handling command line argument processing.
+  - Fixed error in handling command line argument processing.
 
 
 ** Version 2.7 - 30 Sep 2011

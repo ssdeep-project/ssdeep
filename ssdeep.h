@@ -68,11 +68,6 @@ typedef struct
 } filedata_t;
 
 
-/// Indexing used for hashes of known files. 
-/// We use a set to avoid duplicates in the index.
-typedef std::map<std::string,std::set<filedata_t *> > index_t;
-
-
 typedef struct {
   uint64_t  mode;
 
@@ -80,7 +75,6 @@ typedef struct {
 
   // Known hashes
   uint64_t    next_match_id;
-  index_t     index;
   std::vector<filedata_t *> all_files;
 
   /// Display files who score above the threshold

@@ -82,6 +82,9 @@ FILE * sig_file_open(state *s, const char * fn)
 /// @return Returns true on error, false on success.
 bool str_to_filedata(state *s, const char * buffer, filedata_t *f)
 {
+  if (NULL == s or NULL == buffer or NULL == f)
+    return true;
+
   // We do the id number first so that we always advance it, just in case.
   // This code which updates the match_id is NOT THREAD SAFE!
   f->id = s->next_match_id;
@@ -131,8 +134,9 @@ bool str_to_filedata(state *s, const char * buffer, filedata_t *f)
   // On Win32 we have to do a kludgy cast from ordinary char 
   // values to the TCHAR values we use internally. Because we may have
   // reset the string length, get it again.
+  // The extra +1 is for the terminating newline
   size_t i, sz = strlen(tmp2);
-  f->filename = (TCHAR *)malloc(sizeof(TCHAR) * sz);
+  f->filename = (TCHAR *)malloc(sizeof(TCHAR) * (sz + 1));
   if (NULL == f->filename)
     return true;
   for (i = 0 ; i < sz ; i++)
@@ -144,14 +148,17 @@ bool str_to_filedata(state *s, const char * buffer, filedata_t *f)
 }
 
 
-/// Read the next entry in a file of known hashes and convert it to a filedata structure
+/// @brief Read the next entry in a file of known hashes and convert 
+/// it to a filedata structure
 ///
 /// @param s State variable
-/// @param handle File handle to read from. Should have previously been opened by sig_file_open()
+/// @param handle File handle to read from. 
+/// Should have previously been opened by sig_file_open()
 /// @param fn Filename of known hashes
 /// @param f Structure where to store the data we read
 ///
-/// @return Returns true if there is no entry to read or on error. Otherwise, false.
+/// @return Returns true if there is no entry to read or on error. 
+/// Otherwise, false.
 bool sig_file_next(state *s, FILE * handle, const char * fn, filedata_t * f)
 {
   if (NULL == s or NULL == fn or NULL == f or NULL == handle)
@@ -163,7 +170,7 @@ bool sig_file_next(state *s, FILE * handle, const char * fn, filedata_t * f)
     return true;
 
   chop_line(buffer);
-  
+
   f->match_file = std::string(fn);
 
   return str_to_filedata(s,buffer,f);
@@ -225,15 +232,38 @@ bool match_compare(state *s,
   bool status = false;
   
   std::string sig = std::string(sum);
-
-  // RBF - Do we need to do anything for match_pretty here? 
-  // We did in the old version
+  size_t fn_len = _tcslen(fn);
+  size_t sum_len = strlen(sum);
 
   std::vector<filedata_t *>::const_iterator match_it;
   for (match_it = s->all_files.begin() ; 
        match_it != s->all_files.end() ; 
        ++match_it)
   {
+    // When in pretty mode, we still want to avoid printing
+    // A matches A (100).
+    if (s->mode & mode_match_pretty)
+    {
+      if (!(_tcsncmp(fn,
+		     (*match_it)->filename,
+		     std::max(fn_len,_tcslen((*match_it)->filename)))) and
+	  !(strncmp(sum,
+		    (*match_it)->signature.c_str(),
+		    std::max(sum_len,(*match_it)->signature.length()))))
+      {
+	// Unless these results from different matching files (such as
+	// what happens in sigcompare mode). That being said, we have to
+	// be careful to avoid NULL values such as when working in 
+	// normal pretty print mode.
+	if (NULL == match_file or 
+	    0 == (*match_it)->match_file.length() or
+	    (!(strncmp(match_file, 
+		       (*match_it)->match_file.c_str(), 
+		       std::max(strlen(match_file),(*match_it)->match_file.length())))))
+	  continue;
+      }
+    }
+
     int score =  fuzzy_compare(sum, (*match_it)->signature.c_str());
     if (-1 == score)
       print_error(s, "%s: Bad hashes in comparison", __progname);

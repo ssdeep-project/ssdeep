@@ -42,18 +42,16 @@ static void usage(void)
   print_status ("%s version %s by Jesse Kornblum", __progname, VERSION);
   print_status ("Copyright (C) 2012 Kyrus");
   print_status ("");
-  print_status ("Usage: %s [-m file] [-k file] [-vprdsblcxa] [-t val] [-h|-V] [FILES]", 
+  print_status ("Usage: %s [-m file] [-k file] [-dpvrsblcxa] [-t val] [-h|-V] [FILES]", 
 	  __progname);
 
   print_status ("-m - Match FILES against known hashes in file");
   print_status ("-k - Match signatures in FILES against signatures in file");
-
-  //  print_status ("-g - Generate clusters of similar files");
-
-  print_status ("-v - Verbose mode. Displays filename as its being processed");
-  print_status ("-p - Pretty matching mode. Similar to -d but includes all matches");
-  print_status ("-r - Recursive mode");
   print_status ("-d - Directory mode, compare all files in a directory");
+  print_status ("-p - Pretty matching mode. Similar to -d but includes all matches");
+  print_status ("-v - Verbose mode. Displays filename as its being processed");
+  print_status ("-r - Recursive mode");
+
   print_status ("-s - Silent mode; all errors are supressed");
   print_status ("-b - Uses only the bare name of files; all path information omitted");
   print_status ("-l - Uses relative paths for filenames");
@@ -74,10 +72,6 @@ static void process_cmd_line(state *s, int argc, char **argv)
   while ((i=getopt(argc,argv,"avhVpdsblcxt:rm:k:")) != -1) {
     switch(i) {
       
-      //    case 'g':
-      //      s->mode |= mode_cluster;
-      //      break;
-
     case 'a':
       s->mode |= mode_display_all;
       break;
@@ -115,8 +109,6 @@ static void process_cmd_line(state *s, int argc, char **argv)
       s->mode |= mode_csv; break;
 
     case 'x':
-      if (MODE(mode_match) || MODE(mode_compare_unknown))
-	fatal_error("Signature matching cannot be combined with other matching modes");
       s->mode |= mode_sigcompare; break;
 
     case 'r':
@@ -173,12 +165,16 @@ static void process_cmd_line(state *s, int argc, char **argv)
 
   sanity_check(s,
 	       ((s->mode & mode_match_pretty) && (s->mode & mode_directory)),
-	       "Directory mode and pretty matching are mutallty exclusive");
+	       "Directory mode and pretty matching are mutually exclusive");
 
-  //  sanity_check(s,
-  //	       ((s->mode & mode_cluster) && (s->mode & mode_directory)) ||
-  //	       ((s->mode & mode_cluster) && (s->mode & mode_match_pretty)),
-  //	       "Clustering cannot be combined with directory or pretty matching");
+  // -m, -p, and -d are incompatible with -k and -x
+  // The former treat FILES as raw files. The latter require them to be sigs
+  sanity_check(s,
+	       ((MODE(mode_match) or MODE(mode_match_pretty) or MODE(mode_directory))
+		and
+		(MODE(mode_compare_unknown) or MODE(mode_sigcompare))),
+	       "Incompatible matching modes");
+
 
 }
 

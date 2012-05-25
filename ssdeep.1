@@ -1,21 +1,21 @@
-.TH SSDEEP "1" "Version 2.8 \- RBF DATE" "Kyrus" "Kyrus"
+.TH SSDEEP "1" "Version 2.8 \- 25 May 2012" "Kyrus" "Kyrus"
 
 .SH NAME
 ssdeep - Computes context triggered piecewise hashes (fuzzy hashes)
 
 .SH SYNOPSIS
-.B ssdeep [-m <file>] [-k <file>] [-vprdsblcxa] [-t val] [FILES]
+.B ssdeep [-m <file>] [-k <file>] [-vdprsblcxa] [-t val] [FILES]
 .br
 .B ssdeep [-V|h] 
 
 .SH DESCRIPTION
 .PP
-Computes a checksum based on context triggered piecewise hashes
+Computes a signature based on context triggered piecewise hashes
 for each input file, also called a fuzzy hash.
-If requested, the program matches those checksums against
-a file of known checksums and reports any possible matches. 
-It can also examine one or more of signatures and find any 
-matches in those signatures.
+If requested, the program matches those signatures against
+a file of known signatures and reports any possible matches. 
+It can also examine one or more files of signatures and find any 
+matches in those files.
 Output is written to standard out and errors to standard error.
 The program only accepts the first 100MB of data presented
 via standard input.
@@ -45,6 +45,12 @@ This flag may not be used with the \-m, \-d, or \-p flags.
 Verbose mode. The name of each file is printed to standard error
 as it is being hashed.
 
+.TP
+\fB\-d\fR
+Computes a signature for each entry in the FILES and compares it to the set 
+of known signatures. Matches which score above the threshold are displayed. The
+computed signature is then added to the set of known signatures.
+This flag may not be used with the \-k or \-x flags.
 
 .TP
 \fB\-p\fR
@@ -61,13 +67,6 @@ files of a given file extension. For example, invoking the program with
 \fB\-r *.txt\fR will examine all files in directories that end in .txt. 
 If you want to process all files in a directory tree with the .txt suffix,
 try using the \fBfind(1)\fR command.
-
-.TP
-\fB\-d\fR
-Computes a signature for each entry in the FILES and compares it to the set 
-of known signatures. Matches which score above the threshold are displayed. The
-computed signature is then added to the set of known signatures.
-This flag may not be used with the \-k or \-x flags.
 
 .TP
 \fB\-s\fR

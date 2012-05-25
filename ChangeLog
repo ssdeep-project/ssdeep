@@ -1,3 +1,8 @@
+2012-05-25 Jesse Kornblum <research@jessekornblum.com>:
+
+	* main.cpp: Updated command line argument processing
+	* ssdeep.1: Clarifications on description.
+
 2012-05-24 Jesse Kornblum <research@jessekornblum.com>:
 
 	* match.cpp: Convert to C++

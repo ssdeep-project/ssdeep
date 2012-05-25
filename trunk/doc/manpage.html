@@ -10,72 +10,74 @@
 
 <p> 
 <h2><a name='sect0' href='#toc0'>Name</a></h2>
-ssdeep - Computes context triggered piecewise hashes 
+ssdeep - Computes context triggered piecewise hashes (fuzzy hashes)
+
 <p> 
 <h2><a name='sect1' href='#toc1'>Synopsis</a></h2>
-<b>ssdeep
-[-m &lt;file&gt;] [-k &lt;file&gt;] [-vprdsblcxa] [-t val] [FILES]</b> <br>
+<b>ssdeep [-m &lt;file&gt;] [-k &lt;file&gt;] [-vdprsblcxa] [-t val] [FILES]</b> <br>
 <b>ssdeep [-V|h] </b> 
 <p> 
 <h2><a name='sect2' href='#toc2'>Description</a></h2>
 <p>
-Computes a checksum based on context triggered
-piecewise hashes for each input file.  If requested, the program matches
-those checksums against a file of known checksums and reports any possible
-matches.  It can also examine one or more of signatures and find any  matches
-in those signatures. Output is written to standard out and errors to standard
-error. Input from standard input is not supported. 
+Computes a signature based on context triggered
+piecewise hashes for each input file, also called a fuzzy hash. If requested,
+the program matches those signatures against a file of known signatures
+and reports any possible matches.  It can also examine one or more files
+of signatures and find any  matches in those files. Output is written to
+standard out and errors to standard error. The program only accepts the
+first 100MB of data presented via standard input. 
 <p> 
 <dl>
 
 <dt><b>-m &lt;file&gt;</b> </dt>
-<dd>Load the file
-of known hashes to be used for matching. This file must be a previous output
-of the program and have the correct header. Displays only those files that
-match a known file and what file they matched against. Although filenames
-may not contain Unicode characters, they can hold hashes with Unicode filenames.
-May not be used with the  -k or -x flags. 
-<p> </dd>
+<dd>Loads the specified
+file of known hashes to be used for matching. This file must be a previous
+output of the program. The program then hashes each entry in FILES and compares
+these signatures to the known signatures.  Any matches which score above
+the threshold are displayed.  This flag may be used multiple times to load
+more known signatures. This flag may not be used with the -k or -x flags. 
+<p>
+</dd>
 
 <dt><b>-k &lt;file&gt;</b> </dt>
-<dd>Compare the known signatures
-in the specified file to the pre-computed signatures in FILES. That is, both
-the file specified here and the input FILES should contain fuzzy hashes
-already. This flag can be  used multiple times to load more known signatures.
-May not be used with the -m or -x flags. 
+<dd>Load the specified file of known hashes to be used for matching.
+This file must be a previous output of the program. The program then treats
+each entry in FILES as a set of known hashes as well. The hashes in these
+FILES are compared to the known hashes from this file. Matches which score
+ above the threshold are displayed. Both the file specified here and the
+input FILES should contain fuzzy hashes.  This flag may be used multiple
+times to load more known signatures. This flag may not be used with the
+-m, -d, or -p flags. 
 <p> </dd>
 
 <dt><b>-v</b> </dt>
-<dd>Verbose mode. The name of each
-file is printed to standard error as it is being hashed. 
-<p> 
-<p> </dd>
-
-<dt><b>-p</b> </dt>
-<dd>Pretty matching
-mode. Computes signatures for all input files and then display all matches
-between files. That is, if file A matches file B, displays "A matches B"
-and "B matches A" but not "A matches A". Each file&rsquo;s information is grouped
-and separated by newlines.  This flag may be used with the <b>-m</b> flag, but not
- the <b>-d</b> flag. 
-<p> </dd>
-
-<dt><b>-r</b> </dt>
-<dd>Enables recursive mode. All subdirectories are traversed.
-Please note that recursive mode cannot be used to examine all files of
-a given file extension. For example, invoking the program with <b>-r *.txt</b> will
-examine all files in directories that end in .txt.  If you want to process
-all files in a directory tree with the .txt suffix, try using the <a href='find.1'><b>find(1)</b></a>
-
-command. 
+<dd>Verbose mode. The name of each file is printed to standard
+error as it is being hashed. 
 <p> </dd>
 
 <dt><b>-d</b> </dt>
-<dd>Enables directory mode. In this mode, all of the FILES are examined
-and a signature is computed for each. If the signature for any files matches
-any of the previously computed signatures, a match is displayed just like
-the <b>-d</b> mode. This flag may also be used in conjunction with the <b>-m</b> mode, but
-with the <b>-p</b> mode. 
+<dd>Computes a signature for each entry in the
+FILES and compares it to the set  of known signatures. Matches which score
+above the threshold are displayed. The computed signature is then added
+to the set of known signatures. This flag may not be used with the -k or
+-x flags. 
+<p> </dd>
+
+<dt><b>-p</b> </dt>
+<dd>Works like the -d flag, but displays all matches for each file.
+That is, for two files A and B which match score above the threshold, displays
+"A matches B" and "B matches A".  This flag may not be used with the -k or
+-x flags. 
+<p> </dd>
+
+<dt><b>-r</b> </dt>
+<dd>Enables recursive mode. All subdirectories are traversed. Please
+note that recursive mode cannot be used to examine all files of a given
+file extension. For example, invoking the program with <b>-r *.txt</b> will examine
+all files in directories that end in .txt.  If you want to process all files
+in a directory tree with the .txt suffix, try using the <a href='find.1'><b>find(1)</b></a>
+ command.
+
 <p> </dd>
 
 <dt><b>-s</b> </dt>
@@ -83,16 +85,16 @@ with the <b>-p</b> mode.
 <p> </dd>
 
 <dt><b>-b</b> </dt>
-<dd>Enables
-bare mode. Strips any leading directory information from  displayed filenames.
- This flag may not be used in conjunction with the <b>-l</b> flag. 
+<dd>Enables bare mode. Strips
+any leading directory information from  displayed filenames.  This flag
+may not be used in conjunction with the <b>-l</b> flag. 
 <p> </dd>
 
 <dt><b>-l</b> </dt>
-<dd>Enables relative
-file paths. Instead of printing the absolute path for each file, displays
-the relative file path as indicated on the command  line. This flag may
-not be used in conjunction with the <b>-b</b> flag. 
+<dd>Enables relative file
+paths. Instead of printing the absolute path for each file, displays the
+relative file path as indicated on the command  line. This flag may not
+be used in conjunction with the <b>-b</b> flag. 
 <p> </dd>
 
 <dt><b>-c</b> </dt>
@@ -102,23 +104,24 @@ file, known file, matching score.
 <p> </dd>
 
 <dt><b>-x</b> </dt>
-<dd>Enables signature file matching. The
-input FILES are assumed to contain ssdeep formatted signatures. All of the
-signatures in these FILES are loaded into memory and compared against each
-other. All matches are displayed, except for matches that have the same
-filename and come from the same input file. May not be used with the -m or
--k flags. 
+<dd>Signature file matching. Each entry
+in FILES must contain signatures generated by a previous output of the
+program. Each signature is loaded and compared against the set of known
+hashes. Match scores above the threshold are displayed. Each signature is
+then added to the set of knowns.  This flag may not be used with the -m,
+-d, or -p flags. 
 <p> </dd>
 
 <dt><b>-a</b> </dt>
 <dd>Displays all matches in any of the matching mode, regardless
-of score. Yes, this displays all &rsquo;matches&rsquo;, even if the match score is zero.
-
+of score. Using the -a flag displays all results, even if the match score
+is zero. 
 <p> </dd>
 
 <dt><b>-t &lt;val&gt;</b> </dt>
-<dd>In any of the matching modes, only displays matches whose match
-score is above the given value. 
+<dd>In any of the matching modes, only display matches when
+match score is greater than the given value. The default threshold value
+is zero. 
 <p> </dd>
 
 <dt><b>-h</b> </dt>
@@ -126,33 +129,33 @@ score is above the given value.
 <p> </dd>
 
 <dt><b>-V</b> </dt>
-<dd>Show the
-version number and exit. 
+<dd>Show the version number and exit.
+
 <p> 
 <p> </dd>
 </dl>
 
 <h2><a name='sect3' href='#toc3'>Return Value</a></h2>
-Returns 0 on success, 1 if there
-is a problem. Read errors, permission denied, and encountering directories
-while not in recursive mode are still considered successes. Problems are
-things like being unable to load the matching file, specifying both bare
-and relative paths, etc. 
+Returns 0 on success, 1 if there is a problem. Read errors,
+permission denied, and encountering directories while not in recursive
+mode are still considered successes. Problems are things like being unable
+to load the matching file, specifying both bare and relative paths, etc.
+
 <p> 
 <h2><a name='sect4' href='#toc4'>Author</a></h2>
-ssdeep was written by Jesse Kornblum, ManTech
-International Corporation <br>
-research (%at%) jessekornblum dott com 
+ssdeep was written by Jesse Kornblum of Kyrus, <br>
+
+<p>research@jessekornblum.com 
 <p> <p>
 
 <h2><a name='sect5' href='#toc5'>Copyright</a></h2>
-This program is Copyright
-(C) 2006-2010 ManTech International Corporation and is licensed under the
-terms of the General Public License. See the  file COPYING for details. 
-<p>
-
+This program is Copyright (C) 2012
+Kyrus and is licensed under the terms  of the General Public License. See
+the file COPYING for details. 
+<p> 
 <h2><a name='sect6' href='#toc6'>See Also</a></h2>
-This program is based on SpamSum by Dr. Andrews Tridgell. <br>
+This program is based on SpamSum
+by Dr. Andrews Tridgell. <br>
 <a href='http://www.samba.org/ftp/unpacked/junkcode/spamsum/'>http://www.samba.org/ftp/unpacked/junkcode/spamsum/</a>
  <p>
 

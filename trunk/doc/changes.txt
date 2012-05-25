@@ -1,13 +1,14 @@
-** Version 2.8 - RBF DATE
+** Version 2.8 - 25 May 2012
 
 * New Features
 
   - Converted to C++
 
 * Bug Fixes
-
+  
+  - Fixed filename display on Win32.
   - Fixed support for large files on some platforms.
-  - Fixed error in handling command line argument processing.
+  - Fixed errors in handling command line argument processing.
 
 
 ** Version 2.7 - 30 Sep 2011

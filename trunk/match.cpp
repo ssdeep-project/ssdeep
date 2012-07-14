@@ -191,6 +191,9 @@ bool sig_file_close(FILE * handle)
 // MATCHING FUNCTIONS
 // ------------------------------------------------------------------
 
+//void handle_cluster(state *s,
+		    
+
 void handle_match(state *s, 
 		  const TCHAR * fn, 
 		  const char * match_file, 
@@ -204,6 +207,10 @@ void handle_match(state *s,
     printf("\",\"");
     display_filename(stdout,match->filename,TRUE);
     print_status("\",%u", score);
+  }
+  if (s->mode & mode_cluster)
+  {
+    // RBF - Handle clustering
   }
   else
   {
@@ -323,6 +330,7 @@ bool match_add(state *s,
   str_to_filedata(s,hash,f);
   f->filename = _tcsdup(fn);
   f->match_file = std::string(match_file);
+  f->cluster = NULL;
 
   add_known_file(s,f);
 

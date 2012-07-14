@@ -42,13 +42,14 @@ static void usage(void)
   print_status ("%s version %s by Jesse Kornblum", __progname, VERSION);
   print_status ("Copyright (C) 2012 Kyrus");
   print_status ("");
-  print_status ("Usage: %s [-m file] [-k file] [-dpvrsblcxa] [-t val] [-h|-V] [FILES]", 
+  print_status ("Usage: %s [-m file] [-k file] [-dpgvrsblcxa] [-t val] [-h|-V] [FILES]", 
 	  __progname);
 
   print_status ("-m - Match FILES against known hashes in file");
   print_status ("-k - Match signatures in FILES against signatures in file");
   print_status ("-d - Directory mode, compare all files in a directory");
   print_status ("-p - Pretty matching mode. Similar to -d but includes all matches");
+  print_status ("-g - Cluster matches together");
   print_status ("-v - Verbose mode. Displays filename as its being processed");
   print_status ("-r - Recursive mode");
 
@@ -69,9 +70,13 @@ static void usage(void)
 static void process_cmd_line(state *s, int argc, char **argv)
 {
   int i, match_files_loaded = FALSE;
-  while ((i=getopt(argc,argv,"avhVpdsblcxt:rm:k:")) != -1) {
+  while ((i=getopt(argc,argv,"gavhVpdsblcxt:rm:k:")) != -1) {
     switch(i) {
       
+    case 'g':
+      s->mode |= mode_cluster;
+      break;
+
     case 'a':
       s->mode |= mode_display_all;
       break;

@@ -17,7 +17,7 @@
 /// @return Returns false if there are no matches, true if at least one match
 /// @param s State variable
 /// @param f Filedata structure for the file.
-bool match_compare(const state *s, const Filedata * f);
+bool match_compare(state *s, Filedata * f);
 
 /// @brief Load a file of known hashes
 ///
@@ -30,14 +30,14 @@ bool match_load(state *s, const char *fn);
 bool match_add(state *s, Filedata * f);
 
 /// Display all matches in the set of known hashes nicely
-bool match_pretty(const state *s);
+bool match_pretty(state *s);
 
 /// Load the known hashes from the file fn and compare them to the
 /// set of known hashes
-bool match_compare_unknown(const state *s, const char * fn);
+bool match_compare_unknown(state *s, const char * fn);
 
 /// Display the results of clustering operations
-bool display_clusters(state *s);
+bool display_clusters(const state *s);
 
 
 

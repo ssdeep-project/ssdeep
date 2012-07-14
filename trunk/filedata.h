@@ -22,8 +22,8 @@ class Filedata
   TCHAR * get_filename(void) const { return m_filename; }
 
   bool has_cluster(void) const { return (m_cluster != NULL); }
-  void set_cluster(std::set<Filedata> *c);
-  std::set<Filedata>* get_cluster(void) const { return m_cluster; }
+  void set_cluster(std::set<Filedata *> *c) { m_cluster = c; }
+  std::set<Filedata* >* get_cluster(void) const { return m_cluster; }
 
   bool has_match_file(void) const { return m_has_match_file; }
   std::string get_match_file(void) const { return m_match_file; }
@@ -32,7 +32,7 @@ class Filedata
   void set_match_file(const std::string& fn);
 
  private:
-  std::set<Filedata> * m_cluster;
+  std::set<Filedata *> * m_cluster;
 
   /// Original signature in the form [blocksize]:[sig1]:[sig2]
   std::string m_signature;

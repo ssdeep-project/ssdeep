@@ -437,7 +437,7 @@ static int has_common_substring(const char *s1, const char *s2)
 static char *eliminate_sequences(const char *str)
 {
   char *ret;
-  int i, j, len;
+  size_t i, j, len;
   
   ret = strdup(str);
   if (!ret) 
@@ -445,10 +445,12 @@ static char *eliminate_sequences(const char *str)
   
   len = strlen(str);
   
-  for (i=j=3;i<len;i++) {
+  for (i=j=3 ; i<len ; i++) 
+  {
     if (str[i] != str[i-1] ||
 	str[i] != str[i-2] ||
-	str[i] != str[i-3]) {
+	str[i] != str[i-3]) 
+    {
       ret[j++] = str[i];
     }
   }
@@ -464,10 +466,12 @@ static char *eliminate_sequences(const char *str)
 // 100 is a great match. The block_size is used to cope with very small
 // messages.
 //
-static unsigned score_strings(const char *s1, const char *s2, uint32_t block_size)
+static uint32_t score_strings(const char *s1, 
+			      const char *s2, 
+			      unsigned int block_size)
 {
   uint32_t score;
-  uint32_t len1, len2;
+  size_t len1, len2;
   int edit_distn(const char *from, int from_len, const char *to, int to_len);
   
   len1 = strlen(s1);
@@ -526,11 +530,11 @@ static unsigned score_strings(const char *s1, const char *s2, uint32_t block_siz
 //
 int fuzzy_compare(const char *str1, const char *str2)
 {
-  uint32_t block_size1, block_size2;
+  unsigned int block_size1, block_size2;
   uint32_t score = 0;
   char *s1, *s2;
-  char *s1_1, *s1_2;
-  char *s2_1, *s2_2;
+  char *s1_1, *s1_2, *s1_3;
+  char *s2_1, *s2_2, *s2_3;
   
   if (NULL == str1 || NULL == str2)
     return -1;
@@ -563,10 +567,12 @@ int fuzzy_compare(const char *str1, const char *str2)
   // the same character like 'LLLLL'. Eliminate any sequences
   // longer than 3. This is especially important when combined
   // with the has_common_substring() test below. 
+  // NOTE: This function duplciates str1 and str2
   s1 = eliminate_sequences(str1+1);
   s2 = eliminate_sequences(str2+1);
   
-  if (!s1 || !s2) return 0;
+  if (!s1 || !s2) 
+    return 0;
   
   // now break them into the two pieces 
   s1_1 = s1;
@@ -574,35 +580,48 @@ int fuzzy_compare(const char *str1, const char *str2)
   
   s1_2 = strchr(s1, ':');
   s2_2 = strchr(s2, ':');
-  
+
   if (!s1_2 || !s2_2) {
     // a signature is malformed - it doesn't have 2 parts 
     free(s1); free(s2);
-    return 0;
+    return -1;
   }
 
-  *s1_2++ = 0;
-  *s2_2++ = 0;
+  // Chop the first substring. We terminate the first substring
+  // and then advance the pointer to the start of the second substring.
+  *s1_2 = 0;
+  s1_2++;
+  *s2_2 = 0;
+  s2_2++;
+
+  // Chop the second string at the comma--just before the filename.
+  // If the strings don't have a comma (i.e. don't have a filename)
+  // that's ok. It's not an error. This function can be called on
+  // signatures which don't have filenames attached.
+  // We also don't have to advance past the comma however. We don't care
+  // about the filename
+  s1_3 = strchr(s1_2, ',');
+  s2_3 = strchr(s2_2, ',');
+  *s1_3 = 0;
+  *s2_3 = 0;
   
   // each signature has a string for two block sizes. We now
   // choose how to combine the two block sizes. We checked above
   // that they have at least one block size in common 
-  if (block_size1 == block_size2) {
+  if (block_size1 == block_size2) 
+  {
     uint32_t score1, score2;
     score1 = score_strings(s1_1, s2_1, block_size1);
     score2 = score_strings(s1_2, s2_2, block_size2);
-
-    //    s->block_size = block_size1;
-
     score = MAX(score1, score2);
-  } else if (block_size1 == block_size2*2) {
-
+  } 
+  else if (block_size1 == block_size2*2) 
+  {
     score = score_strings(s1_1, s2_2, block_size1);
-    //    s->block_size = block_size1;
-  } else {
-
+  } 
+  else 
+  {
     score = score_strings(s1_2, s2_1, block_size2);
-    //    s->block_size = block_size2;
   }
   
   free(s1);
@@ -610,9 +629,3 @@ int fuzzy_compare(const char *str1, const char *str2)
   
   return (int)score;
 }
-
-
-
-
-
-

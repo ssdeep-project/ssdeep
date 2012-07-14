@@ -431,7 +431,10 @@ static int should_hash(state *s, TCHAR *fn)
 }
 
 
-#define MAX_STDIN_BUFFER  104857600
+/// The largest number of bytes we can process from stdin
+/// This limit is arbitrary and can be adjusted at will
+#define MAX_STDIN_BUFFER      536870912
+#define MAX_STDIN_BUFFER_STR  "512 MB"
 
 int process_stdin(state *s)
 {
@@ -445,6 +448,14 @@ int process_stdin(state *s)
   memset(buffer,0,MAX_STDIN_BUFFER);
 
   size_t sz = fread(buffer, 1, MAX_STDIN_BUFFER, stdin);
+  if (MAX_STDIN_BUFFER == sz)
+  {
+    print_error(s,
+		"%s: Only processed the first %s presented on stdin.",
+		__progname,
+		MAX_STDIN_BUFFER_STR);
+  }
+
   int status = fuzzy_hash_buf(buffer, (uint32_t)sz, sum);
   free(buffer);
 

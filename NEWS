@@ -1,3 +1,15 @@
+** Version 2.9 - RBF DATE 2012
+
+* New Features
+
+  - Added warning message for when some data on stdin is not hashed.
+  - Can now hash up to 512MB of data on stdin.
+
+* Bug Fixes
+
+  - Fixed incorrect match scores for hashes with long filenames.
+
+
 ** Version 2.8 - 25 May 2012
 
 * New Features

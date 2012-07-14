@@ -1,3 +1,12 @@
+2012-07-13 Jesse Kornblum <research@jessekornblum.com>:
+
+	* fuzzy.c: Fixed major bug regarding incorrect match scores for hashes with long filenames
+	* dig.cpp: Added warning message when not all data on stdin was hashed. Also increased stdin buffer to 512MB.
+	* configure.ac: Version bump to 2.9.
+	* main.cpp: Added flags for clustering mode
+	* ssdeep.h: Added flags for clustering mode
+	* match.cpp: Setting up for clustering mode
+	
 2012-05-25 Jesse Kornblum <research@jessekornblum.com>:
 
 	* main.cpp: Updated command line argument processing

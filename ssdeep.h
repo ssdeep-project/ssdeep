@@ -47,7 +47,7 @@ memset(VAR,0,SIZE * sizeof(TYPE));
 #define file_unknown  254
 
 
-typedef struct 
+typedef struct _filedata_t
 {
   uint64_t id;
  
@@ -65,6 +65,10 @@ typedef struct
 
   /// File of hashes where we got this known file from.
   std::string match_file;
+
+  /// Cluster which contains this file
+  std::set<_filedata_t> * cluster;
+
 } filedata_t;
 
 
@@ -136,6 +140,7 @@ int getopt(int argc, char *const argv[], const char *optstring);
 #define mode_sigcompare   1<<10
 #define mode_display_all  1<<11
 #define mode_compare_unknown 1<<12
+#define mode_cluster      1<<13
 
 #define MODE(A)   (s->mode & A)
 

@@ -2,22 +2,27 @@
 
 #include "main.h"
 #include "ssdeep.h"
+#include "match.h"
+
 
 #define MAX_STATUS_MSG   78
 
 void display_result(state *s, const TCHAR * fn, const char * sum)
 {
+  // RBF - Catch exceptions here
+  Filedata * f = new Filedata(fn, sum);
+
   if (MODE(mode_match_pretty)) // || MODE(mode_cluster))
   {
-    if (match_add(s,"",fn,sum))
+    if (match_add(s,f))
       print_error_unicode(s,fn,"Unable to add hash to set of known hashes");
   }
   else if (MODE(mode_match) || MODE(mode_directory))
   {
-    match_compare(s,"",fn,sum);
+    match_compare(s,f);
 
     if (MODE(mode_directory))
-      if (match_add(s,"",fn,sum))
+      if (match_add(s,f))
 	print_error_unicode(s,fn,"Unable to add hash to set of known hashes");
   }
   else
@@ -29,6 +34,7 @@ void display_result(state *s, const TCHAR * fn, const char * sum)
       s->first_file_processed = false;
     }
 
+    // RBF - Replace with a call to a Filedata method?
     printf ("%s,\"", sum);
     display_filename(stdout,fn,TRUE);
     print_status("\"");

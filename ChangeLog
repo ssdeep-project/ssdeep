@@ -1,3 +1,13 @@
+2012-07-14 Jesse Kornblum <research@jessekornblum.com>:
+
+	* win.sh: Updated for C++ compiler warnings
+	* normal.sh: Updated for C++ compiler warnings
+	* fuzzy.c: Corrected logic error for when sigs don't have filenames
+	* ui.cpp: Added const to print_error's state variable
+	* match.cpp: Rewrote to use Filedata class
+	* filedata.cpp: Created Filedata class
+	* main.cpp: Adapted to use Filedata class
+
 2012-07-13 Jesse Kornblum <research@jessekornblum.com>:
 
 	* fuzzy.c: Fixed major bug regarding incorrect match scores for hashes with long filenames

@@ -8,6 +8,7 @@
 // See the file COPYING for details. 
 
 #include "ssdeep.h"
+#include "match.h"
 
 #ifdef _WIN32 
 // This can't go in main.h or we get multiple definitions of it
@@ -28,8 +29,6 @@ static bool initialize_state(state *s)
   s->processed_file        = false;
 
   s->threshold = 0;
-
-  s->next_match_id = 0;
 
   return false;
 }
@@ -254,7 +253,7 @@ int main(int argc, char **argv)
 #ifndef __GLIBC__
   //  __progname  = basename(argv[0]);
 #endif
-
+  
   s = new state;
   if (initialize_state(s))
     fatal_error("%s: Unable to initialize state variable", __progname);

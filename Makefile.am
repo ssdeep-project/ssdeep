@@ -14,9 +14,9 @@ include_HEADERS=fuzzy.h
 
 man_MANS=ssdeep.1
 
-ssdeep_SOURCES = main.cpp match.cpp engine.cpp          	\
+ssdeep_SOURCES = main.cpp match.cpp engine.cpp filedata.cpp   	\
                  dig.cpp cycles.cpp helpers.cpp ui.cpp        	\
-                 main.h fuzzy.h tchar-local.h ssdeep.h
+                 main.h fuzzy.h tchar-local.h ssdeep.h filedata.h match.h
 
 dll: $(libfuzzy_la_SOURCES)
 	$(CC) $(CFLAGS) -shared -o fuzzy.dll $(libfuzzy_la_SOURCES) \

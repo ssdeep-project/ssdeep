@@ -110,7 +110,8 @@ libfuzzy_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(libfuzzy_la_LDFLAGS) $(LDFLAGS) -o $@
 PROGRAMS = $(bin_PROGRAMS)
 am_ssdeep_OBJECTS = main.$(OBJEXT) match.$(OBJEXT) engine.$(OBJEXT) \
-	dig.$(OBJEXT) cycles.$(OBJEXT) helpers.$(OBJEXT) ui.$(OBJEXT)
+	filedata.$(OBJEXT) dig.$(OBJEXT) cycles.$(OBJEXT) \
+	helpers.$(OBJEXT) ui.$(OBJEXT)
 ssdeep_OBJECTS = $(am_ssdeep_OBJECTS)
 ssdeep_DEPENDENCIES = libfuzzy.la
 ssdeep_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
@@ -297,9 +298,9 @@ libfuzzy_la_SOURCES = fuzzy.c edit_dist.c find-file-size.c
 libfuzzy_la_LDFLAGS = -no-undefined -version-info 2:0:0
 include_HEADERS = fuzzy.h
 man_MANS = ssdeep.1
-ssdeep_SOURCES = main.cpp match.cpp engine.cpp          	\
+ssdeep_SOURCES = main.cpp match.cpp engine.cpp filedata.cpp   	\
                  dig.cpp cycles.cpp helpers.cpp ui.cpp        	\
-                 main.h fuzzy.h tchar-local.h ssdeep.h
+                 main.h fuzzy.h tchar-local.h ssdeep.h filedata.h match.h
 
 CLEANFILES = fuzzy.dll fuzzy.def
 EXTRA_DIST = $(man_MANS) config.guess config.sub sample.c FILEFORMAT
@@ -454,6 +455,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/edit_dist.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/engine.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/filedata.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/find-file-size.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuzzy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/helpers.Po@am__quote@

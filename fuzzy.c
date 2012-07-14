@@ -602,8 +602,10 @@ int fuzzy_compare(const char *str1, const char *str2)
   // about the filename
   s1_3 = strchr(s1_2, ',');
   s2_3 = strchr(s2_2, ',');
-  *s1_3 = 0;
-  *s2_3 = 0;
+  if (s1_3 != NULL)
+    *s1_3 = 0;
+  if (s2_3 != NULL)
+    *s2_3 = 0;
   
   // each signature has a string for two block sizes. We now
   // choose how to combine the two block sizes. We checked above

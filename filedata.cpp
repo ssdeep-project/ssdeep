@@ -8,6 +8,7 @@
 
 Filedata::Filedata(const TCHAR *fn, const char * sum)
 {
+  m_cluster = NULL;
   m_has_match_file = false;
 
   m_filename = _tcsdup(fn);
@@ -22,8 +23,8 @@ Filedata::Filedata(const std::string sig)
 {
   size_t start, stop;
 
-  m_has_match_file = false;
   m_cluster = NULL;
+  m_has_match_file = false;
   m_signature = std::string(sig);
 
   // The filename should be immediately after the first comma and

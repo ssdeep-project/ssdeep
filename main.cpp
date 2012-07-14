@@ -334,8 +334,8 @@ int main(int argc, char **argv)
     s->mode |= mode_match_pretty;
   if (s->mode & mode_match_pretty)
     match_pretty(s);
-  //  if (s->mode & mode_cluster)
-  //    display_clusters(s);
+  if (MODE(mode_cluster))
+    display_clusters(s);
 
   return (EXIT_SUCCESS);
 }

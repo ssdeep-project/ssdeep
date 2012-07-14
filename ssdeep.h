@@ -81,6 +81,9 @@ typedef struct {
   // Known hashes
   std::vector<Filedata *> all_files;
 
+  // Known clusters
+  std::vector< std::set<Filedata *> * > all_clusters;
+
   /// Display files who score above the threshold
   uint8_t   threshold;
 

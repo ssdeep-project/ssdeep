@@ -123,14 +123,114 @@ bool sig_file_close(FILE * handle)
 // MATCHING FUNCTIONS
 // ------------------------------------------------------------------
 
-//void handle_cluster(state *s,
-
 // RBF - Move to top of file		
 #include <iostream>
 using std::cout;
 using std::endl;    
 
-void handle_match(const state *s, const Filedata *a, const Filedata *b, int score)
+bool display_clusters(const state *s)
+{
+  if (NULL == s)
+    return true;
+
+  std::vector<std::set<Filedata *> *>::const_iterator it;
+  for (it = s->all_clusters.begin(); it != s->all_clusters.end() ; ++it)
+  {
+    cout << "** Cluster size: " << (*it)->size() << endl;
+    std::set<Filedata *>::const_iterator cit;
+    for (cit = (*it)->begin() ; cit != (*it)->end() ; ++cit)
+      cout << (*cit)->get_filename() << endl;
+
+    cout << endl;
+  }
+
+  return false;
+}
+
+
+bool cluster_add(Filedata * dest, Filedata * src)
+{
+  // RBF - Debugging
+  //  cout << "Combining " << dest->get_filename() << " " <<
+  //    src->get_filename() << endl;
+
+  dest->get_cluster()->insert(src);
+  src->set_cluster(dest->get_cluster());
+
+  return false;
+}
+
+bool cluster_join(Filedata * a, Filedata * b)
+{
+  Filedata * dest, * src;
+  // Combine into the larger cluster for speed
+  if (a->get_cluster()->size() > b->get_cluster()->size())
+  {
+    dest = a; 
+    src  = b;
+  }
+  else
+  {
+    dest = b; 
+    src  = a;
+  }
+
+  // RBF - Debugging
+  //  cout << "Join cluster: " << dest->get_filename() << " " << src->get_filename() << endl;
+  
+  // Add members of src to dest
+  std::set<Filedata *>::const_iterator it;
+  for (it =  src->get_cluster()->begin() ; 
+       it != src->get_cluster()->end() ; 
+       ++it)
+  {
+    dest->get_cluster()->insert(*it);
+  }
+
+  // RBF - Do we need to delete the old set? If so, how?
+  //std::set<Filedata *> * tmp = src->get_cluster();
+  //delete[] tmp;
+
+  src->set_cluster(dest->get_cluster());
+
+  return false;
+}
+
+bool handle_clustering(state *s, Filedata *a, Filedata *b)
+{
+  bool a_has = a->has_cluster(), b_has = b->has_cluster();
+
+  // In the easiest case, one of these has a cluster and one doesn't
+  if (a_has and not b_has)
+    return cluster_add(a,b);
+  if (b_has and not a_has)
+    return cluster_add(b,a);
+  
+  // Combine existing clusters
+  if (a_has and b_has)
+    return cluster_join(a,b);
+
+  // Create new cluster
+  // RBF - Debugging
+  //  cout << "New cluster: " << a->get_filename() << " " << b->get_filename() << endl;
+  std::set<Filedata *> * cluster = new std::set<Filedata *>();
+  cluster->insert(a);
+  cluster->insert(b);
+
+  s->all_clusters.push_back(cluster);
+
+  a->set_cluster(cluster);
+  b->set_cluster(cluster);
+  
+  return true;
+}
+
+
+
+void handle_match(state *s, 
+		  Filedata *a, 
+		  Filedata *b, 
+		  int score)
 {
   if (s->mode & mode_csv)
   {
@@ -142,7 +242,9 @@ void handle_match(const state *s, const Filedata *a, const Filedata *b, int scor
   }
   if (s->mode & mode_cluster)
   {
-    // RBF - Handle clustering
+    // RBF - Handle return value
+    
+    handle_clustering(s,a,b);
   }
   else
   {
@@ -160,7 +262,7 @@ void handle_match(const state *s, const Filedata *a, const Filedata *b, int scor
 }
 
 
-bool match_compare(const state *s, const Filedata * f)
+bool match_compare(state *s, Filedata * f)
 {
   if (NULL == s)
     fatal_error("%s: Null state passed into match_compare", __progname);
@@ -213,7 +315,7 @@ bool match_compare(const state *s, const Filedata * f)
 }
   
 
-bool match_pretty(const state *s)
+bool match_pretty(state *s)
 {
   if (NULL == s)
     return true;
@@ -275,7 +377,7 @@ bool match_load(state *s, const char *fn)
 }
 
 
-bool match_compare_unknown(const state *s, const char * fn)
+bool match_compare_unknown(state *s, const char * fn)
 { 
   if (NULL == s or NULL == fn)
     return true;

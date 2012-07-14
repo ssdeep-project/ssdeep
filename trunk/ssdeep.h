@@ -17,6 +17,7 @@
 
 #include "fuzzy.h"
 #include "tchar-local.h"
+#include "filedata.h"
 
 // This is a kludge, but it works.
 #define __progname "ssdeep"
@@ -78,8 +79,7 @@ typedef struct {
   bool       first_file_processed;
 
   // Known hashes
-  uint64_t    next_match_id;
-  std::vector<filedata_t *> all_files;
+  std::vector<Filedata *> all_files;
 
   /// Display files who score above the threshold
   uint8_t   threshold;
@@ -215,48 +215,11 @@ off_t find_file_size(FILE *h);
 // User Interface Functions
 // *********************************************************************
 void print_status(const char *fmt, ...);
-void print_error(state *s, const char *fmt, ...);
+void print_error(const state *s, const char *fmt, ...);
 void print_error_unicode(state *s, const TCHAR *fn, const char *fmt, ...);
 void internal_error(const char *fmt, ... );
 void fatal_error(const char *fmt, ... );
 void display_filename(FILE *out, const TCHAR *fn, int escape_quotes);
-
-
-// *********************************************************************
-// Matching functions
-// *********************************************************************
-
-// Match the file named fn with the hash sum against the set of knowns and display any matches. 
-//
-/// @return Returns false if there are no matches, true if at least one match
-/// @param s State variable
-/// @param match_file Filename where we got the hash of the unknown file.
-///                   May be the empty string.
-/// @param fn Filename of the unknown file we are comparing
-/// @param sum Fuzzy hash of the unknown file we are comparing
-bool match_compare(state *s, 
-		   const char * match_file, 
-		   const TCHAR *fn, 
-		   const char *sum);
-
-// Load a file of known hashes
-bool match_load(state *s, char *fn);
-
-// Add a single new hash to the set of known hashes
-bool match_add(state *s, const char * match_file, const TCHAR *fn, const char *hash);
-
-// Display all matches in the set of known hashes nicely
-bool match_pretty(state *s);
-
-// Load the known hashes from the file fn and compare them to the
-// set of known hashes
-bool match_compare_unknown(state *s, const char * fn);
-
-// Display the results of clustering operations
-//int display_clusters(state *s);
-
-
-
 
 
 

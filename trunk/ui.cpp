@@ -16,7 +16,7 @@ void print_status(const char *fmt, ...)
 }
 
 
-void print_error(state *s, const char *fmt, ...)
+void print_error(const state *s, const char *fmt, ...)
 {
   if (NULL == s)
     internal_error("%s: NULL state passed to print_error", __progname);

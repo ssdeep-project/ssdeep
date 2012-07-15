@@ -34,28 +34,28 @@
 /// @param s State variable
 /// @param fn filename to open
 /// 
-/// @return On success, returns the open file handle. On failure, returns NULL.
-FILE * sig_file_open(const state *s, const char * fn)
+/// @return Returns false success, true on error
+bool sig_file_open(state *s, const char * fn)
 {
   if (NULL == s or NULL == fn)
-    return NULL;
+    return true;
 
-  FILE * handle = fopen(fn,"rb");
-  if (NULL == handle)
+  s->known_handle = fopen(fn,"rb");
+  if (NULL == s->known_handle)
   {
     if ( ! (MODE(mode_silent)) )
       perror(fn);
-    return NULL;
+    return true;
   }
 
   // The first line of the file should contain a valid ssdeep header. 
   char buffer[MAX_STR_LEN];
-  if (NULL == fgets(buffer,MAX_STR_LEN,handle))
+  if (NULL == fgets(buffer,MAX_STR_LEN,s->known_handle))
   {
     if ( ! (MODE(mode_silent)) )
       perror(fn);
-    fclose(handle);
-    return NULL;
+    fclose(s->known_handle);
+    return true;
   }
 
   chop_line(buffer);
@@ -65,11 +65,14 @@ FILE * sig_file_open(const state *s, const char * fn)
   {
     if ( ! (MODE(mode_silent)) )
       print_error(s,"%s: Invalid file header.", fn);
-    fclose(handle);
-    return NULL;
+    fclose(s->known_handle);
+    return true;
   }
 
-  return handle;
+  s->line_number = 0;
+  s->known_fn = strdup(fn);
+
+  return false;
 }
 
 
@@ -78,37 +81,37 @@ FILE * sig_file_open(const state *s, const char * fn)
 /// it to a Filedata 
 ///
 /// @param s State variable
-/// @param fn Filename of known hashes
-/// @param handle File handle to read from. 
-/// Should have previously been opened by sig_file_open()
-
 /// @param f Structure where to store the data we read
 ///
 /// @return Returns true if there is no entry to read or on error. 
 /// Otherwise, false.
-bool sig_file_next(const state *s, 
-		   const char * fn,
-		   FILE * handle,
-		   Filedata ** f)
+bool sig_file_next(state *s, Filedata ** f)
 {
-  if (NULL == s or NULL == fn or NULL == handle)
+  if (NULL == s or NULL == f or NULL == s->known_handle)
     return true;
 
   char buffer[MAX_STR_LEN];
   memset(buffer,0,MAX_STR_LEN);
-  if (NULL == fgets(buffer,MAX_STR_LEN,handle))
+  if (NULL == fgets(buffer,MAX_STR_LEN,s->known_handle))
     return true;
 
+  s->line_number++;
   chop_line(buffer);
 
   try 
   {
-    *f = new Filedata(std::string(buffer));
-    (*f)->set_match_file(std::string(fn));
+    *f = new Filedata(std::string(buffer),s->known_fn);
   }
   catch (std::bad_alloc)
   {
-    // This can happen on a badly formatted line, or a blank one
+    // This can happen on a badly formatted line, or a blank one.
+    // We don't display errors on blank lines.
+    if (strlen(buffer) > 0)
+      print_error(s,
+		  "%s: Bad hash in line %"PRIu64, 
+		  s->known_fn, 
+		  s->line_number);
+
     return true;
   }
 
@@ -116,12 +119,26 @@ bool sig_file_next(const state *s,
 }
 
 
-bool sig_file_close(FILE * handle)
+bool sig_file_close(state *s)
 {
-  if (handle != NULL) 
-    fclose(handle);
+  if (NULL == s)
+    return true;
+
+  free(s->known_fn);
+
+  if (s->known_handle != NULL) 
+    return true;
+
+  if (fclose(s->known_handle))
+    return true;
   
   return false;
+}
+
+
+bool sig_file_end(state *s)
+{
+  return (feof(s->known_handle));
 }
 
 
@@ -223,7 +240,7 @@ void handle_match(state *s,
     display_filename(stdout,b->get_filename(),TRUE);
     print_status("\",%u", score);
   }
-  if (s->mode & mode_cluster)
+  else if (s->mode & mode_cluster)
   {
     handle_clustering(s,a,b);
   }
@@ -324,8 +341,7 @@ bool match_load(state *s, const char *fn)
   if (NULL == s or NULL == fn)
     return true;
 
-  FILE * handle = sig_file_open(s,fn);
-  if (NULL == handle)
+  if (sig_file_open(s,fn))
     return true;
 
   bool status;
@@ -333,7 +349,7 @@ bool match_load(state *s, const char *fn)
   do 
   {
     Filedata * f; 
-    status = sig_file_next(s,fn,handle,&f);
+    status = sig_file_next(s,&f);
     if (not status)
     {
       if (match_add(s,f))
@@ -344,9 +360,9 @@ bool match_load(state *s, const char *fn)
 	break;
       }
     }
-  } while (not status);
+  } while (not sig_file_end(s));
 
-  sig_file_close(handle);
+  sig_file_close(s);
 
   return false;
 }
@@ -357,8 +373,7 @@ bool match_compare_unknown(state *s, const char * fn)
   if (NULL == s or NULL == fn)
     return true;
 
-  FILE * handle = sig_file_open(s,fn);
-  if (NULL == handle)
+  if (sig_file_open(s,fn))
     return true;
 
   bool status;
@@ -366,12 +381,12 @@ bool match_compare_unknown(state *s, const char * fn)
   do
   {
     Filedata *f;
-    status = sig_file_next(s,fn,handle,&f);
+    status = sig_file_next(s,&f);
     if (not status)
       match_compare(s,f);
-  } while (not status);
+  } while (not sig_file_end(s));
 
-  sig_file_close(handle);
+  sig_file_close(s);
 
   return false;
 }

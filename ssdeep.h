@@ -82,7 +82,7 @@ typedef struct {
   std::vector<Filedata *> all_files;
 
   // Known clusters
-  std::vector< std::set<Filedata *> * > all_clusters;
+  std::set< std::set<Filedata *> * > all_clusters;
 
   /// Display files who score above the threshold
   uint8_t   threshold;

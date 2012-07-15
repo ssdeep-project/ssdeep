@@ -108,7 +108,7 @@ bool sig_file_next(state *s, Filedata ** f)
     // We don't display errors on blank lines.
     if (strlen(buffer) > 0)
       print_error(s,
-		  "%s: Bad hash in line %"PRIu64, 
+		  "%s: Bad hash in line %llu", 
 		  s->known_fn, 
 		  s->line_number);
 
@@ -152,7 +152,7 @@ void display_clusters(const state *s)
   if (NULL == s)
     return;
 
-  std::vector<std::set<Filedata *> *>::const_iterator it;
+  std::set<std::set<Filedata *> *>::const_iterator it;
   for (it = s->all_clusters.begin(); it != s->all_clusters.end() ; ++it)
   {
     print_status("** Cluster size %u", (*it)->size());
@@ -171,7 +171,7 @@ void cluster_add(Filedata * dest, Filedata * src)
   src->set_cluster(dest->get_cluster());
 }
 
-void cluster_join(Filedata * a, Filedata * b)
+void cluster_join(state *s, Filedata * a, Filedata * b)
 {
   Filedata * dest, * src;
   // Combine into the larger cluster for speed
@@ -195,7 +195,9 @@ void cluster_join(Filedata * a, Filedata * b)
     dest->get_cluster()->insert(*it);
   }
 
-  // RBF - Do we need to delete the old set? If so, how?
+  // Remove the old cluster
+  s->all_clusters.erase(src->get_cluster());
+  src->clear_cluster();
 
   src->set_cluster(dest->get_cluster());
 }
@@ -212,14 +214,14 @@ void handle_clustering(state *s, Filedata *a, Filedata *b)
   
   // Combine existing clusters
   if (a_has and b_has)
-    return cluster_join(a,b);
+    return cluster_join(s,a,b);
 
   // Create new cluster
   std::set<Filedata *> * cluster = new std::set<Filedata *>();
   cluster->insert(a);
   cluster->insert(b);
 
-  s->all_clusters.push_back(cluster);
+  s->all_clusters.insert(cluster);
 
   a->set_cluster(cluster);
   b->set_cluster(cluster);

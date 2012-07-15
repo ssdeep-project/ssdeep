@@ -45,6 +45,7 @@ class Filedata
   bool has_cluster(void) const { return (m_cluster != NULL); }
   void set_cluster(std::set<Filedata *> *c) { m_cluster = c; }
   std::set<Filedata* >* get_cluster(void) const { return m_cluster; }
+  void clear_cluster(void);
 
  private:
   std::set<Filedata *> * m_cluster;

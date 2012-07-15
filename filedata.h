@@ -27,14 +27,14 @@ class Filedata
 
   bool has_match_file(void) const { return m_has_match_file; }
   std::string get_match_file(void) const { return m_match_file; }
-
-  // RBF - Should this be a TCHAR?
   void set_match_file(const std::string& fn);
 
  private:
   std::set<Filedata *> * m_cluster;
 
   /// Original signature in the form [blocksize]:[sig1]:[sig2]
+  /// It may also contain the filename, but there is no guarantee of that
+  /// one way or the other.
   std::string m_signature;
 
   TCHAR * m_filename;

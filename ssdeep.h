@@ -168,7 +168,7 @@ int process_stdin(state *s);
 // Fuzzy Hashing Engine
 // *********************************************************************
 int hash_file(state *s, TCHAR *fn);
-void display_result(state *s, const TCHAR * fn, const char * sum);
+bool display_result(state *s, const TCHAR * fn, const char * sum);
 
 
 // *********************************************************************

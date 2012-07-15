@@ -37,7 +37,7 @@ bool match_pretty(state *s);
 bool match_compare_unknown(state *s, const char * fn);
 
 /// Display the results of clustering operations
-bool display_clusters(const state *s);
+void display_clusters(const state *s);
 
 
 

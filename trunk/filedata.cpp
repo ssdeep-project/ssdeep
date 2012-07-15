@@ -4,11 +4,11 @@
 
 #include "filedata.h"
 
-
 bool Filedata::valid(void) const
 {
   // A valid fuzzy hash has the form
   // [blocksize]:[sig1]:[sig2]
+  // with no filename at the end
 
   // First find the block size
   const char * sig = m_signature.c_str();
@@ -36,6 +36,17 @@ bool Filedata::valid(void) const
 }
 
 
+void Filedata::clear_cluster(void)
+{
+  if (NULL == m_cluster)
+    return;
+
+  // We don't want to call the destructors on the individual elements
+  // so we have to clear the set first.
+  m_cluster->clear();
+  m_cluster = NULL;
+}
+
 
 Filedata::Filedata(const TCHAR *fn, const char * sig, const char * match_file)
 {
@@ -53,19 +64,12 @@ Filedata::Filedata(const TCHAR *fn, const char * sig, const char * match_file)
     m_has_match_file = true;
     m_match_file = std::string(match_file);
   }
-
 }
-
-// RBF - Debuging
-#include <iostream>
-using namespace std;
 
 
 Filedata::Filedata(const std::string sig, const char * match_file)
 {
   // Set the easy stuff first
-  size_t start, stop;
-
   m_cluster = NULL;
 
   if (NULL == match_file)
@@ -76,13 +80,12 @@ Filedata::Filedata(const std::string sig, const char * match_file)
     m_match_file = std::string(match_file);
   }
 
-  m_signature = std::string(sig);
-
   // If we don't have a filename included with the sig, that's ok,
   // but we should find out now.
   // If there is a filename, it should be immediately after the
   // first comma and enclosed in quotation marks.
-  start = m_signature.find_first_of(",\"");
+  size_t start, stop;
+  start = sig.find_first_of(",\"");
   if (std::string::npos == start)
   {
     // There is no filename. Ok. We still have a valid Filedata.
@@ -102,19 +105,19 @@ Filedata::Filedata(const std::string sig, const char * match_file)
   
   // Look for the second quotation mark, which should be at the end
   // of the string. 
-  stop = m_signature.find_last_of('"');
-  if (stop != m_signature.size() - 1)
+  stop = sig.find_last_of('"');
+  if (stop != sig.size() - 1)
     throw std::bad_alloc();
   
-  // Strip off the final quotation mark in the duplicate
-  std::string tmp = m_signature.substr(start,(stop - start));
+  // Strip off the final quotation mark and record the filename
+  std::string tmp = sig.substr(start,(stop - start));
 
   // Strip off the filename from the signature. Remember that "start"
   // now points to two characters ahead of the comma
-  m_signature = m_signature.substr(0,start-2);
-
+  m_signature = sig.substr(0,start-2);
+  
   // Unescape any quotation marks in the filename
-  while (tmp.find(std::string("\\\"")) != string::npos)
+  while (tmp.find(std::string("\\\"")) != std::string::npos)
     tmp.replace(tmp.find(std::string("\\\"")),2,std::string("\""));
   
 #ifndef _WIN32

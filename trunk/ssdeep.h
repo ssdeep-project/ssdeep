@@ -92,6 +92,14 @@ typedef struct {
 
   int       argc;
   TCHAR     **argv;
+
+  /// Current line number in file of known hashes
+  uint64_t line_number;
+  /// File handle to file of known hashes
+  FILE     * known_handle;
+  /// Filename of known hashes
+  char     * known_fn;
+
 } state;
 
 

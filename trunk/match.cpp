@@ -75,7 +75,7 @@ FILE * sig_file_open(const state *s, const char * fn)
 
 
 /// @brief Read the next entry in a file of known hashes and convert 
-/// it to a filedata structure
+/// it to a Filedata 
 ///
 /// @param s State variable
 /// @param fn Filename of known hashes
@@ -101,9 +101,16 @@ bool sig_file_next(const state *s,
 
   chop_line(buffer);
 
-  // RBF - Catch exceptions
-  *f = new Filedata(std::string(buffer));
-  (*f)->set_match_file(std::string(fn));
+  try 
+  {
+    *f = new Filedata(std::string(buffer));
+    (*f)->set_match_file(std::string(fn));
+  }
+  catch (std::bad_alloc)
+  {
+    // This can happen on a badly formatted line, or a blank one
+    return true;
+  }
 
   return false;
 }
@@ -123,44 +130,31 @@ bool sig_file_close(FILE * handle)
 // MATCHING FUNCTIONS
 // ------------------------------------------------------------------
 
-// RBF - Move to top of file		
-#include <iostream>
-using std::cout;
-using std::endl;    
-
-bool display_clusters(const state *s)
+void display_clusters(const state *s)
 {
   if (NULL == s)
-    return true;
+    return;
 
   std::vector<std::set<Filedata *> *>::const_iterator it;
   for (it = s->all_clusters.begin(); it != s->all_clusters.end() ; ++it)
   {
-    cout << "** Cluster size: " << (*it)->size() << endl;
+    print_status("** Cluster size %u", (*it)->size());
     std::set<Filedata *>::const_iterator cit;
     for (cit = (*it)->begin() ; cit != (*it)->end() ; ++cit)
-      cout << (*cit)->get_filename() << endl;
-
-    cout << endl;
+      print_status("%s", (*cit)->get_filename());
+    
+    print_status("");
   }
-
-  return false;
 }
 
 
-bool cluster_add(Filedata * dest, Filedata * src)
+void cluster_add(Filedata * dest, Filedata * src)
 {
-  // RBF - Debugging
-  //  cout << "Combining " << dest->get_filename() << " " <<
-  //    src->get_filename() << endl;
-
   dest->get_cluster()->insert(src);
   src->set_cluster(dest->get_cluster());
-
-  return false;
 }
 
-bool cluster_join(Filedata * a, Filedata * b)
+void cluster_join(Filedata * a, Filedata * b)
 {
   Filedata * dest, * src;
   // Combine into the larger cluster for speed
@@ -175,9 +169,6 @@ bool cluster_join(Filedata * a, Filedata * b)
     src  = a;
   }
 
-  // RBF - Debugging
-  //  cout << "Join cluster: " << dest->get_filename() << " " << src->get_filename() << endl;
-  
   // Add members of src to dest
   std::set<Filedata *>::const_iterator it;
   for (it =  src->get_cluster()->begin() ; 
@@ -188,15 +179,11 @@ bool cluster_join(Filedata * a, Filedata * b)
   }
 
   // RBF - Do we need to delete the old set? If so, how?
-  //std::set<Filedata *> * tmp = src->get_cluster();
-  //delete[] tmp;
 
   src->set_cluster(dest->get_cluster());
-
-  return false;
 }
 
-bool handle_clustering(state *s, Filedata *a, Filedata *b)
+void handle_clustering(state *s, Filedata *a, Filedata *b)
 {
   bool a_has = a->has_cluster(), b_has = b->has_cluster();
 
@@ -211,8 +198,6 @@ bool handle_clustering(state *s, Filedata *a, Filedata *b)
     return cluster_join(a,b);
 
   // Create new cluster
-  // RBF - Debugging
-  //  cout << "New cluster: " << a->get_filename() << " " << b->get_filename() << endl;
   std::set<Filedata *> * cluster = new std::set<Filedata *>();
   cluster->insert(a);
   cluster->insert(b);
@@ -221,8 +206,6 @@ bool handle_clustering(state *s, Filedata *a, Filedata *b)
 
   a->set_cluster(cluster);
   b->set_cluster(cluster);
-  
-  return true;
 }
 
 
@@ -242,8 +225,6 @@ void handle_match(state *s,
   }
   if (s->mode & mode_cluster)
   {
-    // RBF - Handle return value
-    
     handle_clustering(s,a,b);
   }
   else
@@ -251,11 +232,11 @@ void handle_match(state *s,
     // The match file names may be empty. If so, we don't print them
     // or the colon which separates them from the filename
     if (a->has_match_file())
-      cout << a->get_match_file() << ":";
+      printf ("%s:", a->get_match_file().c_str());
     display_filename(stdout,a->get_filename(),FALSE);
-    cout << " matches "; 
+    printf (" matches ");
     if (b->has_match_file())
-      cout << b->get_match_file() << ":";
+      printf ("%s:", b->get_match_file().c_str());
     display_filename(stdout,b->get_filename(),FALSE);
     print_status(" (%u)", score);
   }
@@ -291,11 +272,6 @@ bool match_compare(state *s, Filedata * f)
 	  continue;
       }
     }
-
-    /*
-    cout << "Comparing " << 
-      f->get_signature() << " and " << (*it)->get_signature() << endl;
-    */
 
     int score =  fuzzy_compare(f->get_signature().c_str(), 
 			       (*it)->get_signature().c_str());
@@ -348,23 +324,23 @@ bool match_load(state *s, const char *fn)
   if (NULL == s or NULL == fn)
     return true;
 
-  bool status, ret = false;
-
   FILE * handle = sig_file_open(s,fn);
   if (NULL == handle)
     return true;
 
+  bool status;
+
   do 
   {
     Filedata * f; 
-    // RBF - Catch exceptions?
     status = sig_file_next(s,fn,handle,&f);
     if (not status)
     {
       if (match_add(s,f))
       {
+	// One bad hash doesn't mean this load was a failure.
+	// We don't change the return status because match_add failed.
 	print_error(s,"%s: unable to insert hash", fn);
-	ret = true;
 	break;
       }
     }
@@ -372,7 +348,6 @@ bool match_load(state *s, const char *fn)
 
   sig_file_close(handle);
 
-  // RBF _ WHat do we return?
   return false;
 }
 

@@ -8,14 +8,10 @@
 
 Filedata::Filedata(const TCHAR *fn, const char * sum)
 {
-  m_cluster = NULL;
+  m_cluster        = NULL;
   m_has_match_file = false;
-
-  m_filename = _tcsdup(fn);
-
-  // RBF - SIGNATURE DOES NOT INCLUDE FILENAME
-  // RBF - Is that a bad thing?
-  m_signature = std::string(sum);
+  m_filename       = _tcsdup(fn);
+  m_signature      = std::string(sum);
 }
 
 
@@ -23,17 +19,18 @@ Filedata::Filedata(const std::string sig)
 {
   size_t start, stop;
 
-  m_cluster = NULL;
+  m_cluster        = NULL;
   m_has_match_file = false;
-  m_signature = std::string(sig);
+  m_signature      = std::string(sig);
 
-  // The filename should be immediately after the first comma and
-  // enclosed in quotation marks.
+  // If there is a filename, it should be immediately after the
+  // first comma and enclosed in quotation marks.
   start = m_signature.find_first_of(",\"");
   if (std::string::npos == start)
   {
-    // RBF - Error handling. Throw an exception
-    throw (std::bad_alloc());
+    // There is no filename. Ok. We still have a valid Filedata.
+    m_filename = _tcsdup(_TEXT("[NO FILENAME]"));
+    return;
   }
   // Advance past the comma and quotation mark.
   start += 2;
@@ -43,7 +40,6 @@ Filedata::Filedata(const std::string sig)
   stop = m_signature.find('"', start);
   if (stop != m_signature.size() - 1)
   {
-    // RBF - Error handling. Throw an exception
     throw (std::bad_alloc());
   }
   
@@ -62,10 +58,8 @@ Filedata::Filedata(const std::string sig)
   size_t i, sz = strlen(tmp2);
   m_filename = (TCHAR *)malloc(sizeof(TCHAR) * (sz + 1));
   if (NULL == m_filename)
-  {
-    // RBF - Error handling
     throw (std::bad_alloc());
-  }
+
   for (i = 0 ; i < sz ; i++)
     m_filename[i] = (TCHAR)(tmp2[i]);
   m_filename[i] = 0;

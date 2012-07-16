@@ -69,7 +69,8 @@ bool sig_file_open(state *s, const char * fn)
     return true;
   }
 
-  s->line_number = 0;
+  // We've now read the first line
+  s->line_number = 1;
   s->known_fn = strdup(fn);
 
   return false;

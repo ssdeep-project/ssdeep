@@ -2,6 +2,10 @@
 // $Id$
 // Copyright (C) 2012 Kyrus. See COPYING for details.
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include "filedata.h"
 #include <stdio.h>
 #include <stdarg.h>

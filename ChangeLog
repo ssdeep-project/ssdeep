@@ -1,3 +1,7 @@
+2012-07-16: Jesse Korblum <research@jessekornblum.com>:
+
+	* filedata.cpp: Added includes for *nix compilation
+
 2012-07-14 Jesse Kornblum <research@jessekornblum.com>:
 
 	* win.sh: Updated for C++ compiler warnings

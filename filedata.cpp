@@ -3,6 +3,10 @@
 // Copyright (C) 2012 Kyrus. See COPYING for details.
 
 #include "filedata.h"
+#include <stdio.h>
+#include <stdarg.h>
+#include <string.h>
+
 
 bool Filedata::valid(void) const
 {

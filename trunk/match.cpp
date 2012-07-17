@@ -159,7 +159,10 @@ void display_clusters(const state *s)
     print_status("** Cluster size %u", (*it)->size());
     std::set<Filedata *>::const_iterator cit;
     for (cit = (*it)->begin() ; cit != (*it)->end() ; ++cit)
-      print_status("%s", (*cit)->get_filename());
+    {
+      display_filename(stdout,(*cit)->get_filename(),FALSE);
+      print_status("");
+    }
     
     print_status("");
   }
@@ -172,10 +175,16 @@ void cluster_add(Filedata * dest, Filedata * src)
   src->set_cluster(dest->get_cluster());
 }
 
+
 void cluster_join(state *s, Filedata * a, Filedata * b)
 {
+  // If these items are already in the same cluster there is nothing to do
+  if (a->get_cluster() == b->get_cluster())
+    return;
+
   Filedata * dest, * src;
-  // Combine into the larger cluster for speed
+  // Combine the smaller cluster into the larger cluster for speed
+  // (fewer items to move)
   if (a->get_cluster()->size() > b->get_cluster()->size())
   {
     dest = a; 
@@ -203,21 +212,31 @@ void cluster_join(state *s, Filedata * a, Filedata * b)
   src->set_cluster(dest->get_cluster());
 }
 
+
 void handle_clustering(state *s, Filedata *a, Filedata *b)
 {
   bool a_has = a->has_cluster(), b_has = b->has_cluster();
 
   // In the easiest case, one of these has a cluster and one doesn't
   if (a_has and not b_has)
-    return cluster_add(a,b);
+  {
+    cluster_add(a,b);
+    return;
+  }
   if (b_has and not a_has)
-    return cluster_add(b,a);
+  {
+    cluster_add(b,a);
+    return;
+  }
   
   // Combine existing clusters
   if (a_has and b_has)
-    return cluster_join(s,a,b);
+  {
+    cluster_join(s,a,b);
+    return;
+  }
 
-  // Create new cluster
+  // Create a new cluster
   std::set<Filedata *> * cluster = new std::set<Filedata *>();
   cluster->insert(a);
   cluster->insert(b);
@@ -281,7 +300,7 @@ bool match_compare(state *s, Filedata * f)
       if (!(_tcsncmp(f->get_filename(),
 		     (*it)->get_filename(),
 		     std::max(fn_len,_tcslen((*it)->get_filename())))) and
-	  (f->get_signature() != (*it)->get_signature()))
+	  (f->get_signature() == (*it)->get_signature()))
       {
 	// Unless these results from different matching files (such as
 	// what happens in sigcompare mode). That being said, we have to
@@ -320,7 +339,11 @@ bool match_pretty(state *s)
   std::vector<Filedata *>::const_iterator it;
   for (it = s->all_files.begin() ; it != s->all_files.end() ; ++it)
   {
-    if (match_compare(s,*it))
+    bool status = match_compare(s,*it);
+    // In pretty mode and sigcompare mode we need to display a blank
+    // line after each file. In clustering mode we don't display anything
+    // right now.
+    if (status and not(MODE(mode_cluster)))
       print_status("");
   }
 

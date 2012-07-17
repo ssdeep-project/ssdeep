@@ -207,6 +207,8 @@ void cluster_join(state *s, Filedata * a, Filedata * b)
 
   // Remove the old cluster
   s->all_clusters.erase(src->get_cluster());
+  // This call sets the cluster to NULL. Do not access the src
+  // cluster after this call!
   src->clear_cluster();
 
   src->set_cluster(dest->get_cluster());

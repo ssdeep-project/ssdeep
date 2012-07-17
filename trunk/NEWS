@@ -4,6 +4,7 @@
 
   - Added warning message for when some data on stdin is not hashed.
   - Can now hash up to 512MB of data on stdin.
+  - Added clustering mode to group together matching files
 
 * Bug Fixes
 

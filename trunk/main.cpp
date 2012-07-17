@@ -69,9 +69,17 @@ static void usage(void)
 static void process_cmd_line(state *s, int argc, char **argv)
 {
   int i, match_files_loaded = FALSE;
-  while ((i=getopt(argc,argv,"gavhVpdsblcxt:rm:k:")) != -1) {
+
+  // RBF - Document -g mode in man page
+  // RBF - Implement and document -G mode
+
+  while ((i=getopt(argc,argv,"GgavhVpdsblcxt:rm:k:")) != -1) {
     switch(i) {
       
+    case 'G':
+      s->mode |= mode_recursive_cluster;
+      break;
+
     case 'g':
       s->mode |= mode_cluster;
       break;
@@ -170,6 +178,10 @@ static void process_cmd_line(state *s, int argc, char **argv)
   sanity_check(s,
 	       ((s->mode & mode_match_pretty) && (s->mode & mode_directory)),
 	       "Directory mode and pretty matching are mutually exclusive");
+
+  sanity_check(s,
+	       MODE(mode_csv) and MODE(mode_cluster),
+	       "CSV and clustering modes cannot be combined");
 
   // -m, -p, and -d are incompatible with -k and -x
   // The former treat FILES as raw files. The latter require them to be sigs

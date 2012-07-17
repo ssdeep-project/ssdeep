@@ -1,10 +1,10 @@
-.TH SSDEEP "1" "Version 2.9 \- RBF Jul 2012" "Kyrus" "Kyrus"
+.TH SSDEEP "1" "Version 2.9 \- 18 Jul 2012" "Kyrus" "Kyrus"
 
 .SH NAME
 ssdeep - Computes context triggered piecewise hashes (fuzzy hashes)
 
 .SH SYNOPSIS
-.B ssdeep [-m <file>] [-k <file>] [-vdprsblcxa] [-t val] [FILES]
+.B ssdeep [-m <file>] [-k <file>] [-vdprgsblcxa] [-t val] [FILES]
 .br
 .B ssdeep [-V|h] 
 
@@ -67,6 +67,13 @@ files of a given file extension. For example, invoking the program with
 \fB\-r *.txt\fR will examine all files in directories that end in .txt. 
 If you want to process all files in a directory tree with the .txt suffix,
 try using the \fBfind(1)\fR command.
+
+.TP
+\fB\-g\fR
+Similar files are grouped together into clusters. This can be handy
+for finding more similar files. That is, if you are searching for file
+A, which matches B, anything which matches B will also be included in 
+the cluster.
 
 .TP
 \fB\-s\fR

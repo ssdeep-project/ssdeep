@@ -1,7 +1,7 @@
 2012-07-17: Jesse Korblum <research@jessekornblum.com>:
 
 	* match.cpp: Fixing bugs in matching, clustering modes
-	* main.cpp: Clarifying comments
+	* main.cpp: Clarifying comments. Added sanity check for -c, -g
 
 2012-07-16: Jesse Korblum <research@jessekornblum.com>:
 

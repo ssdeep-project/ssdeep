@@ -31,7 +31,6 @@ bool display_result(state *s, const TCHAR * fn, const char * sum)
     else
     {
       // This block is for MODE(mode_match) or MODE(mode_directory)
-
       match_compare(s,f);
 
       if (MODE(mode_directory))

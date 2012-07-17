@@ -1,3 +1,8 @@
+2012-07-17: Jesse Korblum <research@jessekornblum.com>:
+
+	* match.cpp: Fixing bugs in matching, clustering modes
+	* main.cpp: Clarifying comments
+
 2012-07-16: Jesse Korblum <research@jessekornblum.com>:
 
 	* filedata.cpp: Added includes for *nix compilation

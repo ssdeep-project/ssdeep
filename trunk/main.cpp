@@ -70,16 +70,9 @@ static void process_cmd_line(state *s, int argc, char **argv)
 {
   int i, match_files_loaded = FALSE;
 
-  // RBF - Document -g mode in man page
-  // RBF - Implement and document -G mode
-
-  while ((i=getopt(argc,argv,"GgavhVpdsblcxt:rm:k:")) != -1) {
+  while ((i=getopt(argc,argv,"gavhVpdsblcxt:rm:k:")) != -1) {
     switch(i) {
       
-    case 'G':
-      s->mode |= mode_recursive_cluster;
-      break;
-
     case 'g':
       s->mode |= mode_cluster;
       break;

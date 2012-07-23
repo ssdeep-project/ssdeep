@@ -344,11 +344,8 @@ int main(int argc, char **argv)
   // work for us.
   if (MODE(mode_sigcompare))
     s->mode |= mode_match_pretty;
-  // The match_pretty() function computes all matches between known
-  // hashes.
-  // RBF - Rename match_pretty() function for clarity?
   if (MODE(mode_match_pretty) or MODE(mode_sigcompare) or MODE(mode_cluster))
-    match_pretty(s);
+    find_matches_in_known(s);
   if (MODE(mode_cluster))
     display_clusters(s);
 

@@ -14,7 +14,7 @@ ssdeep - Computes context triggered piecewise hashes (fuzzy hashes)
 
 <p> 
 <h2><a name='sect1' href='#toc1'>Synopsis</a></h2>
-<b>ssdeep [-m &lt;file&gt;] [-k &lt;file&gt;] [-vdprsblcxa] [-t val] [FILES]</b> <br>
+<b>ssdeep [-m &lt;file&gt;] [-k &lt;file&gt;] [-vdprgsblcxa] [-t val] [FILES]</b> <br>
 <b>ssdeep [-V|h] </b> 
 <p> 
 <h2><a name='sect2' href='#toc2'>Description</a></h2>
@@ -77,6 +77,13 @@ file extension. For example, invoking the program with <b>-r *.txt</b> will exam
 all files in directories that end in .txt.  If you want to process all files
 in a directory tree with the .txt suffix, try using the <a href='find.1'><b>find(1)</b></a>
  command.
+
+<p> </dd>
+
+<dt><b>-g</b> </dt>
+<dd>Similar files are grouped together into clusters. This can be handy for
+finding more similar files. That is, if you are searching for file A, which
+matches B, anything which matches B will also be included in  the cluster.
 
 <p> </dd>
 

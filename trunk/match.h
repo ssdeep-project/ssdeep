@@ -29,8 +29,8 @@ bool match_load(state *s, const char *fn);
 /// @return Returns false on success, true on error
 bool match_add(state *s, Filedata * f);
 
-/// Display all matches in the set of known hashes nicely
-bool match_pretty(state *s);
+/// Find and display all matches in the set of known hashes
+bool find_matches_in_known(state *s);
 
 /// Load the known hashes from the file fn and compare them to the
 /// set of known hashes

@@ -332,7 +332,7 @@ bool match_compare(state *s, Filedata * f)
 }
   
 
-bool match_pretty(state *s)
+bool find_matches_in_known(state *s)
 {
   if (NULL == s)
     return true;

@@ -1,3 +1,7 @@
+2012-07-23: Jesse Korblum <research@jessekornblum.com>:
+
+	* main.cpp, match.cpp: Renamed the match_pretty function for clarity.
+	
 2012-07-17: Jesse Korblum <research@jessekornblum.com>:
 
 	* match.cpp: Fixing bugs in matching, clustering modes

@@ -569,10 +569,14 @@ int fuzzy_compare(const char *str1, const char *str2)
   // with the has_common_substring() test below. 
   // NOTE: This function duplciates str1 and str2
   s1 = eliminate_sequences(str1+1);
-  s2 = eliminate_sequences(str2+1);
-  
-  if (!s1 || !s2) 
+  if (!s1)
     return 0;
+  s2 = eliminate_sequences(str2+1);
+  if (!s2)
+  {
+    free(s1);
+    return 0;
+  }
   
   // now break them into the two pieces 
   s1_1 = s1;

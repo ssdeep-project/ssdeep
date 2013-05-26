@@ -518,7 +518,8 @@ static uint32_t score_strings(const char *s1,
   //  printf ("len1: %"PRIu32"  len2: %"PRIu32"\n", len1, len2);
   
   // when the blocksize is small we don't want to exaggerate the match size 
-  if (score > block_size/MIN_BLOCKSIZE * MIN(len1, len2)) {
+  if (score > block_size/MIN_BLOCKSIZE * MIN(len1, len2)) 
+  {
     score = block_size/MIN_BLOCKSIZE * MIN(len1, len2);
   }
   return score;
@@ -618,7 +619,7 @@ int fuzzy_compare(const char *str1, const char *str2)
   {
     uint32_t score1, score2;
     score1 = score_strings(s1_1, s2_1, block_size1);
-    score2 = score_strings(s1_2, s2_2, block_size2);
+    score2 = score_strings(s1_2, s2_2, block_size1*2);
     score = MAX(score1, score2);
   } 
   else if (block_size1 == block_size2*2) 

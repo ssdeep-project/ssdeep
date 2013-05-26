@@ -1,3 +1,7 @@
+2013-05-25: Jesse Kornblum <research@jessekornblum.com>:
+
+	* fuzzy.c: Fixed bug on string scoring.
+
 2013-03-12: Jesse Kornblum <research@jessekornblum.com>:
 
 	* Changelog: Spelled my own name correctly.

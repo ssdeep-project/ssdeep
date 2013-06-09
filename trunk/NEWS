@@ -1,11 +1,13 @@
-** Version RBF - RBF 2013
+** Version 2.10-beta - 11 Jun 2013
 
 * New Features
 
-  - RBF
+  - Fuzzy Hashing engine re-written to be thread safe. 
 
 * Bug Fixes
 
+  - Able to handle long file paths on Win32.
+  - Fixed bug on comparing signatures with the same block size.
   - Fixed memory leak
 
 

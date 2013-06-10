@@ -1,3 +1,8 @@
+2013-06-01: Jesse Kornblum <research@jessekornblum.com>:
+
+	* fuzzy.c: Experimental thread-safe patch from Helmut Grohne.
+	* fuzzy.h: Experimental thread-safe patch from Helmut Grohne.
+
 2013-05-25: Jesse Kornblum <research@jessekornblum.com>:
 
 	* fuzzy.c: Fixed bug on string scoring.

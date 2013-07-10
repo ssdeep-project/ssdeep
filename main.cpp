@@ -1,4 +1,5 @@
 // Fuzzy Hashing by Jesse Kornblum
+// Copyright (C) 2013 Facebook
 // Copyright (C) 2012 Kyrus
 // Copyright (C) 2010 ManTech International Corporation
 //
@@ -39,7 +40,7 @@ static bool initialize_state(state *s)
 static void usage(void)
 {
   print_status ("%s version %s by Jesse Kornblum", __progname, VERSION);
-  print_status ("Copyright (C) 2012 Kyrus");
+  print_status ("Copyright (C) 2013 Facebook");
   print_status ("");
   print_status ("Usage: %s [-m file] [-k file] [-dpgvrsblcxa] [-t val] [-h|-V] [FILES]", 
 	  __progname);

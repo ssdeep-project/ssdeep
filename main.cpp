@@ -207,19 +207,17 @@ static int prepare_windows_command_line(state *s)
 #endif
 
 
-
 static int is_absolute_path(TCHAR *fn)
 {
   if (NULL == fn)
     internal_error("Unknown error in is_absolute_path");
   
 #ifdef _WIN32
-  return FALSE;
-#endif
-
+  return (isalpha(fn[0]) and _TEXT(':') == fn[1]);
+# else
   return (DIR_SEPARATOR == fn[0]);
+#endif
 }
-
 
 
 static void generate_filename(state *s, TCHAR *fn, TCHAR *cwd, TCHAR *input)
@@ -228,24 +226,23 @@ static void generate_filename(state *s, TCHAR *fn, TCHAR *cwd, TCHAR *input)
     internal_error("Error calling generate_filename");
 
   if ((s->mode & mode_relative) || is_absolute_path(input))
-    _tcsncpy(fn,input,SSDEEP_PATH_MAX);
-  else
-    {
-      // Windows systems don't have symbolic links, so we don't
-      // have to worry about carefully preserving the paths
-      // they follow. Just use the system command to resolve the paths
+    _tcsncpy(fn, input, SSDEEP_PATH_MAX);
+  else {
+    // Windows systems don't have symbolic links, so we don't
+    // have to worry about carefully preserving the paths
+    // they follow. Just use the system command to resolve the paths
 #ifdef _WIN32
-      _wfullpath(fn,input,SSDEEP_PATH_MAX);
+    _wfullpath(fn, input, SSDEEP_PATH_MAX);
 #else     
-      if (NULL == cwd)
-	// If we can't get the current working directory, we're not
-	// going to be able to build the relative path to this file anyway.
-	// So we just call realpath and make the best of things
-	realpath(input,fn);
-      else
-	snprintf(fn,SSDEEP_PATH_MAX,"%s%c%s",cwd,DIR_SEPARATOR,input);
+    if (NULL == cwd)
+      // If we can't get the current working directory, we're not
+      // going to be able to build the relative path to this file anyway.
+      // So we just call realpath and make the best of things
+      realpath(input, fn);
+    else
+      snprintf(fn, SSDEEP_PATH_MAX, "%s%c%s", cwd, DIR_SEPARATOR, input);
 #endif
-    }
+  }
 }
 
 
@@ -276,16 +273,14 @@ int main(int argc, char **argv)
   // Anything left on the command line at this point is a file
   // or directory we're supposed to process. If there's nothing
   // specified, we should tackle standard input 
-  if (optind == argc)
-  {
+  if (optind == argc) {
     status = process_stdin(s);
   }
-  else
-  {
-    MD5DEEP_ALLOC(TCHAR,fn,SSDEEP_PATH_MAX);
-    MD5DEEP_ALLOC(TCHAR,cwd,SSDEEP_PATH_MAX);
+  else {
+    MD5DEEP_ALLOC(TCHAR, fn, SSDEEP_PATH_MAX);
+    MD5DEEP_ALLOC(TCHAR, cwd, SSDEEP_PATH_MAX);
     
-    cwd = _tgetcwd(cwd,SSDEEP_PATH_MAX);
+    cwd = _tgetcwd(cwd, SSDEEP_PATH_MAX);
     if (NULL == cwd)
       fatal_error("%s: %s", __progname, strerror(errno));
   
@@ -296,8 +291,7 @@ int main(int argc, char **argv)
     // on it on Win32 (i.e. where it matters). The setting of 'goal'
     // to the original argc occured at the start of main(), so we just
     // need to update it if we're *not* in signature compare mode.
-    if (not (s->mode & mode_sigcompare))
-    {
+    if (not (s->mode & mode_sigcompare)) {
       goal = s->argc;
     }
     
@@ -307,14 +301,13 @@ int main(int argc, char **argv)
 	match_load(s,argv[count]);
       else if (MODE(mode_compare_unknown))
 	match_compare_unknown(s,argv[count]);
-      else
-      {
-	generate_filename(s,fn,cwd,s->argv[count]);
-
+      else {
+	generate_filename(s, fn, cwd, s->argv[count]);
+	
 #ifdef _WIN32
-	status = process_win32(s,fn);
+	status = process_win32(s, fn);
 #else
-	status = process_normal(s,fn);
+	status = process_normal(s, fn);
 #endif
       }
       

@@ -29,7 +29,8 @@
 // We print a warning for files smaller than this size
 #define SSDEEP_MIN_FILE_SIZE   4096
 
-// Needed for Win32. RBF - Better comment here
+// The default 'PATH_MAX' on Windows is about 255 bytes. We can expand
+// this limit to 32,767 characters by prepending filenames with "\\?\"
 #define SSDEEP_PATH_MAX 32767
 
 #define MD5DEEP_ALLOC(TYPE,VAR,SIZE)     \

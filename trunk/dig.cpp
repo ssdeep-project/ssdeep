@@ -13,6 +13,14 @@
 
 #include "ssdeep.h"
 
+#define STATUS_OK   FALSE
+
+static int is_special_dir(TCHAR *d)
+{
+  return ((!_tcsncmp(d,_TEXT("."),1) && (_tcslen(d) == 1)) ||
+          (!_tcsncmp(d,_TEXT(".."),2) && (_tcslen(d) == 2)));
+}
+
 #ifndef _WIN32
 
 static TCHAR DOUBLE_DIR[4] = 
@@ -29,9 +37,10 @@ static void remove_double_slash(TCHAR *fn)
   new_str = _tcsstr(tmp,DOUBLE_DIR);
   while (NULL != new_str)
   {
+    /*
 #ifdef _WIN32
-    /* On Windows, we have to allow the first two characters to be slashes
-       to account for UNC paths. e.g. \\SERVER\dir\path  */
+    // On Windows, we have to allow the first two characters to be slashes
+    // to account for UNC paths. e.g. \\SERVER\dir\path  
     if (tmp == fn)
     {  
       ++tmp;
@@ -39,15 +48,16 @@ static void remove_double_slash(TCHAR *fn)
     else
     {
 #endif  // ifdef _WIN32
-    
+    */
       _tmemmove(new_str,new_str+tsize,_tcslen(new_str));
 
+      /*
 #ifdef _WIN32
     }
 #endif  // ifdef _WIN32
+      */
 
     new_str = _tcsstr(tmp,DOUBLE_DIR);
-
   }
 }
 
@@ -59,7 +69,7 @@ static void remove_single_dirs(TCHAR *fn)
 
   for (pos = 0 ; pos < sz ; pos++)
   {
-    /* Catch strings that end with /. (e.g. /foo/.)  */
+    // Catch strings that end with /. (e.g. /foo/.) 
     if (pos > 0 && 
 	fn[pos-1] == _TEXT(DIR_SEPARATOR) && 
 	fn[pos]   == _TEXT('.') &&
@@ -72,7 +82,7 @@ static void remove_single_dirs(TCHAR *fn)
       {
 	_tmemmove(fn+(pos*tsize),(fn+((pos+2)*tsize)),(sz-pos) * tsize);
 	
-	/* In case we have ././ we shift back one! */
+	// In case we have ././ we shift back one!
 	--pos;
 
       }
@@ -82,7 +92,7 @@ static void remove_single_dirs(TCHAR *fn)
   }
 }
 
-/* Removes all "../" references from the absolute path fn */
+// Removes all "../" references from the absolute path fn 
 void remove_double_dirs(TCHAR *fn)
 {
   size_t pos, next_dir, sz = _tcslen(fn), tsize = sizeof(TCHAR);
@@ -147,104 +157,24 @@ void remove_double_dirs(TCHAR *fn)
     }
   }
 }
-#endif  // ifndef _WIN32
 
 
-/* On Win32 systems directories are handled... differently
-   Attempting to process d: causes an error, but d:\ does not.
-   Conversely, if you have a directory "foo",
-   attempting to process d:\foo\ causes an error, but d:\foo does not.
-   The following turns d: into d:\ and d:\foo\ into d:\foo */
-
-#ifdef _WIN32
-static void clean_name_win32(TCHAR *fn)
-{
-  size_t length = _tcslen(fn);
-
-  if (length < 2)
-    return;
-
-  if (length == 2 && fn[1] == _TEXT(':'))
-  {
-    fn[length+1] = 0;
-    fn[length]   = _TEXT(DIR_SEPARATOR);
-    return;
-  }
-
-  if (fn[length-1] == _TEXT(DIR_SEPARATOR) && length != 3)
-  {
-    fn[length - 1] = 0;
-  }
-}
-
-static int is_win32_device_file(TCHAR *fn)
-{
-  /* Specifications for device files came from
-     http://msdn.microsoft.com/library/default.asp?url=/library/en-us/fileio/base/createfile.asp
-
-     -- Physical devices (like hard drives) are 
-        \\.\PhysicalDriveX where X is a digit from 0 to 9
-     -- Tape devices is \\.\tapeX where X is a digit from 0 to 9
-     -- Logical volumes is \\.\X: where X is a letter */
-
-  if (!_tcsnicmp(fn, _TEXT("\\\\.\\physicaldrive"),17) &&
-      (_tcslen(fn) == 18) && 
-      isdigit(fn[17]))
-    return TRUE;
-
-  if (!_tcsnicmp(fn, _TEXT("\\\\.\\tape"),8) &&
-      (_tcslen(fn) == 9) && 
-      isdigit(fn[8]))
-    return TRUE;
- 
-  if ((!_tcsnicmp(fn,_TEXT("\\\\.\\"),4)) &&
-      (_tcslen(fn) == 6) &&
-      (isalpha(fn[4])) &&
-      (fn[5] == ':'))
-    return TRUE;
-
-  return FALSE;
-}
-
-#endif  /* ifdef _WIN32 */
-
+// We don't need to call these functions when running in Windows
+// as we've already called real_path() on them in main.c. These
+// functions are necessary in *nix so that we can clean up the 
+// path names without removing the names of symbolic links. They
+// are also called when the user has specified an absolute path
+// but has included extra double dots or such. 
 
 static void clean_name(state *s, TCHAR *fn)
 {
-#ifdef _WIN32
-  // Avoids compiler warnings
-  if (NULL == s)
-    return;
-
-  clean_name_win32(fn);
-#else
-
-  /* We don't need to call these functions when running in Windows
-     as we've already called real_path() on them in main.c. These
-     functions are necessary in *nix so that we can clean up the 
-     path names without removing the names of symbolic links. They
-     are also called when the user has specified an absolute path
-     but has included extra double dots or such. */
-
-  if (!(s->mode & mode_relative))
-  {
+  if (not (s->mode & mode_relative)) {
     remove_double_slash(fn);
     remove_single_dirs(fn);
     remove_double_dirs(fn);
   }
-#endif
 }
 
-
-
-
-static int is_special_dir(TCHAR *d)
-{
-  return ((!_tcsncmp(d,_TEXT("."),1) && (_tcslen(d) == 1)) ||
-          (!_tcsncmp(d,_TEXT(".."),2) && (_tcslen(d) == 2)));
-}
-
-#define STATUS_OK   FALSE
 
 static int process_dir(state *s, TCHAR *fn)
 {
@@ -252,8 +182,6 @@ static int process_dir(state *s, TCHAR *fn)
   TCHAR *new_file;
   _TDIR *current_dir;
   struct _tdirent *entry;
-
-  //  print_status (_TEXT("Called process_dir(%s)"), fn);
 
   if (have_processed_dir(fn))
   {
@@ -344,7 +272,6 @@ static int file_type(state *s, TCHAR *fn)
 
   if (_lstat(fn,&sb))
   {
-    printf("RBF - ERROR DURING STAT2\n");
     print_error_unicode(s,fn,"%s", strerror(errno));
     return file_unknown;
   }
@@ -353,7 +280,6 @@ static int file_type(state *s, TCHAR *fn)
 }
 
 
-#ifndef _WIN32
 static int should_hash_symlink(state *s, TCHAR *fn, int *link_type)
 {
   int type;
@@ -388,16 +314,12 @@ static int should_hash_symlink(state *s, TCHAR *fn, int *link_type)
     *link_type = type;
   return TRUE;    
 }
-#endif
 
 
 #define RETURN_IF_MODE(A) \
 if (s->mode & A) \
   return TRUE; \
 break;
-
-
-
 
 
 static int should_hash(state *s, TCHAR *fn)
@@ -418,17 +340,27 @@ static int should_hash(state *s, TCHAR *fn)
     return FALSE;
   }
 
-#ifndef _WIN32
   if (type == file_symlink)
     return should_hash_symlink(s,fn,NULL);
-#endif
 
   if (type == file_unknown)
     return FALSE;
 
-  /* By default we hash anything we can't identify as a "bad thing" */
+  // By default we hash anything we can't identify as a "bad thing"
   return TRUE;
 }
+
+
+int process_normal(state *s, TCHAR *fn)
+{
+  clean_name(s,fn);
+
+  if (should_hash(s,fn))
+    return (hash_file(s,fn));
+  
+  return FALSE;
+}
+#endif   // ifndef _WIN32
 
 
 /// The largest number of bytes we can process from stdin
@@ -471,52 +403,107 @@ int process_stdin(state *s)
 }
 
 
-int process_normal(state *s, TCHAR *fn)
-{
-  clean_name(s,fn);
 
-  if (should_hash(s,fn))
-    return (hash_file(s,fn));
-  
+
+#ifdef _WIN32
+static int is_win32_device_file(TCHAR *fn)
+{
+  /* Specifications for device files came from
+     http://msdn.microsoft.com/library/default.asp?url=/library/en-us/fileio/base/createfile.asp
+
+     -- Physical devices (like hard drives) are 
+        \\.\PhysicalDriveX where X is a digit from 0 to 9
+     -- Tape devices is \\.\tapeX where X is a digit from 0 to 9
+     -- Logical volumes is \\.\X: where X is a letter */
+
+  if (!_tcsnicmp(fn, _TEXT("\\\\.\\physicaldrive"),17) &&
+      (_tcslen(fn) == 18) && 
+      isdigit(fn[17]))
+    return TRUE;
+
+  if (!_tcsnicmp(fn, _TEXT("\\\\.\\tape"),8) &&
+      (_tcslen(fn) == 9) && 
+      isdigit(fn[8]))
+    return TRUE;
+ 
+  if ((!_tcsnicmp(fn,_TEXT("\\\\.\\"),4)) &&
+      (_tcslen(fn) == 6) &&
+      (isalpha(fn[4])) &&
+      (fn[5] == ':'))
+    return TRUE;
+
   return FALSE;
 }
 
 
-#ifdef _WIN32
+bool process_dir_win32(state *s, TCHAR *fn) {
+  TCHAR new_fn[SSDEEP_PATH_MAX];
+
+  if (have_processed_dir(fn)) {
+    print_error_unicode(s, fn, "Cycle detected");
+    return true;
+  }
+  
+  processing_dir(fn);
+  
+  _sntprintf(new_fn,
+	     SSDEEP_PATH_MAX,
+	     _TEXT("%s\\*"),
+	     fn);
+
+  process_win32(s, new_fn);
+
+  done_processing_dir(fn);
+  return false;
+}
+
+
 int process_win32(state *s, TCHAR *fn)
 {
   int rc, status = STATUS_OK;
   TCHAR *dirname, *new_fn;
   WIN32_FIND_DATAW FindFileData;
   HANDLE hFind;
+  size_t len;
 
-  //  print_status("Called process_win32(%S)", fn);
+  //print_status("process_win32 got %S", fn);
 
   if (is_win32_device_file(fn))
     return (hash_file(s,fn));
 
-  /* Filenames without wildcards can be processed by the
-     normal recursion code. */
-  /* RBF - PROCESS EVERYTHING! 
-  asterisk = _tcschr(fn,L'*');
-  question = _tcschr(fn,L'?');
-  if (NULL == asterisk && NULL == question)
-    return (process_normal(s,fn));
-  */
- 
-  //  print_status("process_win32 got %S", fn);
+  // This is a special case for ssdeep. Most Win32 programs reject 'c:'
+  // as an error or use it to alias the current working directory on c:.
+  // We're going to alias it to 'C:\'
+  if (_tcslen(fn) == 2 and isalpha(fn[0]) and fn[1] == _TEXT(':')) {
+    fn[2] = _TEXT(DIR_SEPARATOR);
+    fn[3] = 0;
+  }
 
-  clean_name(s, fn);
+  // FindFirstFile doesn't accept '\' as the trailing character.
+  // We look for that now and deal with it appropriately.
+  len = _tcslen(fn);
+  if (fn[len-1] == _TEXT(DIR_SEPARATOR)) {
+    if (s->mode & mode_recursive) {
+      // If the user wanted us to look recursively, do so.
+      fn[len]   = _TEXT('*');
+      fn[len+1] = 0;
+    } else {
+      print_error_unicode(s, fn, "Is a directory");
+      return status;
+    }
+  }
+
   if (is_special_dir(fn))
     return hash_file(s, fn);
+
+  //print_status("cleaned name %S", fn);
 
   TCHAR * expanded_fn, * wildcard_fn;
   MD5DEEP_ALLOC(TCHAR, expanded_fn, SSDEEP_PATH_MAX);
   MD5DEEP_ALLOC(TCHAR, wildcard_fn, SSDEEP_PATH_MAX);
   
-  if (not expanded_path(fn)) {
-    //    print_status("This is not an expanded path");
-    // 16 extra bytes for '\\.\'
+  if (not expanded_path(fn) and
+      not (s->mode & mode_relative)) {
     _sntprintf(expanded_fn,
 	       SSDEEP_PATH_MAX,
 	       _TEXT("\\\\?\\%s"), 
@@ -525,13 +512,14 @@ int process_win32(state *s, TCHAR *fn)
   else {
     _tcsncpy(expanded_fn, fn, SSDEEP_PATH_MAX);
   }
-  //  print_status("expanded filename %S", expanded_fn);
+  //print_status("expanded filename %S", expanded_fn);
 
   hFind = FindFirstFile(expanded_fn, &FindFileData);
   if (INVALID_HANDLE_VALUE == hFind)
   {
     // We don't display an error if there was a wildcard anywhere in the
-    // original filename, e.g. C:\foo\*.
+    // original filename, e.g. C:\foo\*. When this happens it means we just
+    // didn't find any matching files.
     // Note that we still display errors with the original 'fn'
     if (not _tcsstr(fn, _TEXT("*")))
       print_error_unicode(s, fn, "No such file or directory");
@@ -570,7 +558,8 @@ int process_win32(state *s, TCHAR *fn)
 		 _TEXT("%s%s"), 
 		 dirname, 
 		 FindFileData.cFileName);
-      if (not expanded_path(new_fn)) {
+      if (not expanded_path(new_fn) and
+	  not (s->mode & mode_relative)) {
 	_sntprintf(expanded_fn,
 		   SSDEEP_PATH_MAX,
 		   _TEXT("\\\\?\\%s"),
@@ -582,17 +571,16 @@ int process_win32(state *s, TCHAR *fn)
       //      print_status("Getting attributes for %S", expanded_fn);
       DWORD attrib = GetFileAttributes(expanded_fn);
 
-      if (INVALID_FILE_ATTRIBUTES == attrib) {
-	// RBF - Error handling
-	//	print_status("Invalid file attributes %d", GetLastError());
+      // TODO Check for and skip junction points, etc
 
+      if (INVALID_FILE_ATTRIBUTES == attrib) {
+	print_error_unicode(s, new_fn, "File read error");
       } else if (attrib & FILE_ATTRIBUTE_DIRECTORY) {
-	//	print_status("This is a directory");
-	_sntprintf(wildcard_fn,
-		   SSDEEP_PATH_MAX,
-		   _TEXT("%s\\*"),
-		   new_fn);
-	process_win32(s, wildcard_fn);
+	if (s->mode & mode_recursive) {
+	  process_dir_win32(s, new_fn);
+	} else {
+	  print_error_unicode(s, new_fn, "Is a directory");
+	}
       } else {
 	hash_file(s, new_fn);
       }

@@ -2,6 +2,7 @@
 #define __SSDEEP_H
 
 // Fuzzy Hashing by Jesse Kornblum
+// Copyright (C) 2013 Facebook
 // Copyright (C) 2012 Kyrus
 // Copyright (C) 2008 ManTech International Corporation
 //

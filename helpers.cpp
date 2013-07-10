@@ -27,6 +27,14 @@ void try_msg(void)
 }
 
 
+bool expanded_path(TCHAR *p)
+{
+  if (_tcsncmp(p,_TEXT("\\\\?\\"),4))
+    return false;
+  return true;
+}
+
+
 void sanity_check(state *s, int condition, const char *msg)
 {
   if (NULL == s)

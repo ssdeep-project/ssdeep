@@ -43,10 +43,10 @@ static void dump_table(void)
 int done_processing_dir(TCHAR *fn)
 {
   dir_table *last, *temp;
-  TCHAR *d_name = (TCHAR *)malloc(sizeof(TCHAR) * PATH_MAX);
+  TCHAR *d_name = (TCHAR *)malloc(sizeof(TCHAR) * SSDEEP_PATH_MAX);
 
 #ifdef _WIN32
-  _wfullpath(d_name,fn,PATH_MAX);
+  _wfullpath(d_name,fn,SSDEEP_PATH_MAX);
 #else
   realpath(fn,d_name);
 #endif
@@ -62,7 +62,7 @@ int done_processing_dir(TCHAR *fn)
 
   temp = my_table;
 
-  if (!_tcsncmp(d_name,temp->name,PATH_MAX))
+  if (!_tcsncmp(d_name,temp->name,SSDEEP_PATH_MAX))
   {
     my_table = my_table->next;
     free(temp->name);
@@ -75,7 +75,7 @@ int done_processing_dir(TCHAR *fn)
   {
     last = temp;
     temp = temp->next;
-    if (!_tcsncmp(d_name,temp->name,PATH_MAX))
+    if (!_tcsncmp(d_name,temp->name,SSDEEP_PATH_MAX))
     {
       last->next = temp->next;
       free(temp->name);
@@ -99,10 +99,10 @@ int done_processing_dir(TCHAR *fn)
 int processing_dir(TCHAR *fn)
 {
   dir_table *new_dir, *temp;
-  TCHAR *d_name = (TCHAR *)malloc(sizeof(TCHAR) * PATH_MAX);
+  TCHAR *d_name = (TCHAR *)malloc(sizeof(TCHAR) * SSDEEP_PATH_MAX);
 
 #ifdef _WIN32
-  _wfullpath(d_name,fn,PATH_MAX);
+  _wfullpath(d_name,fn,SSDEEP_PATH_MAX);
 #else
   realpath(fn,d_name);
 #endif
@@ -122,7 +122,7 @@ int processing_dir(TCHAR *fn)
   while (temp->next != NULL)
   {
     /* We should never be adding a directory that is already here */
-    if (!_tcsncmp(temp->name,d_name,PATH_MAX))
+    if (!_tcsncmp(temp->name,d_name,SSDEEP_PATH_MAX))
     {
       internal_error("%s: Attempt to add existing %s in processing_dir",
 		     __progname, d_name);
@@ -151,9 +151,9 @@ int have_processed_dir(TCHAR *fn)
   if (my_table == NULL)
     return FALSE;
 
-  d_name = (TCHAR *)malloc(sizeof(TCHAR) * PATH_MAX);
+  d_name = (TCHAR *)malloc(sizeof(TCHAR) * SSDEEP_PATH_MAX);
 #ifdef _WIN32
-  _wfullpath(d_name,fn,PATH_MAX);
+  _wfullpath(d_name,fn,SSDEEP_PATH_MAX);
 #else
   realpath(fn,d_name);
 #endif
@@ -161,7 +161,7 @@ int have_processed_dir(TCHAR *fn)
   temp = my_table;
   while (temp != NULL)
   {
-    if (!_tcsncmp(temp->name,d_name,PATH_MAX))
+    if (!_tcsncmp(temp->name,d_name,SSDEEP_PATH_MAX))
     {
       free(d_name);
       return TRUE;

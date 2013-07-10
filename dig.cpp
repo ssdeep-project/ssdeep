@@ -13,23 +13,18 @@
 
 #include "ssdeep.h"
 
+#ifndef _WIN32
+
 static TCHAR DOUBLE_DIR[4] = 
   { (TCHAR)DIR_SEPARATOR, 
     (TCHAR)DIR_SEPARATOR,
     0
   };
 
-// RBF - WTF is going on with removing double slash and Windows defines?!?
-
-#ifndef _WIN32
 static void remove_double_slash(TCHAR *fn)
 {
   size_t tsize = sizeof(TCHAR);
-  //  TCHAR DOUBLE_DIR[4];
   TCHAR *tmp = fn, *new_str;
-
-  // RBF - Why on earth do we generate DOUBLE_DIR dynamically *every time*?
-  //  _sntprintf(DOUBLE_DIR,3,_TEXT("%c%c"),DIR_SEPARATOR,DIR_SEPARATOR);
 
   new_str = _tcsstr(tmp,DOUBLE_DIR);
   while (NULL != new_str)
@@ -217,6 +212,10 @@ static int is_win32_device_file(TCHAR *fn)
 static void clean_name(state *s, TCHAR *fn)
 {
 #ifdef _WIN32
+  // Avoids compiler warnings
+  if (NULL == s)
+    return;
+
   clean_name_win32(fn);
 #else
 
@@ -271,7 +270,7 @@ static int process_dir(state *s, TCHAR *fn)
     return STATUS_OK;
   }    
 
-  new_file = (TCHAR *)malloc(sizeof(TCHAR) * PATH_MAX);
+  new_file = (TCHAR *)malloc(sizeof(TCHAR) * SSDEEP_PATH_MAX);
   if (NULL == new_file)
     internal_error("%s: Out of memory", __progname);
 
@@ -280,12 +279,12 @@ static int process_dir(state *s, TCHAR *fn)
     if (is_special_dir(entry->d_name))
       continue;
     
-    _sntprintf(new_file,PATH_MAX,_TEXT("%s%c%s"),
+    _sntprintf(new_file,SSDEEP_PATH_MAX,_TEXT("%s%c%s"),
 	       fn,DIR_SEPARATOR,entry->d_name);
 
     return_value = process_normal(s,new_file);
-
   }
+
   free(new_file);
   _tclosedir(current_dir);
   
@@ -345,6 +344,7 @@ static int file_type(state *s, TCHAR *fn)
 
   if (_lstat(fn,&sb))
   {
+    printf("RBF - ERROR DURING STAT2\n");
     print_error_unicode(s,fn,"%s", strerror(errno));
     return file_unknown;
   }
@@ -402,7 +402,7 @@ break;
 
 static int should_hash(state *s, TCHAR *fn)
 {
-  int type = file_type(s,fn);
+  int type = file_type(s, fn);
 
   if (NULL == s || NULL == fn)
     fatal_error("%s: Null state passed into should_hash", __progname);
@@ -486,7 +486,7 @@ int process_normal(state *s, TCHAR *fn)
 int process_win32(state *s, TCHAR *fn)
 {
   int rc, status = STATUS_OK;
-  TCHAR *asterisk, *question, *tmp, *dirname, *new_fn;
+  TCHAR *dirname, *new_fn;
   WIN32_FIND_DATAW FindFileData;
   HANDLE hFind;
 
@@ -497,79 +497,123 @@ int process_win32(state *s, TCHAR *fn)
 
   /* Filenames without wildcards can be processed by the
      normal recursion code. */
+  /* RBF - PROCESS EVERYTHING! 
   asterisk = _tcschr(fn,L'*');
   question = _tcschr(fn,L'?');
   if (NULL == asterisk && NULL == question)
     return (process_normal(s,fn));
+  */
+ 
+  //  print_status("process_win32 got %S", fn);
+
+  clean_name(s, fn);
+  if (is_special_dir(fn))
+    return hash_file(s, fn);
+
+  TCHAR * expanded_fn, * wildcard_fn;
+  MD5DEEP_ALLOC(TCHAR, expanded_fn, SSDEEP_PATH_MAX);
+  MD5DEEP_ALLOC(TCHAR, wildcard_fn, SSDEEP_PATH_MAX);
   
-  hFind = FindFirstFile(fn, &FindFileData);
+  if (not expanded_path(fn)) {
+    //    print_status("This is not an expanded path");
+    // 16 extra bytes for '\\.\'
+    _sntprintf(expanded_fn,
+	       SSDEEP_PATH_MAX,
+	       _TEXT("\\\\?\\%s"), 
+	       fn);
+  }
+  else {
+    _tcsncpy(expanded_fn, fn, SSDEEP_PATH_MAX);
+  }
+  //  print_status("expanded filename %S", expanded_fn);
+
+  hFind = FindFirstFile(expanded_fn, &FindFileData);
   if (INVALID_HANDLE_VALUE == hFind)
   {
-    print_error_unicode(s,fn,"No such file or directory");
+    // We don't display an error if there was a wildcard anywhere in the
+    // original filename, e.g. C:\foo\*.
+    // Note that we still display errors with the original 'fn'
+    if (not _tcsstr(fn, _TEXT("*")))
+      print_error_unicode(s, fn, "No such file or directory");
+
     return STATUS_OK;
   }
   
 #define FATAL_ERROR_UNK(A) if (NULL == A) fatal_error("%s: %s", __progname, strerror(errno));
 #define FATAL_ERROR_MEM(A) if (NULL == A) fatal_error("%s: Out of memory", __progname);
   
-  MD5DEEP_ALLOC(TCHAR,new_fn,PATH_MAX);
+  MD5DEEP_ALLOC(TCHAR, new_fn, SSDEEP_PATH_MAX);
   
   dirname = _tcsdup(fn);
   FATAL_ERROR_MEM(dirname);
   
   my_dirname(dirname);
   
-  rc = 1;
-  while (0 != rc)
-  {
-    if (!(is_special_dir(FindFileData.cFileName)))
-    {
-      /* The filename we've found doesn't include any path information.
-	 We have to add it back in manually. Thankfully Windows doesn't
-	 allow wildcards in the early part of the path. For example,
-	 we will never see:  c:\bin\*\tools 
-
-	 Because the wildcard is always in the last part of the input
-	 (e.g. c:\bin\*.exe) we can use the original dirname, combined
-	 with the filename we've found, to make the new filename. */
+  do {
+    /* The filename we've found doesn't include any path information.
+       That is, for the file C:\foo\bar.txt, we have bar.txt.
+       If the user wants path information, we have to add it back in 
+       manually.
+       Thankfully Windows doesn't
+       allow wildcards in the early part of the path. For example,
+       we will never see:  c:\bin\*\tools 
+       
+       Because the wildcard is always in the last part of the input
+       (e.g. c:\bin\*.exe) we can use the original dirname, combined
+       with the filename we've found, to make the new filename. */
+    if (not is_special_dir(FindFileData.cFileName)) {
 
       //      print_status("Found file: %S", FindFileData.cFileName);
 
-
-      if (s->mode & mode_relative)
-      {
-	_sntprintf(new_fn,PATH_MAX,
-		   _TEXT("%s%s"), dirname, FindFileData.cFileName);
-      }
-      else
-      {	  
-	MD5DEEP_ALLOC(TCHAR,tmp,PATH_MAX);
-	_sntprintf(tmp,PATH_MAX,_TEXT("%s%s"),dirname,FindFileData.cFileName);
-	_wfullpath(new_fn,tmp,PATH_MAX);
-	free(tmp);
+      _sntprintf(new_fn,
+		 SSDEEP_PATH_MAX,
+		 _TEXT("%s%s"), 
+		 dirname, 
+		 FindFileData.cFileName);
+      if (not expanded_path(new_fn)) {
+	_sntprintf(expanded_fn,
+		   SSDEEP_PATH_MAX,
+		   _TEXT("\\\\?\\%s"),
+		   new_fn);
+      } else {
+	_tcsncpy(expanded_fn, new_fn, SSDEEP_PATH_MAX);
       }
       
-      process_normal(s,new_fn); 
+      //      print_status("Getting attributes for %S", expanded_fn);
+      DWORD attrib = GetFileAttributes(expanded_fn);
+
+      if (INVALID_FILE_ATTRIBUTES == attrib) {
+	// RBF - Error handling
+	//	print_status("Invalid file attributes %d", GetLastError());
+
+      } else if (attrib & FILE_ATTRIBUTE_DIRECTORY) {
+	//	print_status("This is a directory");
+	_sntprintf(wildcard_fn,
+		   SSDEEP_PATH_MAX,
+		   _TEXT("%s\\*"),
+		   new_fn);
+	process_win32(s, wildcard_fn);
+      } else {
+	hash_file(s, new_fn);
+      }
     }
     
     rc = FindNextFile(hFind, &FindFileData);
-    if (0 == rc)
-      if (ERROR_NO_MORE_FILES != GetLastError())
-      {
-	/* The Windows API for getting an intelligible error message
-	   is beserk. Rather than play their silly games, we 
-	   acknowledge that an unknown error occured and hope we
-	   can continue. */
-	print_error_unicode(s,fn,"Unknown error while expanding wildcard");
-	free(dirname);
-	free(new_fn);
-	return STATUS_OK;
-      }
+  } while (rc != 0);
+  
+  if (ERROR_NO_MORE_FILES != GetLastError()) {
+    /* The Windows API for getting an intelligible error message
+       is beserk. Rather than play their silly games, we 
+       acknowledge that an unknown error occured and hope we
+       can continue. */
+    print_error_unicode(s, new_fn, "Unknown error while expanding wildcard");
+    free(dirname);
+    free(new_fn);
+    return STATUS_OK;
   }
   
   rc = FindClose(hFind);
-  if (0 == rc)
-  {
+  if (0 == rc) {
     print_error_unicode(s,
 			fn,
 			"Unknown error while cleaning up wildcard expansion");

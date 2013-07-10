@@ -1,3 +1,8 @@
+2013-07-09: Jesse Kornblum <research@jessekornblum.com>:
+
+	* dig.cpp, engine.cpp, helpers.cpp: Created separate directory traversal code
+	for Win32 systems.
+
 2013-06-01: Jesse Kornblum <research@jessekornblum.com>:
 
 	* fuzzy.c: Experimental thread-safe patch from Helmut Grohne.

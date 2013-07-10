@@ -228,14 +228,14 @@ static void generate_filename(state *s, TCHAR *fn, TCHAR *cwd, TCHAR *input)
     internal_error("Error calling generate_filename");
 
   if ((s->mode & mode_relative) || is_absolute_path(input))
-    _tcsncpy(fn,input,PATH_MAX);
+    _tcsncpy(fn,input,SSDEEP_PATH_MAX);
   else
     {
       // Windows systems don't have symbolic links, so we don't
       // have to worry about carefully preserving the paths
       // they follow. Just use the system command to resolve the paths
 #ifdef _WIN32
-      _wfullpath(fn,input,PATH_MAX);
+      _wfullpath(fn,input,SSDEEP_PATH_MAX);
 #else     
       if (NULL == cwd)
 	// If we can't get the current working directory, we're not
@@ -243,7 +243,7 @@ static void generate_filename(state *s, TCHAR *fn, TCHAR *cwd, TCHAR *input)
 	// So we just call realpath and make the best of things
 	realpath(input,fn);
       else
-	snprintf(fn,PATH_MAX,"%s%c%s",cwd,DIR_SEPARATOR,input);
+	snprintf(fn,SSDEEP_PATH_MAX,"%s%c%s",cwd,DIR_SEPARATOR,input);
 #endif
     }
 }
@@ -282,10 +282,10 @@ int main(int argc, char **argv)
   }
   else
   {
-    MD5DEEP_ALLOC(TCHAR,fn,PATH_MAX);
-    MD5DEEP_ALLOC(TCHAR,cwd,PATH_MAX);
+    MD5DEEP_ALLOC(TCHAR,fn,SSDEEP_PATH_MAX);
+    MD5DEEP_ALLOC(TCHAR,cwd,SSDEEP_PATH_MAX);
     
-    cwd = _tgetcwd(cwd,PATH_MAX);
+    cwd = _tgetcwd(cwd,SSDEEP_PATH_MAX);
     if (NULL == cwd)
       fatal_error("%s: %s", __progname, strerror(errno));
   

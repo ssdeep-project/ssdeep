@@ -29,6 +29,9 @@
 // We print a warning for files smaller than this size
 #define SSDEEP_MIN_FILE_SIZE   4096
 
+// Needed for Win32. RBF - Better comment here
+#define SSDEEP_PATH_MAX 32767
+
 #define MD5DEEP_ALLOC(TYPE,VAR,SIZE)     \
 VAR = (TYPE *)malloc(sizeof(TYPE) * SIZE);  \
 if (NULL == VAR)  \
@@ -184,6 +187,9 @@ bool display_result(state *s, const TCHAR * fn, const char * sum);
 // Helper functions
 // *********************************************************************
 void try_msg(void);
+
+bool expanded_path(TCHAR *p);
+
 void sanity_check(state *s, int condition, const char *msg);
 
 // The basename function kept misbehaving on OS X, so I rewrote it.

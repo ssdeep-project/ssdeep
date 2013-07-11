@@ -6,7 +6,7 @@
 // Copyright (C) 2012 Kyrus
 // Copyright (C) 2008 ManTech International Corporation
 //
-// $Id$ 
+// $Id$
 //
 
 #include "main.h"
@@ -56,10 +56,10 @@ memset(VAR,0,SIZE * sizeof(TYPE));
 typedef struct _filedata_t
 {
   uint64_t id;
- 
+
   /// Original signature in the form [blocksize]:[sig1]:[sig2]
   std::string signature;
-  
+
   uint64_t blocksize;
 
   /// Holds signature equal to blocksize
@@ -115,7 +115,7 @@ typedef struct {
 #ifdef _WIN32
 
 // We create macros for the Windows equivalent UNIX functions.
-// No worries about lstat to stat; Windows doesn't have symbolic links 
+// No worries about lstat to stat; Windows doesn't have symbolic links
 #define lstat(A,B)      stat(A,B)
 #define realpath(A,B)   _fullpath(B,A,PATH_MAX)
 #define snprintf        _snprintf
@@ -147,7 +147,7 @@ int getopt(int argc, char *const argv[], const char *optstring);
 #define mode_match        1<<1
 #define mode_barename     1<<2
 #define mode_relative     1<<3
-#define mode_silent       1<<4 
+#define mode_silent       1<<4
 #define mode_directory    1<<5
 #define mode_match_pretty 1<<6
 #define mode_verbose      1<<7
@@ -173,7 +173,7 @@ int done_processing_dir(TCHAR *fn);
 int processing_dir(TCHAR *fn);
 int have_processed_dir(TCHAR *fn);
 
-int process_win32(state *s, TCHAR *fn);
+bool process_win32(state *s, TCHAR *fn);
 int process_normal(state *s, TCHAR *fn);
 int process_stdin(state *s);
 
@@ -198,12 +198,12 @@ void sanity_check(state *s, int condition, const char *msg);
 // This function isn't perfect, nor is it designed to be. Because
 // we're guarenteed to be working with a filename here, there's no way
 // that s will end with a DIR_SEPARATOR (e.g. /foo/bar/). This function
-// will not work properly for a string that ends in a DIR_SEPARATOR 
+// will not work properly for a string that ends in a DIR_SEPARATOR
 int my_basename(TCHAR *s);
 int my_dirname(TCHAR *s);
 
 // Remove the newlines, if any, from the string. Works with both
-// \r and \r\n style newlines 
+// \r and \r\n style newlines
 void chop_line_tchar(TCHAR *s);
 void chop_line(char *s);
 

@@ -561,18 +561,46 @@ bool process_win32(state *s, TCHAR *fn)
       }
 
       //      print_status("Getting attributes for %S", expanded_fn);
-      DWORD attrib = GetFileAttributes(expanded_fn);
+      DWORD dwFileAttributes = FindFileData.dwFileAttributes;
 
-      // TODO Check for and skip junction points, etc
-
-      if (INVALID_FILE_ATTRIBUTES == attrib) {
+      if (INVALID_FILE_ATTRIBUTES == dwFileAttributes) {
 	print_error_unicode(s, new_fn, "File read error");
-      } else if (attrib & FILE_ATTRIBUTE_DIRECTORY) {
+      } else if (dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
 	if (s->mode & mode_recursive) {
 	  process_dir_win32(s, new_fn);
-	} else {
-	  print_error_unicode(s, new_fn, "Is a directory");
 	}
+
+      // TODO Add support for symbolic links
+      /*
+      } else if (dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) {
+	// Generally we skip reparse points (e.g. symbolic links,
+	// junction points, etc) UNLESS it's part of single
+	// instance storage. Single Instance Storage "is a system's
+	// ability to keep one copy of content that multiple users
+	// or computers share". See
+	// http://blogs.technet.com/b/filecab/archive/2006/02/03/single-instance-store-sis-in-windows-storage-server-r2.aspx
+	switch (FindFileData.dwReserved0) {
+	case IO_REPARSE_TAG_MOUNT_POINT:
+	  print_error_unicode(s, new_fn, "Junction point, skipping.");
+	  break;
+
+	case IO_REPARSE_TAG_SYMLINK:
+	  print_error_unicode(s, new_fn, "Symbolic link, skipping.");
+	  break;
+
+	case IO_REPARSE_TAG_SIS:
+	  hash_file(s, new_fn);
+	  break;
+
+	default:
+	  print_error_unicode(s,
+			      new_fn,
+			      "Unknown reparse point 0x%"PRIx32", skipping. Please report this to the developers",
+			      FindFileData.dwReserved0);
+	  break;
+	}
+      */
+
       } else {
 	hash_file(s, new_fn);
       }
@@ -598,5 +626,3 @@ bool process_win32(state *s, TCHAR *fn)
   return false;
 }
 #endif
-
-

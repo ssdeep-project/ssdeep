@@ -1,3 +1,8 @@
+2013-07-16: Jesse Kornblum <research@jessekornblum.com>:
+
+	* fuzzy.c: Fix heap corruption bug #15.
+	* dig.c: Removed extra call to GetFileAttributes
+
 2013-07-09: Jesse Kornblum <research@jessekornblum.com>:
 
 	* dig.cpp, engine.cpp, helpers.cpp: Created separate directory traversal code
@@ -20,7 +25,7 @@
 2012-07-23: Jesse Kornblum <research@jessekornblum.com>:
 
 	* main.cpp, match.cpp: Renamed the match_pretty function for clarity.
-	
+
 2012-07-17: Jesse Kornblum <research@jessekornblum.com>:
 
 	* match.cpp: Fixing bugs in matching, clustering modes
@@ -48,7 +53,7 @@
 	* main.cpp: Added flags for clustering mode
 	* ssdeep.h: Added flags for clustering mode
 	* match.cpp: Setting up for clustering mode
-	
+
 2012-05-25 Jesse Kornblum <research@jessekornblum.com>:
 
 	* main.cpp: Updated command line argument processing
@@ -59,7 +64,7 @@
 	* match.cpp: Convert to C++
 
 2012-04-24 Jesse Kornblum <research@jessekornblum.com>:
-	
+
 	* ssdeep.1: Updating support for stdin, clarifying modes
         * Makefile.am: LF to CR/LF change now done by zip program
 	* ssdeep.h: Adding Doxygen comments
@@ -73,7 +78,7 @@
 2012-04-15: Jesse Kornblum <research@jessekornblum.com>:
 
 	* main.c: Fixed error handling in getopt processing
-	
+
 2012-02-16 Jesse Kornblum <research@jessekornblum.com>:
 
 	* main.c: Bump copyright to 2012 in usage message. Add flag for clustering

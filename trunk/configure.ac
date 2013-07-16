@@ -1,4 +1,4 @@
-AC_INIT([SSDEEP],[2.10-beta1],[research@jessekornblum.com])
+AC_INIT([SSDEEP],[2.10],[research@jessekornblum.com])
 AM_INIT_AUTOMAKE
 
 AC_CONFIG_FILES([Makefile])
@@ -47,9 +47,9 @@ AC_CHECK_HEADERS([sys/mount.h],[],[],
 [#ifdef HAVE_SYS_TYPES_H
  # include <sys/types.h>
  #endif
- #ifdef HAVE_SYS_PARAM_H                                                     
- # include <sys/param.h>                           
- #endif])                 
+ #ifdef HAVE_SYS_PARAM_H
+ # include <sys/param.h>
+ #endif])
 
 AC_FUNC_FSEEKO
 

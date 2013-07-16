@@ -72,17 +72,17 @@ static void roll_init(/*@out@*/ struct roll_state *self) {
  * h3 is a shift/xor based rolling hash, and is mostly needed to ensure that
  * we can cope with large blocksize values
  */
-static void roll_hash(struct roll_state *self, unsigned char c) 
+static void roll_hash(struct roll_state *self, unsigned char c)
 {
   self->h2 -= self->h1;
   self->h2 += ROLLING_WINDOW * (uint32_t)c;
-  
+
   self->h1 += (uint32_t)c;
   self->h1 -= (uint32_t)self->window[self->n % ROLLING_WINDOW];
-  
+
   self->window[self->n % ROLLING_WINDOW] = c;
   self->n++;
-  
+
   /* The original spamsum AND'ed this value with 0xFFFFFFFF which
    * in theory should have no effect. This AND has been removed
    * for performance (jk) */
@@ -90,13 +90,13 @@ static void roll_hash(struct roll_state *self, unsigned char c)
   self->h3 ^= c;
 }
 
-static uint32_t roll_sum(const struct roll_state *self) 
+static uint32_t roll_sum(const struct roll_state *self)
 {
   return self->h1 + self->h2 + self->h3;
 }
 
 /* A simple non-rolling hash, based on the FNV hash. */
-static uint32_t sum_hash(unsigned char c, uint32_t h) 
+static uint32_t sum_hash(unsigned char c, uint32_t h)
 {
   return (h * HASH_PRIME) ^ c;
 }
@@ -106,14 +106,14 @@ static uint32_t sum_hash(unsigned char c, uint32_t h)
  * FNV hashes, where halfh stops to be reset after digest is SPAMSUM_LENGTH/2
  * long. The halfh hash is needed be able to truncate digest for the second
  * output hash to stay compatible with ssdeep output. */
-struct blockhash_context 
+struct blockhash_context
 {
   uint32_t h, halfh;
   char digest[SPAMSUM_LENGTH];
   unsigned int dlen;
 };
 
-struct fuzzy_state 
+struct fuzzy_state
 {
   unsigned int bhstart, bhend;
   struct blockhash_context bh[NUM_BLOCKHASHES];
@@ -123,7 +123,7 @@ struct fuzzy_state
 
 #define SSDEEP_BS(index) (((uint32_t)MIN_BLOCKSIZE) << (index))
 
-/*@only@*/ /*@null@*/ struct fuzzy_state *fuzzy_new(void) 
+/*@only@*/ /*@null@*/ struct fuzzy_state *fuzzy_new(void)
 {
   struct fuzzy_state *self;
   if(NULL == (self = malloc(sizeof(struct fuzzy_state))))
@@ -139,7 +139,7 @@ struct fuzzy_state
   return self;
 }
 
-static void fuzzy_try_fork_blockhash(struct fuzzy_state *self) 
+static void fuzzy_try_fork_blockhash(struct fuzzy_state *self)
 {
   struct blockhash_context *obh, *nbh;
   if (self->bhend >= NUM_BLOCKHASHES)
@@ -153,7 +153,7 @@ static void fuzzy_try_fork_blockhash(struct fuzzy_state *self)
   ++self->bhend;
 }
 
-static void fuzzy_try_reduce_blockhash(struct fuzzy_state *self) 
+static void fuzzy_try_reduce_blockhash(struct fuzzy_state *self)
 {
   assert(self->bhstart < self->bhend);
   if (self->bhend - self->bhstart < 2)
@@ -175,7 +175,7 @@ static void fuzzy_try_reduce_blockhash(struct fuzzy_state *self)
 static const char *b64 =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-static void fuzzy_engine_step(struct fuzzy_state *self, unsigned char c) 
+static void fuzzy_engine_step(struct fuzzy_state *self, unsigned char c)
 {
   size_t h;
   unsigned int i;
@@ -190,7 +190,7 @@ static void fuzzy_engine_step(struct fuzzy_state *self, unsigned char c)
     self->bh[i].h = sum_hash(c, self->bh[i].h);
     self->bh[i].halfh = sum_hash(c, self->bh[i].halfh);
   }
-  
+
   for (i = self->bhstart; i < self->bhend; ++i)
   {
     /* With growing blocksize almost no runs fail the next test. */
@@ -224,7 +224,7 @@ static void fuzzy_engine_step(struct fuzzy_state *self, unsigned char c)
   }
 }
 
-int fuzzy_update(struct fuzzy_state *self, 
+int fuzzy_update(struct fuzzy_state *self,
 		 const unsigned char *buffer,
 		 size_t buffer_size) {
   self->total_size += buffer_size;
@@ -233,9 +233,9 @@ int fuzzy_update(struct fuzzy_state *self,
   return 0;
 }
 
-static int memcpy_eliminate_sequences(char *dst, 
+static int memcpy_eliminate_sequences(char *dst,
 				      const char *src,
-				      int n) 
+				      int n)
 {
   const char *srcend = src + n;
   assert(n >= 0);
@@ -243,7 +243,7 @@ static int memcpy_eliminate_sequences(char *dst,
   if (src < srcend) *dst++ = *src++;
   if (src < srcend) *dst++ = *src++;
   while (src < srcend)
-    if (*src == dst[-1] && *src == dst[-2] && *src == dst[-3]) 
+    if (*src == dst[-1] && *src == dst[-2] && *src == dst[-3])
     {
       ++src;
       --n;
@@ -263,9 +263,9 @@ extern const int EOVERFLOW;
 # define fseeko    fseek
 #endif
 
-int fuzzy_digest(const struct fuzzy_state *self, 
+int fuzzy_digest(const struct fuzzy_state *self,
 		 /*@out@*/ char *result,
-		 unsigned int flags) 
+		 unsigned int flags)
 {
   unsigned int bi = self->bhstart;
   uint32_t h = roll_sum(&self->roll);
@@ -273,7 +273,7 @@ int fuzzy_digest(const struct fuzzy_state *self,
   /* Verify that our elimination was not overeager. */
   assert(bi == 0 || (size_t)SSDEEP_BS(bi) / 2 * SPAMSUM_LENGTH <
 	 self->total_size);
-  
+
   /* Initial blocksize guess. */
   while ((size_t)SSDEEP_BS(bi) * SPAMSUM_LENGTH < self->total_size) {
     ++bi;
@@ -289,7 +289,7 @@ int fuzzy_digest(const struct fuzzy_state *self,
   while (bi > self->bhstart && self->bh[bi].dlen < SPAMSUM_LENGTH / 2)
     --bi;
   assert (!(bi > 0 && self->bh[bi].dlen < SPAMSUM_LENGTH / 2));
-  
+
   i = snprintf(result, (size_t)remain, "%u:", SSDEEP_BS(bi));
   if (i <= 0)
     /* Maybe snprintf has set errno here? */
@@ -305,7 +305,7 @@ int fuzzy_digest(const struct fuzzy_state *self,
     memcpy(result, self->bh[bi].digest, (size_t)i);
   result += i;
   remain -= i;
-  if (h != 0) 
+  if (h != 0)
   {
     assert(remain > 0);
     *result = b64[self->bh[bi].h % 64];
@@ -320,7 +320,7 @@ int fuzzy_digest(const struct fuzzy_state *self,
   assert(remain > 0);
   *result++ = ':';
   --remain;
-  if (bi < self->bhend - 1) 
+  if (bi < self->bhend - 1)
   {
     ++bi;
     i = (int)self->bh[bi].dlen;
@@ -343,7 +343,7 @@ int fuzzy_digest(const struct fuzzy_state *self,
       if ((flags & FUZZY_FLAG_ELIMSEQ) == 0 || i < 3 ||
 	  *result != result[-1] ||
 	  *result != result[-2] ||
-	  *result != result[-3]) 
+	  *result != result[-3])
       {
 	++result;
 	--remain;
@@ -362,14 +362,14 @@ int fuzzy_digest(const struct fuzzy_state *self,
   return 0;
 }
 
-void fuzzy_free(/*@only@*/ struct fuzzy_state *self) 
+void fuzzy_free(/*@only@*/ struct fuzzy_state *self)
 {
   free(self);
 }
 
-int fuzzy_hash_buf(const unsigned char *buf, 
+int fuzzy_hash_buf(const unsigned char *buf,
 		   uint32_t buf_len,
-		   /*@out@*/ char *result) 
+		   /*@out@*/ char *result)
 {
   struct fuzzy_state *ctx;
   int ret = -1;
@@ -385,7 +385,7 @@ int fuzzy_hash_buf(const unsigned char *buf,
   return ret;
 }
 
-int fuzzy_hash_stream(FILE *handle, /*@out@*/ char *result) 
+int fuzzy_hash_stream(FILE *handle, /*@out@*/ char *result)
 {
   struct fuzzy_state *ctx;
   unsigned char buffer[4096];
@@ -393,7 +393,7 @@ int fuzzy_hash_stream(FILE *handle, /*@out@*/ char *result)
   int ret = -1;
   if (NULL == (ctx = fuzzy_new()))
     return -1;
-  for(;;) 
+  for(;;)
   {
     n = fread(buffer, 1, 4096, handle);
     if (0 == n)
@@ -417,7 +417,7 @@ int fseeko(FILE *, off_t, int);
 off_t ftello(FILE *);
 #endif
 
-int fuzzy_hash_file(FILE *handle, /*@out@*/ char *result) 
+int fuzzy_hash_file(FILE *handle, /*@out@*/ char *result)
 {
   off_t fpos;
   int status;
@@ -433,7 +433,7 @@ int fuzzy_hash_file(FILE *handle, /*@out@*/ char *result)
   return status;
 }
 
-int fuzzy_hash_filename(const char *filename, /*@out@*/ char *result) 
+int fuzzy_hash_filename(const char *filename, /*@out@*/ char *result)
 {
   int status;
   FILE *handle = fopen(filename, "rb");
@@ -458,27 +458,27 @@ static int has_common_substring(const char *s1, const char *s2)
   int i, j;
   int num_hashes;
   uint32_t hashes[SPAMSUM_LENGTH];
-  
+
   // there are many possible algorithms for common substring
   // detection. In this case I am re-using the rolling hash code
-  // to act as a filter for possible substring matches 
-  
+  // to act as a filter for possible substring matches
+
   memset(hashes, 0, sizeof(hashes));
-  
+
   // first compute the windowed rolling hash at each offset in
-  // the first string 
+  // the first string
   struct roll_state state;
   roll_init (&state);
-  
-  for (i=0;s1[i];i++) 
+
+  for (i=0;s1[i];i++)
   {
     roll_hash(&state, (unsigned char)s1[i]);
     hashes[i] = roll_sum(&state);
   }
   num_hashes = i;
-  
+
   roll_init(&state);
-  
+
   // now for each offset in the second string compute the
   // rolling hash and compare it to all of the rolling hashes
   // for the first string. If one matches then we have a
@@ -489,22 +489,22 @@ static int has_common_substring(const char *s1, const char *s2)
     roll_hash(&state, (unsigned char)s2[i]);
     uint32_t h = roll_sum(&state);
     if (i < ROLLING_WINDOW-1) continue;
-    for (j=ROLLING_WINDOW-1;j<num_hashes;j++) 
+    for (j=ROLLING_WINDOW-1;j<num_hashes;j++)
     {
-      if (hashes[j] != 0 && hashes[j] == h) 
+      if (hashes[j] != 0 && hashes[j] == h)
       {
-	// we have a potential match - confirm it 
-	if (strlen(s2+i-(ROLLING_WINDOW-1)) >= ROLLING_WINDOW && 
-	    strncmp(s2+i-(ROLLING_WINDOW-1), 
-		    s1+j-(ROLLING_WINDOW-1), 
-		    ROLLING_WINDOW) == 0) 
+	// we have a potential match - confirm it
+	if (strlen(s2+i-(ROLLING_WINDOW-1)) >= ROLLING_WINDOW &&
+	    strncmp(s2+i-(ROLLING_WINDOW-1),
+		    s1+j-(ROLLING_WINDOW-1),
+		    ROLLING_WINDOW) == 0)
 	{
 	  return 1;
 	}
       }
     }
   }
-  
+
   return 0;
 }
 
@@ -516,25 +516,27 @@ static char *eliminate_sequences(const char *str)
 {
   char *ret;
   size_t i, j, len;
-  
+
   ret = strdup(str);
-  if (!ret) 
+  if (!ret)
     return NULL;
-  
+
   len = strlen(str);
-  
-  for (i=j=3 ; i<len ; i++) 
+  if (len < 3)
+    return ret;
+
+  for (i=j=3 ; i<len ; i++)
   {
     if (str[i] != str[i-1] ||
 	str[i] != str[i-2] ||
-	str[i] != str[i-3]) 
+	str[i] != str[i-3])
     {
       ret[j++] = str[i];
     }
   }
-  
+
   ret[j] = 0;
-  
+
   return ret;
 }
 
@@ -544,59 +546,59 @@ static char *eliminate_sequences(const char *str)
 // 100 is a great match. The block_size is used to cope with very small
 // messages.
 //
-static uint32_t score_strings(const char *s1, 
-			      const char *s2, 
+static uint32_t score_strings(const char *s1,
+			      const char *s2,
 			      unsigned int block_size)
 {
   uint32_t score;
   size_t len1, len2;
   int edit_distn(const char *from, int from_len, const char *to, int to_len);
-  
+
   len1 = strlen(s1);
   len2 = strlen(s2);
-  
+
   if (len1 > SPAMSUM_LENGTH || len2 > SPAMSUM_LENGTH) {
-    // not a real spamsum signature? 
+    // not a real spamsum signature?
     return 0;
   }
-  
+
   // the two strings must have a common substring of length
-  // ROLLING_WINDOW to be candidates 
+  // ROLLING_WINDOW to be candidates
   if (has_common_substring(s1, s2) == 0) {
     return 0;
   }
-  
+
   // compute the edit distance between the two strings. The edit distance gives
-  // us a pretty good idea of how closely related the two strings are 
+  // us a pretty good idea of how closely related the two strings are
   score = edit_distn(s1, len1, s2, len2);
- 
+
   // scale the edit distance by the lengths of the two
   // strings. This changes the score to be a measure of the
   // proportion of the message that has changed rather than an
   // absolute quantity. It also copes with the variability of
-  // the string lengths. 
+  // the string lengths.
   score = (score * SPAMSUM_LENGTH) / (len1 + len2);
-  
+
   // at this stage the score occurs roughly on a 0-64 scale,
   // with 0 being a good match and 64 being a complete
   // mismatch
-  
-  // rescale to a 0-100 scale (friendlier to humans) 
+
+  // rescale to a 0-100 scale (friendlier to humans)
   score = (100 * score) / 64;
-  
+
   // it is possible to get a score above 100 here, but it is a
-  // really terrible match 
-  if (score >= 100) 
+  // really terrible match
+  if (score >= 100)
     return 0;
-  
+
   // now re-scale on a 0-100 scale with 0 being a poor match and
   // 100 being a excellent match.
   score = 100 - score;
 
   //  printf ("len1: %"PRIu32"  len2: %"PRIu32"\n", len1, len2);
-  
-  // when the blocksize is small we don't want to exaggerate the match size 
-  if (score > block_size/MIN_BLOCKSIZE * MIN(len1, len2)) 
+
+  // when the blocksize is small we don't want to exaggerate the match size
+  if (score > block_size/MIN_BLOCKSIZE * MIN(len1, len2))
   {
     score = block_size/MIN_BLOCKSIZE * MIN(len1, len2);
   }
@@ -604,7 +606,7 @@ static uint32_t score_strings(const char *s1,
 }
 
 //
-// Given two spamsum strings return a value indicating the degree 
+// Given two spamsum strings return a value indicating the degree
 // to which they match.
 //
 int fuzzy_compare(const char *str1, const char *str2)
@@ -614,7 +616,7 @@ int fuzzy_compare(const char *str1, const char *str2)
   char *s1, *s2;
   char *s1_1, *s1_2, *s1_3;
   char *s2_1, *s2_2, *s2_3;
-  
+
   if (NULL == str1 || NULL == str2)
     return -1;
 
@@ -623,29 +625,29 @@ int fuzzy_compare(const char *str1, const char *str2)
       sscanf(str2, "%u:", &block_size2) != 1) {
     return -1;
   }
-  
+
   // if the blocksizes don't match then we are comparing
   // apples to oranges. This isn't an 'error' per se. We could
-  // have two valid signatures, but they can't be compared. 
-  if (block_size1 != block_size2 && 
+  // have two valid signatures, but they can't be compared.
+  if (block_size1 != block_size2 &&
       block_size1 != block_size2*2 &&
       block_size2 != block_size1*2) {
     return 0;
   }
-  
+
   // move past the prefix
   str1 = strchr(str1, ':');
   str2 = strchr(str2, ':');
-  
+
   if (!str1 || !str2) {
-    // badly formed ... 
+    // badly formed ...
     return -1;
   }
-  
+
   // there is very little information content is sequences of
   // the same character like 'LLLLL'. Eliminate any sequences
   // longer than 3. This is especially important when combined
-  // with the has_common_substring() test below. 
+  // with the has_common_substring() test below.
   // NOTE: This function duplciates str1 and str2
   s1 = eliminate_sequences(str1+1);
   if (!s1)
@@ -656,16 +658,16 @@ int fuzzy_compare(const char *str1, const char *str2)
     free(s1);
     return 0;
   }
-  
-  // now break them into the two pieces 
+
+  // now break them into the two pieces
   s1_1 = s1;
   s2_1 = s2;
-  
+
   s1_2 = strchr(s1, ':');
   s2_2 = strchr(s2, ':');
 
   if (!s1_2 || !s2_2) {
-    // a signature is malformed - it doesn't have 2 parts 
+    // a signature is malformed - it doesn't have 2 parts
     free(s1); free(s2);
     return -1;
   }
@@ -689,28 +691,28 @@ int fuzzy_compare(const char *str1, const char *str2)
     *s1_3 = 0;
   if (s2_3 != NULL)
     *s2_3 = 0;
-  
+
   // each signature has a string for two block sizes. We now
   // choose how to combine the two block sizes. We checked above
-  // that they have at least one block size in common 
-  if (block_size1 == block_size2) 
+  // that they have at least one block size in common
+  if (block_size1 == block_size2)
   {
     uint32_t score1, score2;
     score1 = score_strings(s1_1, s2_1, block_size1);
     score2 = score_strings(s1_2, s2_2, block_size1*2);
     score = MAX(score1, score2);
-  } 
-  else if (block_size1 == block_size2*2) 
+  }
+  else if (block_size1 == block_size2*2)
   {
     score = score_strings(s1_1, s2_2, block_size1);
-  } 
-  else 
+  }
+  else
   {
     score = score_strings(s1_2, s2_1, block_size2);
   }
-  
+
   free(s1);
   free(s2);
-  
+
   return (int)score;
 }

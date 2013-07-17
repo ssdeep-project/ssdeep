@@ -32,7 +32,7 @@
 <body>
 
 <h1>
-ssdeep - Latest version 2.9 (beta 2.10)
+ssdeep - Latest version 2.10
 </h1>
 
 <hr>
@@ -133,18 +133,18 @@ Download
 
 <p>
 The latest stable version of ssdeep is 
-version 2.9
+version 2.10
 and was released on
-23 Jul 2012
+17 Jul 2013
 You can take a look at the 
 <a href="changes.txt">complete changelog</a>, but here are the 
 changes in the latest version:
 
 <ul>
-<li>Added clustering mode to group together matching files</li>
-<li>Fixed incorrect match scores for hashes with long filenames.</li>
-<li>Added warning message for when some data on stdin is not hashed.</li>
-<li>Can now hash up to 512MB of data on stdin.</li>
+<li>Fuzzy Hashing engine re-written to be thread safe.</li>
+<li>Able to handle long file paths on Win32.</li>
+<li>Fixed bug on comparing signatures with the same block size.</li>
+<li>Fixed crash on comparing short signatures.</li>
 </ul>
 
 </p>
@@ -157,22 +157,22 @@ changes in the latest version:
 
     <tr>
      <td rowspan="2">
-        Version 2.9
+        Version 2.10
      </td>
 
      <td rowspan="2">
-       23 Jul 2012
+       17 Jul 2013
      </td>
 
-        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.9/ssdeep-2.9.zip/download">
+        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.10/ssdeep-2.10.zip/download">
                Windows binary</a></td>
-        <td class="hash"> SHA256 15f7273ff232348294acc2e14dd68a2118844c0b4cd0c1938204fb2addcd731f
+        <td class="hash"> SHA256 dc4350b6d0190d8149ac53454d9ffd458b08a8cd69b2c841c62700254c1916c7
 	  </td>
      </tr>
      <tr>
-        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.9/ssdeep-2.9.tar.gz/download">
+        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.10/ssdeep-2.10.tar.gz/download">
                  source code</a></td>
-        <td class="hash"> SHA256 5270297d315541d188b11047fc26c1d4269ef853a0cabb0d59ee8d9a327bf8aa
+        <td class="hash"> SHA256 5b893b8059941476352fa1794c2839b2cc13bc2a09e2f2bb6dea4184217beddc
 	  </td>
      </tr>
 
@@ -183,7 +183,7 @@ changes in the latest version:
 
 <h3> Beta Version </h3>
 
-<!--
+
 <p> 
 
 There is no beta version of ssdeep right now. If you have any
@@ -194,8 +194,8 @@ visit the
 page </a>.
 
 </p>
--->
 
+<!--
 <p>
 
 A beta version of ssdeep 2.10 is now available. This version is for your
@@ -237,7 +237,7 @@ serious/official/meaningful work. Changes in this new version:
 
 
 </p>
-
+-->
 
 <h3> Older Versions </h3>
 
@@ -279,7 +279,29 @@ document.write(old_link_text);
 
     <tr>
      <td rowspan="2">
-        Version 2.8
+        2.9
+     </td>
+
+     <td rowspan="2">
+       23 Jul 2012
+     </td>
+
+        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.9/ssdeep-2.9.zip/download">
+               Windows binary</a></td>
+        <td class="hash"> SHA256 15f7273ff232348294acc2e14dd68a2118844c0b4cd0c1938204fb2addcd731f
+	  </td>
+     </tr>
+     <tr>
+        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.9/ssdeep-2.9.tar.gz/download">
+                 source code</a></td>
+        <td class="hash"> SHA256 5270297d315541d188b11047fc26c1d4269ef853a0cabb0d59ee8d9a327bf8aa
+	  </td>
+     </tr>
+
+
+    <tr>
+      <td rowspan="2">
+        2.8
      </td>
 
      <td rowspan="2">

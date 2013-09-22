@@ -86,6 +86,16 @@ struct fuzzy_state;
 extern /*@only@*/ /*@null@*/ struct fuzzy_state *fuzzy_new(void);
 
 /**
+ * @brief Create a copy of a fuzzy_state object and return it.
+ *
+ * It can be used with fuzzy_update and fuzzy_digest independently of
+ * the original. It must be disposed with fuzzy_free like the original
+ * has to be cleared in this way.
+ * @return the cloned fuzzy_state or NULL on failure
+ */
+extern /*@only@*/ /*@null@*/ struct fuzzy_state *fuzzy_clone(const struct fuzzy_state *state);
+
+/**
  * @brief Feed the data contained in the given buffer to the state.
  *
  * When an error occurs, the state is undefined. In that case it must not be

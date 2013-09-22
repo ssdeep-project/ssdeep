@@ -1,3 +1,7 @@
+2013-09-21: Jesse Kornblum <research@jessekornblum.com>:
+
+	* fuzzy.c, fuzzy.h: Added fuzzy_clone function
+
 2013-07-16: Jesse Kornblum <research@jessekornblum.com>:
 
 	* fuzzy.c: Fix heap corruption bug #15.

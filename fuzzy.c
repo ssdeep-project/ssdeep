@@ -139,6 +139,17 @@ struct fuzzy_state
   return self;
 }
 
+/*@only@*/ /*@null@*/ struct fuzzy_state *fuzzy_clone(const struct fuzzy_state *state)
+{
+  struct fuzzy_state *newstate;
+  if (NULL == (newstate = malloc(sizeof(struct fuzzy_state))))
+    /* malloc sets ENOMEM */
+    return NULL;
+  memcpy(newstate, state, sizeof(struct fuzzy_state));
+  return newstate;
+}
+
+
 static void fuzzy_try_fork_blockhash(struct fuzzy_state *self)
 {
   struct blockhash_context *obh, *nbh;

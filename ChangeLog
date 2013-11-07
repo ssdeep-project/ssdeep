@@ -2,6 +2,10 @@
 
 	* fuzzy.c, fuzzy.h: Added fuzzy_clone function
 
+2013-07-24: Jesse Kornblum <research@jessekornblum.com>:
+
+	* fuzzy.h: Moving include guard to the top of the file.
+
 2013-07-16: Jesse Kornblum <research@jessekornblum.com>:
 
 	* fuzzy.c: Fix heap corruption bug #15.

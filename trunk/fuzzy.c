@@ -707,6 +707,8 @@ int fuzzy_compare(const char *str1, const char *str2)
   // identical? We could save ourselves some work here
   if (strlen(s1) == strlen(s2)) {
     if (!strncmp(s1, s2, strlen(s1))) {
+      free (s1);
+      free (s2);
       return 100;
     }
   }

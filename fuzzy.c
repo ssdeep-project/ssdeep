@@ -703,22 +703,27 @@ int fuzzy_compare(const char *str1, const char *str2)
   if (s2_3 != NULL)
     *s2_3 = 0;
 
+  // Now that we know the strings are both well formed, are they
+  // identical? We could save ourselves some work here
+  if (strlen(s1) == strlen(s2)) {
+    if (!strncmp(s1, s2, strlen(s1))) {
+      return 100;
+    }
+  }
+
   // each signature has a string for two block sizes. We now
   // choose how to combine the two block sizes. We checked above
   // that they have at least one block size in common
-  if (block_size1 == block_size2)
-  {
+  if (block_size1 == block_size2) {
     uint32_t score1, score2;
     score1 = score_strings(s1_1, s2_1, block_size1);
     score2 = score_strings(s1_2, s2_2, block_size1*2);
     score = MAX(score1, score2);
   }
-  else if (block_size1 == block_size2*2)
-  {
+  else if (block_size1 == block_size2*2) {
     score = score_strings(s1_1, s2_2, block_size1);
   }
-  else
-  {
+  else {
     score = score_strings(s1_2, s2_1, block_size2);
   }
 

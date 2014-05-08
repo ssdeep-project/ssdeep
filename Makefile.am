@@ -8,7 +8,7 @@ ACLOCAL_AMFLAGS = -I m4
 
 lib_LTLIBRARIES=libfuzzy.la
 libfuzzy_la_SOURCES=fuzzy.c edit_dist.c find-file-size.c
-libfuzzy_la_LDFLAGS=-no-undefined -version-info 2:0:0
+libfuzzy_la_LDFLAGS=-static -no-undefined -version-info 2:0:0
 
 include_HEADERS=fuzzy.h
 
@@ -58,7 +58,7 @@ win-package: win-docs
 	rm -rf $(distdir) $(WINDOWSDOCS)
 
 world: distclean
-	./configure --host=i386-mingw32
+	./configure --host=i686-w64-mingw32
 	make win-package
 	make dist
 

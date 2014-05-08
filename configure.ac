@@ -9,7 +9,6 @@ AC_CANONICAL_HOST
 AC_PROG_CC
 AC_PROG_CXX
 AC_LIBTOOL_WIN32_DLL
-#AC_PROG_LIBTOOL
 AM_PROG_LIBTOOL
 AC_PROG_INSTALL
 
@@ -17,7 +16,7 @@ AC_CONFIG_MACRO_DIR([m4])
 
 case $host in
   *-*-*linux*-*) AC_DEFINE([__LINUX__],1,[Linux operating system functions]) ;;
-  *-*-mingw32)   LIBS="-liberty $LIBS" && CPPFLAGS="-DUNICODE -D_UNICODE $CPPFLAGS"
+  *-*-mingw32)   LIBS="-static-libgcc -static-libstdc++ $LIBS" && CPPFLAGS="-DUNICODE -D_UNICODE $CPPFLAGS"
 esac
 
 

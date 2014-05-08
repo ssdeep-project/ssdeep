@@ -1,3 +1,7 @@
+2014-05-08: Jesse Kornblum <research@jessekornblum.com>:
+
+	* Version bump to 2.10.1, updates for compiling on Fedora Core 20
+
 2013-11-25: Jesse Kornblum <research@jessekornblum.com>:
 
 	* fuzzy.c: Revised check for equal signature to be case sensitive

@@ -267,13 +267,6 @@ static int memcpy_eliminate_sequences(char *dst,
 extern const int EOVERFLOW;
 #endif
 
-// We need some extra help on Win32
-#ifdef _WIN32
-# define EOVERFLOW 84
-# define ftello    ftell
-# define fseeko    fseek
-#endif
-
 int fuzzy_digest(const struct fuzzy_state *self,
 		 /*@out@*/ char *result,
 		 unsigned int flags)

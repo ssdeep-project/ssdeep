@@ -1,3 +1,8 @@
+2014-05-14: Jesse Kornblum <research@jessekornblum.com>:
+
+	* filedata.h: Added destructor method, constructor copy by reference.
+	* Minor cleanup and code formatting.
+
 2014-05-08: Jesse Kornblum <research@jessekornblum.com>:
 
 	* Version bump to 2.10.1, updates for compiling on Fedora Core 20

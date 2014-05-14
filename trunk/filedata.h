@@ -9,6 +9,7 @@
 #include <set>
 #include <string>
 #include <iostream>
+#include <stdlib.h>
 #include "tchar-local.h"
 
 /// Contains a fuzzy hash and associated metadata for file
@@ -25,7 +26,7 @@ class Filedata
   /// Creates a new Filedata object with the given filename and signature
   ///
   /// If sig is not valid, throws std::bad_alloc
-  Filedata(const std::string sig, const char * match_file = NULL);
+  Filedata(const std::string& sig, const char * match_file = NULL);
 
   /// Returns the file's fuzzy hash without a filename. 
   /// std::string("[blocksize]:[sig1]:[sig2]")
@@ -46,6 +47,8 @@ class Filedata
   void set_cluster(std::set<Filedata *> *c) { m_cluster = c; }
   std::set<Filedata* >* get_cluster(void) const { return m_cluster; }
   void clear_cluster(void);
+
+  ~Filedata() { if (m_filename) { free(m_filename); } }
 
  private:
   std::set<Filedata *> * m_cluster;

@@ -4,40 +4,37 @@
 #include "ssdeep.h"
 #include "match.h"
 
-
 #define MAX_STATUS_MSG   78
 
-bool display_result(state *s, const TCHAR * fn, const char * sum)
-{
+bool display_result(state *s, const TCHAR * fn, const char * sum) {
   // Only spend the extra time to make a Filedata object if we need to
-  if (MODE(mode_match_pretty) or MODE(mode_match) or MODE(mode_directory))
-  {
+  if (MODE(mode_match_pretty) or MODE(mode_match) or MODE(mode_directory)) {
     Filedata * f;
-
-    try 
-    {
+    
+    try {
       f = new Filedata(fn, sum);
     } 
-    catch (std::bad_alloc)
-    {
+    catch (std::bad_alloc) {
       fatal_error("%s: Unable to create Filedata object in engine.cpp:display_result()", __progname);
     }
 
-    if (MODE(mode_match_pretty)) 
-    {
-      if (match_add(s,f))
-	print_error_unicode(s,fn,"Unable to add hash to set of known hashes");
+    if (MODE(mode_match_pretty)) {
+      if (match_add(s, f))
+	print_error_unicode(s, fn, "Unable to add hash to set of known hashes");
     }
-    else
-    {
+    else {
       // This block is for MODE(mode_match) or MODE(mode_directory)
-      match_compare(s,f);
-
-      if (MODE(mode_directory))
-	if (match_add(s,f))
+      match_compare(s, f);
+      
+      if (MODE(mode_directory)) {
+	if (match_add(s, f))
 	  print_error_unicode(s,
 			      fn,
 			      "Unable to add hash to set of known hashes");
+      } else {
+	// We haven't add f to the set of knowns, so let's free it.
+	delete f;
+      }
     }
   }
   else
@@ -50,7 +47,7 @@ bool display_result(state *s, const TCHAR * fn, const char * sum)
     }
 
     printf ("%s,\"", sum);
-    display_filename(stdout,fn,TRUE);
+    display_filename(stdout, fn, TRUE);
     print_status("\"");
   }
 
@@ -58,8 +55,7 @@ bool display_result(state *s, const TCHAR * fn, const char * sum)
 }
 
 
-int hash_file(state *s, TCHAR *fn)
-{
+int hash_file(state *s, TCHAR *fn) {
   size_t fn_length;
   char *sum;
   TCHAR *my_filename, *msg;

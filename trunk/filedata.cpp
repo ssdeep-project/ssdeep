@@ -56,7 +56,7 @@ void Filedata::clear_cluster(void)
 }
 
 
-Filedata::Filedata(const TCHAR *fn, const char * sig, const char * match_file)
+Filedata::Filedata(const TCHAR * fn, const char * sig, const char * match_file)
 {
   m_signature = std::string(sig);
   if (not valid())
@@ -75,7 +75,7 @@ Filedata::Filedata(const TCHAR *fn, const char * sig, const char * match_file)
 }
 
 
-Filedata::Filedata(const std::string sig, const char * match_file)
+Filedata::Filedata(const std::string& sig, const char * match_file)
 {
   // Set the easy stuff first
   m_cluster = NULL;
@@ -145,6 +145,8 @@ Filedata::Filedata(const std::string sig, const char * match_file)
   for (i = 0 ; i < sz ; i++)
     m_filename[i] = (TCHAR)(tmp2[i]);
   m_filename[i] = 0;
+
+  free (tmp2);
 #endif
 }
 

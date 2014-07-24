@@ -1,3 +1,7 @@
+2014-07-23: Jesse Kornblum <research@jessekornblum.com>:
+
+	* sample.c, README: Fixed -l flag in compile instructions.
+
 2014-05-14: Jesse Kornblum <research@jessekornblum.com>:
 
 	* filedata.h: Added destructor method, constructor copy by reference.

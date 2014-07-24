@@ -6,7 +6,7 @@
    
    To compile the program using gcc:
 
-   $ gcc -Wall -I/usr/local/include -L/usr/local/lib sample.c -Lfuzzy
+   $ gcc -Wall -I/usr/local/include -L/usr/local/lib sample.c -lfuzzy
 
    Using mingw:
 

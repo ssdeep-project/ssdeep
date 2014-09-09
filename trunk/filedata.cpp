@@ -106,41 +106,43 @@ Filedata::Filedata(const std::string& sig, const char * match_file)
 
     return;
   }
-  
+
   // There is a filename. Ok.
   // Advance past the comma and quotation mark.
   start += 2;
-  
+
   // Look for the second quotation mark, which should be at the end
-  // of the string. 
+  // of the string.
   stop = sig.find_last_of('"');
   if (stop != sig.size() - 1)
     throw std::bad_alloc();
-  
+
   // Strip off the final quotation mark and record the filename
   std::string tmp = sig.substr(start,(stop - start));
 
   // Strip off the filename from the signature. Remember that "start"
   // now points to two characters ahead of the comma
   m_signature = sig.substr(0,start-2);
-  
+
   // Unescape any quotation marks in the filename
   while (tmp.find(std::string("\\\"")) != std::string::npos)
     tmp.replace(tmp.find(std::string("\\\"")),2,std::string("\""));
-  
+
 #ifndef _WIN32
   m_filename = strdup(tmp.c_str());
 #else
   char * tmp2 = strdup(tmp.c_str());
-  
-  // On Win32 we have to do a kludgy cast from ordinary char 
+
+  // On Win32 we have to do a kludgy cast from ordinary char
   // values to the TCHAR values we use internally. Because we may have
   // reset the string length, get it again.
   // The extra +1 is for the terminating newline
   size_t i, sz = strlen(tmp2);
   m_filename = (TCHAR *)malloc(sizeof(TCHAR) * (sz + 1));
-  if (NULL == m_filename)
+  if (NULL == m_filename) {
+    free (tmp2);
     throw std::bad_alloc();
+  }
 
   for (i = 0 ; i < sz ; i++)
     m_filename[i] = (TCHAR)(tmp2[i]);

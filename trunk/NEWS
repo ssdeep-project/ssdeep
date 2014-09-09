@@ -1,9 +1,13 @@
-** Version 2.10.1 - 14 May 2014
+** Version 2.11 - 11 Sep 2014
 
 * New Features
 
   - Added fuzzy_clone function to the API.
   - Moved to modern Win32 compiler.
+
+* Bug Fixes
+
+  - Fixed edge case on signature generaion. Behavior now matches v2.9 again.
 
 
 ** Version 2.10 - 17 Jul 2013

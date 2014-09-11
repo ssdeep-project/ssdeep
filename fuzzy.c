@@ -110,6 +110,7 @@ struct blockhash_context
 {
   uint32_t h, halfh;
   char digest[SPAMSUM_LENGTH];
+  char halfdigest;
   unsigned int dlen;
 };
 
@@ -134,6 +135,7 @@ struct fuzzy_state
   self->bh[0].h = HASH_INIT;
   self->bh[0].halfh = HASH_INIT;
   self->bh[0].digest[0] = '\0';
+  self->bh[0].halfdigest = '\0';
   self->bh[0].dlen = 0;
   self->total_size = 0;
   roll_init(&self->roll);
@@ -162,6 +164,7 @@ static void fuzzy_try_fork_blockhash(struct fuzzy_state *self)
   nbh->h = obh->h;
   nbh->halfh = obh->halfh;
   nbh->digest[0] = '\0';
+  nbh->halfdigest = '\0';
   nbh->dlen = 0;
   ++self->bhend;
 }
@@ -222,6 +225,7 @@ static void fuzzy_engine_step(struct fuzzy_state *self, unsigned char c)
     }
     self->bh[i].digest[self->bh[i].dlen] =
       b64[self->bh[i].h % 64];
+    self->bh[i].halfdigest = b64[self->bh[i].halfh % 64];
     if (self->bh[i].dlen < SPAMSUM_LENGTH - 1) {
       /* We can have a problem with the tail overflowing. The
        * easiest way to cope with this is to only reset the
@@ -231,8 +235,10 @@ static void fuzzy_engine_step(struct fuzzy_state *self, unsigned char c)
        * */
       self->bh[i].digest[++(self->bh[i].dlen)] = '\0';
       self->bh[i].h = HASH_INIT;
-      if (self->bh[i].dlen < SPAMSUM_LENGTH / 2)
+      if (self->bh[i].dlen < SPAMSUM_LENGTH / 2) {
 	self->bh[i].halfh = HASH_INIT;
+	self->bh[i].halfdigest = '\0';
+      }
     } else
       fuzzy_try_reduce_blockhash(self);
   }
@@ -364,6 +370,21 @@ int fuzzy_digest(const struct fuzzy_state *self,
       {
 	++result;
 	--remain;
+      }
+    } else {
+      i = (flags & FUZZY_FLAG_NOTRUNC) != 0 ?
+        self->bh[bi].digest[self->bh[bi].dlen] : self->bh[bi].halfdigest;
+      if (i != '\0') {
+	assert(remain > 0);
+	*result = i;
+	if ((flags & FUZZY_FLAG_ELIMSEQ) == 0 || i < 3 ||
+	    *result != result[-1] ||
+	    *result != result[-2] ||
+	    *result != result[-3])
+	{
+	  ++result;
+	  --remain;
+	}
       }
     }
   } else if (h != 0)

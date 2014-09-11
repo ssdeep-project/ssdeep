@@ -17,7 +17,7 @@ preflight:
 	grep RBF *.html *.txt
 
 manpages:
-	$(RMAN) -f HTML -S -l "ssdeep man page" ../ssdeep.1 > manpage.html
+	man ../ssdeep.1 | man2html > manpage.html
 
 changes:
 	cp ../NEWS changes.txt

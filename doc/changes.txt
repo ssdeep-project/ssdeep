@@ -1,3 +1,10 @@
+** Version 2.11.1 - 27 Sep 2014
+
+* Bug Fixes
+
+  - Made libfuzzy compile as a shared library again.
+
+
 ** Version 2.11 - 11 Sep 2014
 
 * New Features

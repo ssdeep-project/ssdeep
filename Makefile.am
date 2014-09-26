@@ -8,7 +8,7 @@ ACLOCAL_AMFLAGS = -I m4
 
 lib_LTLIBRARIES=libfuzzy.la
 libfuzzy_la_SOURCES=fuzzy.c edit_dist.c find-file-size.c
-libfuzzy_la_LDFLAGS=-static -no-undefined -version-info 2:0:0
+libfuzzy_la_LDFLAGS=-no-undefined -version-info 2:0:0
 
 include_HEADERS=fuzzy.h
 
@@ -21,7 +21,7 @@ ssdeep_SOURCES = main.cpp match.cpp engine.cpp filedata.cpp   	\
 dll: $(libfuzzy_la_SOURCES)
 	$(CC) $(CFLAGS) -shared -o fuzzy.dll $(libfuzzy_la_SOURCES) \
         -Wl,--output-def,fuzzy.def,--out-implib,libfuzzy.a
-	$(STRIP) fuzzy.dll 
+	$(STRIP) fuzzy.dll
 
 CLEANFILES=fuzzy.dll fuzzy.def
 

@@ -1,3 +1,9 @@
+2014-10-16: Jesse Kornblum <research@jessekornblum.com>:
+
+	* configure.ac: Version bump to 2.12
+	* fuzzy.c: Fixed bug when comparing identical hashes, bug #16.
+	* normal.sh: Use multiple cores when compiling
+
 2014-09-26: Jesse Kornblum <research@jessekornblum.com>:
 
 	* Makefile.am: Made libfuzzy compile as a shared library again.

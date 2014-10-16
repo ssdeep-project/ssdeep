@@ -1,3 +1,11 @@
+** Version 2.12 - RBF DATE
+
+* Bug Fixes
+
+  - Fixed issue when comparing identical hashes but with different
+    block sizes.
+
+
 ** Version 2.11.1 - 27 Sep 2014
 
 * Bug Fixes

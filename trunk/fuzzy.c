@@ -732,7 +732,7 @@ int fuzzy_compare(const char *str1, const char *str2)
 
   // Now that we know the strings are both well formed, are they
   // identical? We could save ourselves some work here
-  if (strlen(s1) == strlen(s2)) {
+  if (block_size1 == block_size2 && strlen(s1) == strlen(s2)) {
     if (!strncmp(s1, s2, strlen(s1))) {
       free (s1);
       free (s2);

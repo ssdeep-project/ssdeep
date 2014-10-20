@@ -34,7 +34,7 @@
    SPECIFICALLY DISCLAIMS ANY EXPRESS OR IMPLIED WARRANTY OF FITNESS FOR
    HIGH RISK ACTIVITIES.   */
 
-// $Id$
+// $Id: sample.c 212 2014-07-24 00:05:35Z jessekornblum $
 
 #include <stdio.h>
 #include <stdlib.h>

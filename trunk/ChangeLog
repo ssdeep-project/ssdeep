@@ -1,3 +1,9 @@
+2014-10-20: Jesse Kornblum <research@jessekornblum.com>:
+
+	* edit_dist.c: Replaced with new, explicitly GPL licensed code.
+	* fuzzy.c: Removed edit distance function prototype
+	* edit_dist.h: Added edit distance function prototype
+
 2014-10-16: Jesse Kornblum <research@jessekornblum.com>:
 
 	* configure.ac: Version bump to 2.12

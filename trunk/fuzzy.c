@@ -28,7 +28,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "fuzzy.h"
+#include "edit_dist.h"
 
 #if defined(__GNUC__) && __GNUC__ >= 3
 #define likely(x)       __builtin_expect(!!(x), 1)
@@ -590,7 +592,6 @@ static uint32_t score_strings(const char *s1,
 {
   uint32_t score;
   size_t len1, len2;
-  int edit_distn(const char *from, int from_len, const char *to, int to_len);
 
   len1 = strlen(s1);
   len2 = strlen(s2);

@@ -1,3 +1,7 @@
+2014-10-24: Jesse Kornblum <research@jessekornblum.com>:
+
+	* Makefile.am: Adding edit_dist.h
+
 2014-10-20: Jesse Kornblum <research@jessekornblum.com>:
 
 	* edit_dist.c: Replaced with new, explicitly GPL licensed code.

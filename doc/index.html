@@ -32,7 +32,7 @@
 <body>
 
 <h1>
-ssdeep - Latest version 2.11.1
+ssdeep - Latest version 2.12
 </h1>
 
 <hr>
@@ -44,13 +44,6 @@ ssdeep - Latest version 2.11.1
 <li> <a href="changes.txt">Changelog</a></li>
 <li> <a href="usage.html">Quickstart Guide</a></li>
 <li> <a href="api/html/">API documentation</a></li>
-<!--
-<li> <!a href="http://forensiczone.com/SSDeepFE/SSDeepFE.htm">GUI
-frontend ssdeepFE</a> -
-A graphical interface for
-ssdeep on Windows. Not officially part of the ssdeep project.
-(Appears to have gone dark)
--->
 <li> <a href="http://sourceforge.net/projects/ssdeep/">Sourceforge project
 page</a> - Home to ssdeep development and feature requests
 </li></ul>
@@ -133,18 +126,16 @@ Download
 
 <p>
 The latest stable version of ssdeep is
-version 2.11.1
+version 2.12
 and was released on
-27 Sep 2014
+24 Oct 2014
 You can take a look at the
 <a href="changes.txt">complete changelog</a>, but here are the
 changes in the latest version:
 
 <ul>
-<li> Fixed bug in signature computation. </li>
-<li> Added fuzzy_clone function to the API. </li>
-<li> Windows version has more modern compiler. </li>
-<li> Made libfuzzy a shared library again. </li>
+<li> Fixed a bug when comparing hashes with different block sizes </li>
+<li> Replaced edit distance code </li>
 </ul>
 
 </p>
@@ -157,22 +148,22 @@ changes in the latest version:
 
     <tr>
      <td rowspan="2">
-        Version 2.11.1
+        Version 2.12
      </td>
 
      <td rowspan="2">
-       27 Sep 2014
+       24 Oct 2014
      </td>
 
-        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.11.1/ssdeep-2.11.1.zip/download">
+        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.12/ssdeep-2.12.zip/download">
                Windows binary</a></td>
-        <td class="hash"> SHA256 01aa313038baa1d822eee07a91bfcf1aab265d2bde7527030bdd6ec7e9fa55d8
+        <td class="hash"> SHA256 8e0add834592e8f2c0784080d7ddaa9704d8e90ab4cb02773aa6a5c05708ed95
 	  </td>
      </tr>
      <tr>
-        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.11.1/ssdeep-2.11.1.tar.gz/download">
+        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.12/ssdeep-2.12.tar.gz/download">
                  source code</a></td>
-        <td class="hash"> SHA256 a632ac30fca29ad5627e1bf5fae05d9a8873e6606314922479259531e0c19608
+        <td class="hash"> SHA256 bf409c92fc8edd5e8779742f1dcae342bf078371b709bb9d5a68f544b47531bc
 	  </td>
      </tr>
 
@@ -276,6 +267,28 @@ document.write(old_link_text);
 
 
   <tbody>
+
+    <tr>
+     <td rowspan="2">
+       2.11.1
+     </td>
+
+     <td rowspan="2">
+       27 Sep 2014
+     </td>
+
+        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.11.1/ssdeep-2.11.1.zip/download">
+               Windows binary</a></td>
+        <td class="hash"> SHA256 01aa313038baa1d822eee07a91bfcf1aab265d2bde7527030bdd6ec7e9fa55d8
+	  </td>
+     </tr>
+     <tr>
+        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.11.1/ssdeep-2.11.1.tar.gz/download">
+                 source code</a></td>
+        <td class="hash"> SHA256 a632ac30fca29ad5627e1bf5fae05d9a8873e6606314922479259531e0c19608
+	  </td>
+     </tr>
+
 
     <tr>
      <td rowspan="2">

@@ -1,3 +1,16 @@
+2015-04-24: Jesse Kornblum <research@jessekornblum.com>:
+
+	* ssdeep.1, NEWS: Updated release date
+
+2015-04-01: Tsukasa OI <floss_ssdeep@irq.a4lg.com>:
+
+	* dig.cpp: Support arbitrary length input from the standard input.
+
+2014-11-07: Tsukasa OI <floss_ssdeep@irq.a4lg.com>:
+
+	* edit_dist.c: Made code more portable
+	* fuzzy.c: Multiple bug fixes
+
 2014-10-24: Jesse Kornblum <research@jessekornblum.com>:
 
 	* Makefile.am: Adding edit_dist.h

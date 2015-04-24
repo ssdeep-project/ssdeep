@@ -18,29 +18,28 @@
        matches those signatures against a file of known signatures and reports
        any possible matches.  It can also examine one or more files of  signa-
        tures  and find any matches in those files.  Output is written to stan-
-       dard out and errors to standard error.  The program  only  accepts  the
-       first 100MB of data presented via standard input.
+       dard out and errors to standard error.
 
 
        <B>-m</B> <B>&lt;file&gt;</B>
-              Loads  the  specified file of known hashes to be used for match-
-              ing. This file must be a previous output  of  the  program.  The
-              program  then hashes each entry in FILES and compares these sig-
-              natures to the known signatures.  Any matches which score  above
-              the  threshold  are  displayed.   This flag may be used multiple
-              times to load more known signatures.  This flag may not be  used
+              Loads the specified file of known hashes to be used  for  match-
+              ing.  This  file  must  be a previous output of the program. The
+              program then hashes each entry in FILES and compares these  sig-
+              natures  to the known signatures.  Any matches which score above
+              the threshold are displayed.  This flag  may  be  used  multiple
+              times  to load more known signatures.  This flag may not be used
               with the -k or -x flags.
 
 
        <B>-k</B> <B>&lt;file&gt;</B>
               Load the specified file of known hashes to be used for matching.
-              This file must be a previous output of the program. The  program
-              then  treats  each  entry  in  FILES as a set of known hashes as
+              This  file must be a previous output of the program. The program
+              then treats each entry in FILES as a  set  of  known  hashes  as
               well. The hashes in these FILES are compared to the known hashes
               from this file. Matches which score above the threshold are dis-
-              played. Both the file specified here and the input FILES  should
-              contain  fuzzy  hashes.  This flag may be used multiple times to
-              load more known signatures.  This flag may not be used with  the
+              played.  Both the file specified here and the input FILES should
+              contain fuzzy hashes.  This flag may be used multiple  times  to
+              load  more known signatures.  This flag may not be used with the
               -m, -d, or -p flags.
 
 
@@ -49,53 +48,53 @@
 
 
        <B>-d</B>     Computes a signature for each entry in the FILES and compares it
-              to  the  set  of known signatures. Matches which score above the
+              to the set of known signatures. Matches which  score  above  the
               threshold are displayed. The computed signature is then added to
               the set of known signatures.  This flag may not be used with the
               -k or -x flags.
 
 
-       <B>-p</B>     Works like the -d flag, but displays all matches for each  file.
-              That  is,  for  two  files  A  and B which match score above the
-              threshold, displays "A matches B" and "B matches A".  This  flag
-              will also be included in the cluster.
+       <B>-p</B>     Works  like the -d flag, but displays all matches for each file.
+              That is, for two files A and  B  which  match  score  above  the
+              threshold,  displays "A matches B" and "B matches A".  This flag
+              may not be used with the -k or -x flags.
 
 
        <B>-s</B>     Silent mode. All error messages are suppressed.
 
 
        <B>-b</B>     Enables bare mode. Strips any leading directory information from
-              displayed filenames.  This flag may not be used  in  conjunction
+              displayed  filenames.   This flag may not be used in conjunction
               with the <B>-l</B> flag.
 
 
-       <B>-l</B>     Enables  relative  file  paths. Instead of printing the absolute
+       <B>-l</B>     Enables relative file paths. Instead of  printing  the  absolute
               path for each file, displays the relative file path as indicated
-              on  the  command  line. This flag may not be used in conjunction
+              on the command line. This flag may not be  used  in  conjunction
               with the <B>-b</B> flag.
 
 
-       <B>-c</B>     Enables comma separated output mode.  In  any  of  the  matching
-              modes  -d,  -p, or -m, displays the results as input file, known
+       <B>-c</B>     Enables  comma  separated  output  mode.  In any of the matching
+              modes -d, -p, or -m, displays the results as input  file,  known
               file, matching score.
 
 
-       <B>-x</B>     Signature file matching.  Each entry in FILES must contain  sig-
+       <B>-x</B>     Signature  file matching.  Each entry in FILES must contain sig-
               natures generated by a previous output of the program. Each sig-
-              nature is loaded and compared against the set of  known  hashes.
-              Match  scores  above the threshold are displayed. Each signature
-              is then added to the set of knowns.  This flag may not  be  used
+              nature  is  loaded and compared against the set of known hashes.
+              Match scores above the threshold are displayed.  Each  signature
+              is  then  added to the set of knowns.  This flag may not be used
               with the -m, -d, or -p flags.
 
 
-       <B>-a</B>     Displays  all matches in any of the matching mode, regardless of
-              score.  Using the -a flag displays  all  results,  even  if  the
+       <B>-a</B>     Displays all matches in any of the matching mode, regardless  of
+              score.   Using  the  -a  flag  displays all results, even if the
               match score is zero.
 
 
        <B>-t</B> <B>&lt;val&gt;</B>
-              In  any  of  the matching modes, only display matches when match
-              score is greater than the given  value.  The  default  threshold
+              In any of the matching modes, only display  matches  when  match
+              score  is  greater  than  the given value. The default threshold
               value is zero.
 
 
@@ -110,18 +109,15 @@
 </PRE>
 <H2>RETURN VALUE</H2><PRE>
        Returns 0 on success, 1 if there is a problem.  Read errors, permission
-       denied, and encountering directories while not in  recursive  mode  are
-       still  considered  successes.  Problems are things like being unable to
-
-
-</PRE>
-<H2>SEE ALSO</H2><PRE>
+       denied,  and  encountering  directories while not in recursive mode are
+       still considered successes. Problems are things like  being  unable  to
+       load the matching file, specifying both bare and relative paths, etc.
        This program is based on SpamSum by Dr. Andrews Tridgell.
        http://www.samba.org/ftp/unpacked/junkcode/spamsum/
 
 
 
-Facebook                  Version 2.12 - 24 Oct 2014                 <B>SSDEEP(1)</B>
+Facebook                  Version 2.13 - 24 Apr 2015                 <B>SSDEEP(1)</B>
 </PRE>
 <HR>
 <ADDRESS>

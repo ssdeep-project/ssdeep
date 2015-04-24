@@ -96,6 +96,15 @@ extern /*@only@*/ /*@null@*/ struct fuzzy_state *fuzzy_new(void);
 extern /*@only@*/ /*@null@*/ struct fuzzy_state *fuzzy_clone(const struct fuzzy_state *state);
 
 /**
+ * @brief Set fixed length of input
+ *
+ * If we know the file size to compute fuzzy digest, we can boost
+ * computation by restricting range of blocksize.
+ * @return 0 on success or -1 on failure
+ */
+extern int fuzzy_set_total_input_length(struct fuzzy_state *state, uint_least64_t total_fixed_length);
+
+/**
  * @brief Feed the data contained in the given buffer to the state.
  *
  * When an error occurs, the state is undefined. In that case it must not be
@@ -193,7 +202,7 @@ extern int fuzzy_hash_filename(const char *filename, /*@out@*/ char * result);
 /// Computes the match score between two fuzzy hash signatures.
 /// @return Returns a value from zero to 100 indicating the
 /// match score of the
-/// two signatures. A match score of zero indicates the sigantures
+/// two signatures. A match score of zero indicates the signatures
 /// did not match. When an error occurs, such as if one of the
 /// inputs is NULL, returns -1.
 extern int fuzzy_compare(const char *sig1, const char *sig2);

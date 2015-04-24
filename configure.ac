@@ -1,4 +1,4 @@
-AC_INIT([SSDEEP],[2.12],[research@jessekornblum.com])
+AC_INIT([SSDEEP],[2.13],[research@jessekornblum.com])
 AM_INIT_AUTOMAKE
 
 AC_CONFIG_FILES([Makefile])
@@ -22,11 +22,35 @@ esac
 
 # Bring additional directories where things might be found into our
 # search path. I don't know why autoconf doesn't do this by default
+AC_ARG_ENABLE([auto-search],
+[AS_HELP_STRING([--disable-auto-search], [disable searching additional include and library directories])],,
+[enable_auto_search=yes])
+with_auto_headers_default=$enable_auto_search
+with_auto_libs_default=$enable_auto_search
+AC_ARG_WITH([auto-headers],
+[AS_HELP_STRING([--without-auto-headers], [disable searching additional include directories])],,
+[with_auto_headers=$with_auto_headers_default])
+AC_ARG_WITH([auto-libs],
+[AS_HELP_STRING([--without-auto-libs], [disable searching additional library directories])],,
+[with_auto_libs=$with_auto_libs_default])
 for spfx in /usr/local /opt/local /sw ; do
-    echo checking ${spfx}/include
-    if test -d ${spfx}/include; then
-        CPPFLAGS="-I${spfx}/include $CPPFLAGS"
-        LDFLAGS="-L${spfx}/lib $LDFLAGS"
+    if test "x$with_auto_headers" = xyes; then
+        AC_MSG_CHECKING([for ${spfx}/include])
+        if test -d ${spfx}/include; then
+            CPPFLAGS="-I${spfx}/include $CPPFLAGS"
+            AC_MSG_RESULT([yes])
+        else
+            AC_MSG_RESULT([no])
+        fi
+    fi
+    if test "x$with_auto_libs" = xyes; then
+        AC_MSG_CHECKING([for ${spfx}/lib])
+        if test -d ${spfx}/lib; then
+            LDFLAGS="-L${spfx}/lib $LDFLAGS"
+            AC_MSG_RESULT([yes])
+        else
+            AC_MSG_RESULT([no])
+        fi
     fi
 done
 

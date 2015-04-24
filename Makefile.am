@@ -8,7 +8,7 @@ ACLOCAL_AMFLAGS = -I m4
 
 lib_LTLIBRARIES=libfuzzy.la
 libfuzzy_la_SOURCES=fuzzy.c edit_dist.c find-file-size.c
-libfuzzy_la_LDFLAGS=-no-undefined -version-info 2:0:0
+libfuzzy_la_LDFLAGS=-no-undefined -version-info 3:0:1
 
 include_HEADERS=fuzzy.h edit_dist.h
 
@@ -25,7 +25,7 @@ dll: $(libfuzzy_la_SOURCES)
 
 CLEANFILES=fuzzy.dll fuzzy.def
 
-EXTRA_DIST=$(man_MANS) config.guess config.sub sample.c FILEFORMAT
+EXTRA_DIST=$(man_MANS) bootstrap sample.c FILEFORMAT m4/README
 
 WINDOWSDOCS=README.TXT API.TXT FILEFORMAT.TXT NEWS.TXT
 

@@ -32,7 +32,7 @@
 <body>
 
 <h1>
-ssdeep - Latest version 2.12
+ssdeep - Latest version 2.13
 </h1>
 
 <hr>
@@ -126,16 +126,19 @@ Download
 
 <p>
 The latest stable version of ssdeep is
-version 2.12
+version 2.13
 and was released on
-24 Oct 2014
+24 Apr 2015
 You can take a look at the
 <a href="changes.txt">complete changelog</a>, but here are the
 changes in the latest version:
 
 <ul>
-<li> Fixed a bug when comparing hashes with different block sizes </li>
-<li> Replaced edit distance code </li>
+ <li>Added fuzzy_set_total_input_length function to the API</li>
+ <li>Added support for files up to 192GB</li>
+ <li>Added support for arbitrary length input from the standard input</li>
+ <li>Fixed issue when comparing hashes from relatively simple files</li>
+ <li>Fixed portability issues</li>
 </ul>
 
 </p>
@@ -148,22 +151,22 @@ changes in the latest version:
 
     <tr>
      <td rowspan="2">
-        Version 2.12
+        Version 2.13
      </td>
 
      <td rowspan="2">
-       24 Oct 2014
+       24 Apr 2015
      </td>
 
-        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.12/ssdeep-2.12.zip/download">
+        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.13/ssdeep-2.13.zip/download">
                Windows binary</a></td>
-        <td class="hash"> SHA256 8e0add834592e8f2c0784080d7ddaa9704d8e90ab4cb02773aa6a5c05708ed95
+        <td class="hash"> SHA256 d66f4a7c1c7562cd9b42fd4e2af2ab3f4c676a921ac8c009e77e0854c908a42b
 	  </td>
      </tr>
      <tr>
-        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.12/ssdeep-2.12.tar.gz/download">
+        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.13/ssdeep-2.13.tar.gz/download">
                  source code</a></td>
-        <td class="hash"> SHA256 bf409c92fc8edd5e8779742f1dcae342bf078371b709bb9d5a68f544b47531bc
+        <td class="hash"> SHA256 6e4ca94457cb50ff3343d4dd585473817a461a55a666da1c5a74667924f0f8c5
 	  </td>
      </tr>
 
@@ -267,6 +270,28 @@ document.write(old_link_text);
 
 
   <tbody>
+
+    <tr>
+     <td rowspan="2">
+        2.12
+     </td>
+
+     <td rowspan="2">
+       24 Oct 2014
+     </td>
+
+        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.12/ssdeep-2.12.zip/download">
+               Windows binary</a></td>
+        <td class="hash"> SHA256 8e0add834592e8f2c0784080d7ddaa9704d8e90ab4cb02773aa6a5c05708ed95
+	  </td>
+     </tr>
+     <tr>
+        <td><a href="http://sourceforge.net/projects/ssdeep/files/ssdeep-2.12/ssdeep-2.12.tar.gz/download">
+                 source code</a></td>
+        <td class="hash"> SHA256 bf409c92fc8edd5e8779742f1dcae342bf078371b709bb9d5a68f544b47531bc
+	  </td>
+     </tr>
+
 
     <tr>
      <td rowspan="2">

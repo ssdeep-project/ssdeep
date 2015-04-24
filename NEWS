@@ -1,3 +1,17 @@
+** Version 2.13 - 24 Apr 2015
+
+* New Features
+
+  - Added fuzzy_set_total_input_length function to the API.
+  - Added support for files up to 192GB.
+  - Added support for arbitrary length input from the standard input.
+
+* Bug Fixes
+
+  - Fixed issue when comparing hashes from relatively simple files.
+  - Fixed portability issues.
+
+
 ** Version 2.12 - 24 Oct 2014
 
 * Bug Fixes

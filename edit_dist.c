@@ -26,9 +26,9 @@ int edit_distn(const char *s1, size_t s1len, const char *s2, size_t s2len) {
   int *t3;
   size_t i1, i2;
   for (i2 = 0; i2 <= s2len; i2++)
-    t[0][i2] = i2;
+    t[0][i2] = i2 * EDIT_DISTN_REMOVE_COST;
   for (i1 = 0; i1 < s1len; i1++) {
-    t2[0] = i1 + 1;
+    t2[0] = (i1 + 1) * EDIT_DISTN_INSERT_COST;
     for (i2 = 0; i2 < s2len; i2++) {
       int cost_a = t1[i2+1] + EDIT_DISTN_INSERT_COST;
       int cost_d = t2[i2] + EDIT_DISTN_REMOVE_COST;

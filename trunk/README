@@ -66,7 +66,7 @@ int fuzzy_compare(const char *sig1, const char *sig2);
 
 This function returns a value from 0 to 100 indicating the match 
 score of the two signatures. A match score of zero indicates the \
-sigantures did not match.
+signatures did not match.
 
 
 3. Compile

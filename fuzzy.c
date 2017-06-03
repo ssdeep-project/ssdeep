@@ -889,11 +889,11 @@ int fuzzy_compare(const char *str1, const char *str2)
   ++s1p;
   tmp = s1b1;
   if (!copy_eliminate_sequences(&tmp, SPAMSUM_LENGTH, &s1p, ':'))
-    return 0;
+    return -1;
   s1b1len = tmp - s1b1;
   if (!*s1p++) {
     // a signature is malformed - it doesn't have 2 parts
-    return 0;
+    return -1;
   }
   tmp = s1b2;
   if (!copy_eliminate_sequences(&tmp, SPAMSUM_LENGTH, &s1p, ','))

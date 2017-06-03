@@ -10,7 +10,7 @@
  * Copyright (C) 2014 kikairoya <kikairoya@gmail.com>
  * Copyright (C) 2014 Jesse Kornblum <research@jessekornblum.com>
  */
-#include <string.h>
+#include <stddef.h>
 
 #define EDIT_DISTN_MAXLEN 64 /* MAX_SPAMSUM */
 #define EDIT_DISTN_INSERT_COST 1
@@ -46,6 +46,7 @@ int edit_distn(const char *s1, size_t s1len, const char *s2, size_t s2len) {
 #ifdef __UNITTEST
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define HELLOWORLD "Hello World!"
 

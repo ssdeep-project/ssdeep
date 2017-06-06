@@ -231,8 +231,7 @@ static void fuzzy_try_reduce_blockhash(struct fuzzy_state *self)
   if (self->bhend - self->bhstart < 2)
     /* Need at least two working hashes. */
     return;
-  if (self->total_size <= SSDEEP_TOTAL_SIZE_MAX &&
-      self->reduce_border >= ((self->flags & FUZZY_STATE_SIZE_FIXED) ? self->fixed_size : self->total_size))
+  if (self->reduce_border >= ((self->flags & FUZZY_STATE_SIZE_FIXED) ? self->fixed_size : self->total_size))
     /* Initial blocksize estimate would select this or a smaller
      * blocksize. */
     return;
@@ -317,14 +316,12 @@ static void fuzzy_engine_step(struct fuzzy_state *self, unsigned char c)
 int fuzzy_update(struct fuzzy_state *self,
 		 const unsigned char *buffer,
 		 size_t buffer_size) {
-  if (self->total_size <= SSDEEP_TOTAL_SIZE_MAX) {
-    if (buffer_size > SSDEEP_TOTAL_SIZE_MAX ||
-	SSDEEP_TOTAL_SIZE_MAX - buffer_size < self->total_size ) {
-      self->total_size = SSDEEP_TOTAL_SIZE_MAX + 1;
-    }
-    else
-      self->total_size += buffer_size;
+  if (unlikely(buffer_size > SSDEEP_TOTAL_SIZE_MAX ||
+      SSDEEP_TOTAL_SIZE_MAX - buffer_size < self->total_size )) {
+    self->total_size = SSDEEP_TOTAL_SIZE_MAX + 1;
   }
+  else
+    self->total_size += buffer_size;
   for ( ;buffer_size > 0; ++buffer, --buffer_size)
     fuzzy_engine_step(self, *buffer);
   return 0;
@@ -692,13 +689,12 @@ static int has_common_substring_pa(const unsigned long long *parray, const char 
 static int edit_distn_pa(const unsigned long long *parray, size_t s1len, const char *s2, size_t s2len)
 {
   unsigned long long pv, nv, ph, nh, zd, mt, x, y;
-  unsigned long long mask, msb;
+  unsigned long long msb;
   size_t i;
   // 0 < s1len <= 64
   int cur = s1len;
-  mask = 0xffffffffffffffffull >> (64 - s1len);
   msb = 1ull << (s1len - 1);
-  pv = mask;
+  pv = -1;
   nv = 0;
   for (i = 0; i < s2len; i++)
   {

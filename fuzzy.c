@@ -57,14 +57,16 @@
 #endif
 #endif
 
-struct roll_state {
+struct roll_state
+{
   unsigned char window[ROLLING_WINDOW];
   uint32_t h1, h2, h3;
   uint32_t n;
 };
 
-static void roll_init(/*@out@*/ struct roll_state *self) {
-	memset(self, 0, sizeof(struct roll_state));
+static void roll_init(/*@out@*/ struct roll_state *self)
+{
+  memset(self, 0, sizeof(struct roll_state));
 }
 
 /*
@@ -222,7 +224,7 @@ static void fuzzy_try_fork_blockhash(struct fuzzy_state *self)
     ++self->bhend;
   }
   else if (self->bhend == NUM_BLOCKHASHES &&
-           !(self->flags & FUZZY_STATE_NEED_LASTHASH))
+	   !(self->flags & FUZZY_STATE_NEED_LASTHASH))
   {
     self->flags |= FUZZY_STATE_NEED_LASTHASH;
     self->lasth = obh->h;
@@ -309,7 +311,8 @@ static void fuzzy_engine_step(struct fuzzy_state *self, unsigned char c)
 	self->bh[i].halfh = HASH_INIT;
 	self->bh[i].halfdigest = '\0';
       }
-    } else
+    }
+    else
       fuzzy_try_reduce_blockhash(self);
     if (h & 1)
       break;
@@ -319,7 +322,8 @@ static void fuzzy_engine_step(struct fuzzy_state *self, unsigned char c)
 
 int fuzzy_update(struct fuzzy_state *self,
 		 const unsigned char *buffer,
-		 size_t buffer_size) {
+		 size_t buffer_size)
+{
   if (unlikely(buffer_size > SSDEEP_TOTAL_SIZE_MAX ||
       SSDEEP_TOTAL_SIZE_MAX - buffer_size < self->total_size )) {
     self->total_size = SSDEEP_TOTAL_SIZE_MAX + 1;
@@ -341,12 +345,15 @@ static int memcpy_eliminate_sequences(char *dst,
   if (src < srcend) *dst++ = *src++;
   if (src < srcend) *dst++ = *src++;
   while (src < srcend)
+  {
     if (*src == dst[-1] && *src == dst[-2] && *src == dst[-3])
     {
       ++src;
       --n;
-    } else
+    }
+    else
       *dst++ = *src++;
+  }
   return n;
 }
 
@@ -408,7 +415,8 @@ int fuzzy_digest(const struct fuzzy_state *self,
       ++result;
       --remain;
     }
-  } else if (self->bh[bi].digest[self->bh[bi].dindex] != '\0') {
+  }
+  else if (self->bh[bi].digest[self->bh[bi].dindex] != '\0') {
     assert(remain > 0);
     *result = self->bh[bi].digest[self->bh[bi].dindex];
     if((flags & FUZZY_FLAG_ELIMSEQ) == 0 || i < 3 ||
@@ -450,9 +458,10 @@ int fuzzy_digest(const struct fuzzy_state *self,
 	++result;
 	--remain;
       }
-    } else {
+    }
+    else {
       i = (flags & FUZZY_FLAG_NOTRUNC) != 0 ?
-        self->bh[bi].digest[self->bh[bi].dindex] : self->bh[bi].halfdigest;
+	  self->bh[bi].digest[self->bh[bi].dindex] : self->bh[bi].halfdigest;
       if (i != '\0') {
 	assert(remain > 0);
 	*result = i;
@@ -466,18 +475,19 @@ int fuzzy_digest(const struct fuzzy_state *self,
 	}
       }
     }
-  } else if (h != 0)
-    {
-      assert(bi == 0 || bi == NUM_BLOCKHASHES - 1);
-      assert(remain > 0);
-      if (bi == 0)
-	*result++ = b64[self->bh[bi].h];
-      else
-	*result++ = b64[self->lasth];
-      /* No need to bother with FUZZY_FLAG_ELIMSEQ, because this
-       * digest has length 1. */
-      --remain;
-    }
+  }
+  else if (h != 0)
+  {
+    assert(bi == 0 || bi == NUM_BLOCKHASHES - 1);
+    assert(remain > 0);
+    if (bi == 0)
+      *result++ = b64[self->bh[bi].h];
+    else
+      *result++ = b64[self->lasth];
+    /* No need to bother with FUZZY_FLAG_ELIMSEQ, because this
+     * digest has length 1. */
+    --remain;
+  }
   *result = '\0';
   return 0;
 }
@@ -646,7 +656,7 @@ static int has_common_substring(const char *s1, size_t s1len, const char *s2, si
     {
       // confirm the match after checking potential match
       if (hashes[i] == h && !memcmp(s1 + i, s2 + j, ROLLING_WINDOW))
-          return 1;
+	  return 1;
     }
   }
 
@@ -677,7 +687,7 @@ static int has_common_substring_pa(const unsigned long long *parray, const char 
       r--;
       D = (D << 1) & parray[*++ch - CHAR_MIN];
       if (r == l && D)
-        return 1;
+	return 1;
     }
     // Boyer-Moore-like skipping
     r += ROLLING_WINDOW;
@@ -742,17 +752,17 @@ static int copy_eliminate_sequences(char **out, size_t outsize, char **in, char 
     {
       if (++seq >= 3)
       {
-        seq = 3;
-        continue;
+	seq = 3;
+	continue;
       }
       if (!outsize--)
-        return 0;
+	return 0;
       *(*out)++ = curr;
     }
     else
     {
       if (!outsize--)
-        return 0;
+	return 0;
       *(*out)++ = curr;
       seq = 0;
       prev = curr;

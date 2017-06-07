@@ -174,6 +174,10 @@ struct fuzzy_state
   return newstate;
 }
 
+#ifdef S_SPLINT_S
+extern const int EOVERFLOW;
+#endif
+
 int fuzzy_set_total_input_length(struct fuzzy_state *state, uint_least64_t total_fixed_length)
 {
   unsigned int bi = 0;
@@ -345,10 +349,6 @@ static int memcpy_eliminate_sequences(char *dst,
       *dst++ = *src++;
   return n;
 }
-
-#ifdef S_SPLINT_S
-extern const int EOVERFLOW;
-#endif
 
 int fuzzy_digest(const struct fuzzy_state *self,
 		 /*@out@*/ char *result,

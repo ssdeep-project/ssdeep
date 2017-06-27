@@ -58,7 +58,7 @@ win-package: win-docs
 	rm -rf $(distdir) $(WINDOWSDOCS)
 
 world: distclean
-	./configure --host=i686-w64-mingw32
+	./configure --host=i686-w64-mingw32 LIBS="-Wl,-Bstatic -lstdc++ -lpthread -static-libgcc"
 	make win-package
 	make dist
 

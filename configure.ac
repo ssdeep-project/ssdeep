@@ -16,7 +16,7 @@ AC_CONFIG_MACRO_DIR([m4])
 
 case $host in
   *-*-*linux*-*) AC_DEFINE([__LINUX__],1,[Linux operating system functions]) ;;
-  *-*-mingw32)   LIBS="-static-libgcc -static-libstdc++ $LIBS" && CPPFLAGS="-DUNICODE -D_UNICODE $CPPFLAGS"
+  *-*-mingw32)   CPPFLAGS="-DUNICODE -D_UNICODE $CPPFLAGS"
 esac
 
 

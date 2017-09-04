@@ -30,7 +30,7 @@ EXTRA_DIST=$(man_MANS) bootstrap sum_table.h sample.c FILEFORMAT m4/README
 WINDOWSDOCS=README.TXT API.TXT FILEFORMAT.TXT NEWS.TXT
 
 README.TXT: ssdeep.1
-	man ./ssdeep.1 | col -bx > README.TXT
+	COLUMNS=76 man ./ssdeep.1 | col -bx > README.TXT
 
 API.TXT: README
 	cp README API.TXT

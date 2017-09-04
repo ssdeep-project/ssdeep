@@ -39,8 +39,8 @@ static bool initialize_state(state *s)
 // no more than 22 lines of output.
 static void usage(void)
 {
-  print_status ("%s version %s by Jesse Kornblum", __progname, VERSION);
-  print_status ("Copyright (C) 2014 Facebook");
+  print_status ("%s version %s by Jesse Kornblum and the ssdeep Project", __progname, VERSION);
+  print_status ("For copyright information, see man page or README.TXT.");
   print_status ("");
   print_status ("Usage: %s [-m file] [-k file] [-dpgvrsblcxa] [-t val] [-h|-V] [FILES]", 
 	  __progname);

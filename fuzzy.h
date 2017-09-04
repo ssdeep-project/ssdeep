@@ -91,6 +91,7 @@ extern /*@only@*/ /*@null@*/ struct fuzzy_state *fuzzy_new(void);
  * It can be used with fuzzy_update and fuzzy_digest independently of
  * the original. It must be disposed with fuzzy_free like the original
  * has to be cleared in this way.
+ * @param state The fuzzy state
  * @return the cloned fuzzy_state or NULL on failure
  */
 extern /*@only@*/ /*@null@*/ struct fuzzy_state *fuzzy_clone(const struct fuzzy_state *state);
@@ -100,6 +101,8 @@ extern /*@only@*/ /*@null@*/ struct fuzzy_state *fuzzy_clone(const struct fuzzy_
  *
  * If we know the file size to compute fuzzy digest, we can boost
  * computation by restricting range of blocksize.
+ * @param state The fuzzy state
+ * @param total_fixed_length Total length of the data to generate digest
  * @return 0 on success or -1 on failure
  */
 extern int fuzzy_set_total_input_length(struct fuzzy_state *state, uint_least64_t total_fixed_length);
@@ -109,6 +112,7 @@ extern int fuzzy_set_total_input_length(struct fuzzy_state *state, uint_least64_
  *
  * When an error occurs, the state is undefined. In that case it must not be
  * passed to any function besides fuzzy_free.
+ * @param state The fuzzy state
  * @param buffer The data to be hashes
  * @param buffer_size The length of the given buffer
  * @return zero on success, non-zero on error
@@ -122,6 +126,7 @@ extern int fuzzy_update(struct fuzzy_state *state,
  *
  * This operation does not change the state at all. It reports the hash for the
  * concatenation of the data previously fed using fuzzy_update.
+ * @param state The fuzzy state
  * @param result Where the fuzzy hash is stored. This variable
  * must be allocated to hold at least FUZZY_MAX_RESULT bytes.
  * @param flags is a bitwise or of FUZZY_FLAG_* macros. The absence of flags is
@@ -134,6 +139,7 @@ extern int fuzzy_digest(const struct fuzzy_state *state,
 
 /**
  * @brief Dispose a fuzzy state.
+ * @param state The fuzzy state to dispose
  */
 extern void fuzzy_free(/*@only@*/ struct fuzzy_state *state);
 

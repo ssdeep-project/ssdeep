@@ -1,3 +1,16 @@
+** Version 2.14 - 12 Sep 2017
+
+* New Features
+
+  - Optimizations to the fuzzy hashing engine. (hash generator can run as twice
+    as fast and comparison can run five times faster than the previous
+    release)
+
+* Bug Fixes
+
+  - Fixed issue when certain memory allocation is failed.
+
+
 ** Version 2.13 - 24 Apr 2015
 
 * New Features

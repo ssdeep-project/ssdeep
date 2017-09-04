@@ -20,7 +20,7 @@ ssdeep_SOURCES = main.cpp match.cpp engine.cpp filedata.cpp   	\
 
 dll: $(libfuzzy_la_SOURCES)
 	$(CC) $(CFLAGS) -shared -o fuzzy.dll $(libfuzzy_la_SOURCES) \
-        -Wl,--output-def,fuzzy.def,--out-implib,libfuzzy.a
+		-Wl,--output-def,fuzzy.def,--out-implib,libfuzzy.a
 	$(STRIP) fuzzy.dll
 
 CLEANFILES=fuzzy.dll fuzzy.def

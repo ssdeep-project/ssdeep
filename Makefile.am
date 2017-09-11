@@ -51,7 +51,7 @@ win-package: win-docs
 	make dll
 	$(STRIP) ssdeep.exe
 	mkdir $(distdir)
-	cp $(WINDOWSDOCS) ssdeep.exe fuzzy.dll fuzzy.def sample.c $(distdir)
+	cp $(WINDOWSDOCS) ssdeep.exe fuzzy.dll fuzzy.def fuzzy.h sample.c $(distdir)
 #	flip -d $(distdir)/{sample.c,fuzzy.def}
 #	unix2dos $(distdir)/{sample.c,fuzzy.def}
 	zip -lr9 $(distdir).zip $(distdir)

@@ -40,7 +40,7 @@
 #include <stdlib.h>
 #include <inttypes.h>
 
-#include <fuzzy.h>
+#include "fuzzy.h"
 
 #define FILENAME "foo.dat" 
 #define SIZE 0x50000

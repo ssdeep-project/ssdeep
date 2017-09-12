@@ -3,8 +3,8 @@
 * New Features
 
   - Optimizations to the fuzzy hashing engine. (hash generator can run as twice
-    as fast and comparison can run five times faster than the previous
-    release)
+    as fast and comparison can run 1.5 through 5 times faster [heavily depends
+    on the data and platform] than the previous release)
 
 * Bug Fixes
 

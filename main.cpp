@@ -53,7 +53,7 @@ static void usage(void)
   print_status ("-v - Verbose mode. Displays filename as its being processed");
   print_status ("-r - Recursive mode");
 
-  print_status ("-s - Silent mode; all errors are supressed");
+  print_status ("-s - Silent mode; all errors are suppressed");
   print_status ("-b - Uses only the bare name of files; all path information omitted");
   print_status ("-l - Uses relative paths for filenames");
   print_status ("-c - Prints output in CSV format");

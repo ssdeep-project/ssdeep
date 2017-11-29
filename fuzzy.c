@@ -583,7 +583,7 @@ out:
   if (status == 0)
   {
     if (fseeko(handle, fpos, SEEK_SET) < 0)
-      return -1;
+      status = -1;
   }
   fuzzy_free(ctx);
   return status;

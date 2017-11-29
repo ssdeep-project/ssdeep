@@ -47,6 +47,7 @@ int edit_distn(const char *s1, size_t s1len, const char *s2, size_t s2len) {
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "edit_dist.h"
 
 #define HELLOWORLD "Hello World!"
 

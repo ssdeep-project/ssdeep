@@ -52,7 +52,7 @@ class Filedata
   ~Filedata() { if (m_filename) { free(m_filename); } }
 
  private:
-  Filedata(const Filedata &other) { assert(false); /* never copy */ }
+  Filedata(const Filedata &other) { (void) other; assert(false); /* never copy */ }
 
   std::set<Filedata *> * m_cluster;
 

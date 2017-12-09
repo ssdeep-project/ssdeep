@@ -7,6 +7,11 @@
 
 #include "main.h"
 
+// Prototypes
+off_t find_file_size(FILE *f);
+off_t find_dev_size(int fd, int blk_size);
+
+
 #ifndef _WIN32
 
 // Return the size, in bytes of an open file stream. On error, return 0 

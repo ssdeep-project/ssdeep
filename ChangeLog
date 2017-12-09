@@ -1,3 +1,15 @@
+2017-11-28: Travis Finkenauer <tmfink@juniper.net>:
+
+	* edit_dist.c: Include edit_dist.h to pick up forward declaration of
+	  edit_distn().
+	* engine.cpp (display_result): Initialize before use in case of
+	  uncaught exception.
+	* filedata.h (class Filedata): Avoid unused variable warning.
+	* find-file-size.c: Add function prototypes for find_dev_size() and
+	  find_file_size() to keep compiler happy.
+	* fuzzy.c (fuzzy_hash_file): Avoid a memory leak.
+	* match.cpp (sig_file_close): Fix reversed logic to close handle.
+
 2017-06-01: Tsukasa OI <floss_ssdeep@irq.a4lg.com>:
 
 	* fuzzy.c, sum_table.h: Added many optimizations

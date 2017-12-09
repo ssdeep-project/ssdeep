@@ -127,7 +127,7 @@ bool sig_file_close(state *s)
 
   free(s->known_fn);
 
-  if (s->known_handle != NULL) 
+  if (s->known_handle == NULL)
     return true;
 
   if (fclose(s->known_handle))

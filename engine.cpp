@@ -9,7 +9,7 @@
 bool display_result(state *s, const TCHAR * fn, const char * sum) {
   // Only spend the extra time to make a Filedata object if we need to
   if (MODE(mode_match_pretty) or MODE(mode_match) or MODE(mode_directory)) {
-    Filedata * f;
+    Filedata * f = NULL;
     
     try {
       f = new Filedata(fn, sum);

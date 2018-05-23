@@ -1,4 +1,4 @@
-// $Id$ 
+// $Id$
 
 #include "main.h"
 #include "ssdeep.h"
@@ -13,7 +13,7 @@ bool display_result(state *s, const TCHAR * fn, const char * sum) {
     
     try {
       f = new Filedata(fn, sum);
-    } 
+    }
     catch (std::bad_alloc) {
       fatal_error("%s: Unable to create Filedata object in engine.cpp:display_result()", __progname);
     }
@@ -61,12 +61,12 @@ int hash_file(state *s, TCHAR *fn) {
   TCHAR *my_filename, *msg;
   FILE *handle;
 
-#ifdef WIN32  
+#ifdef WIN32
   TCHAR expanded_fn[SSDEEP_PATH_MAX];
   if (not expanded_path(fn) && !(s->mode & mode_relative)) {
-    _sntprintf(expanded_fn, 
+    _sntprintf(expanded_fn,
 	       SSDEEP_PATH_MAX,
-	       _TEXT("\\\\?\\%s"), 
+	       _TEXT("\\\\?\\%s"),
 	       fn);
   } else {
     _tcsncpy(expanded_fn, fn, SSDEEP_PATH_MAX);
@@ -89,7 +89,8 @@ int hash_file(state *s, TCHAR *fn) {
     return TRUE;
   }
 
-  if ((msg = (TCHAR *)malloc(sizeof(TCHAR) * (MAX_STATUS_MSG + 2))) == NULL)
+#define MSG_LENGTH (MAX_STATUS_MSG + 20)
+  if ((msg = (TCHAR *)malloc(sizeof(TCHAR) * MSG_LENGTH)) == NULL)
   {
     free(sum);
     fclose(handle);
@@ -111,9 +112,9 @@ int hash_file(state *s, TCHAR *fn) {
       my_filename = fn;
 
     _sntprintf(msg,
-	       MAX_STATUS_MSG-1,
-	       _TEXT("Hashing: %s%s"), 
-	       my_filename, 
+	       MSG_LENGTH-1,
+	       _TEXT("Hashing: %s%s"),
+	       my_filename,
 	       _TEXT(BLANK_LINE));
     _ftprintf(stderr,_TEXT("%s\r"), msg);
 

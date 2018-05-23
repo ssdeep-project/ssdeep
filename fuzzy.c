@@ -121,7 +121,7 @@ struct blockhash_context
   unsigned int dindex;
   char digest[SPAMSUM_LENGTH];
   char halfdigest;
-  char h, halfh;
+  unsigned char h, halfh;
 };
 
 struct fuzzy_state
@@ -609,6 +609,7 @@ int fuzzy_hash_filename(const char *filename, /*@out@*/ char *result)
 //
 // return 1 if the two strings do have a common substring, 0 otherwise
 //
+#ifndef SSDEEP_ENABLE_POSITION_ARRAY
 static int has_common_substring(const char *s1, size_t s1len, const char *s2, size_t s2len)
 {
   size_t i, j;
@@ -662,7 +663,7 @@ static int has_common_substring(const char *s1, size_t s1len, const char *s2, si
 
   return 0;
 }
-
+#endif
 
 
 #ifdef SSDEEP_ENABLE_POSITION_ARRAY

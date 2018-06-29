@@ -504,7 +504,7 @@ bool process_win32(state *s, TCHAR *fn)
     // didn't find any matching files.
     // Note that we still display errors with the original 'fn'
     if (! _tcsstr(fn, _TEXT("*")))
-      print_error_unicode(s, fn, "No such file || directory");
+      print_error_unicode(s, fn, "No such file or directory");
     return false;
   }
 

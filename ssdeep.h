@@ -22,6 +22,7 @@
 
 // This is a kludge, but it works.
 #define __progname "ssdeep"
+#define VERSION "2.14.1"
 
 #define SSDEEPV1_0_HEADER        "ssdeep,1.0--blocksize:hash:hash,filename"
 #define SSDEEPV1_1_HEADER        "ssdeep,1.1--blocksize:hash:hash,filename"

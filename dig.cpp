@@ -168,7 +168,7 @@ void remove_double_dirs(TCHAR *fn)
 
 static void clean_name(state *s, TCHAR *fn)
 {
-  if (not (s->mode & mode_relative)) {
+  if (!(s->mode & mode_relative)) {
     remove_double_slash(fn);
     remove_single_dirs(fn);
     remove_double_dirs(fn);
@@ -446,7 +446,7 @@ bool process_win32(state *s, TCHAR *fn)
   TCHAR dirname[SSDEEP_PATH_MAX], new_fn[SSDEEP_PATH_MAX], expanded_fn[SSDEEP_PATH_MAX];
   WIN32_FIND_DATAW FindFileData;
 
-  if (NULL == s or NULL == fn)
+  if (NULL == s || NULL == fn)
     return true;
 
   //print_status("process_win32 got %S", fn);
@@ -460,7 +460,7 @@ bool process_win32(state *s, TCHAR *fn)
   // as an error or use it to alias the current working directory on c:.
   // As a convenience to users, we're going to accept 'c:'. To do this
   // we change it into 'c:\'
-  if (_tcslen(fn) == 2 and isalpha(fn[0]) and fn[1] == _TEXT(':')) {
+  if (_tcslen(fn) == 2 && isalpha(fn[0]) && fn[1] == _TEXT(':')) {
     fn[2] = _TEXT(DIR_SEPARATOR);
     fn[3] = 0;
   }
@@ -484,8 +484,8 @@ bool process_win32(state *s, TCHAR *fn)
 
   // If we don't have it already, create the expanded filename.
   // "C:\foo\bar.txt" --> "\\?\C:\foo\bar.txt"
-  if (not expanded_path(fn) and
-      not (s->mode & mode_relative)) {
+  if (!expanded_path(fn) &&
+      !(s->mode & mode_relative)) {
     _sntprintf(expanded_fn,
 	       SSDEEP_PATH_MAX,
 	       _TEXT("\\\\?\\%s"),
@@ -503,7 +503,7 @@ bool process_win32(state *s, TCHAR *fn)
     // original filename, e.g. C:\foo\*. When this happens it means we just
     // didn't find any matching files.
     // Note that we still display errors with the original 'fn'
-    if (not _tcsstr(fn, _TEXT("*")))
+    if (!_tcsstr(fn, _TEXT("*")))
       print_error_unicode(s, fn, "No such file or directory");
     return false;
   }
@@ -521,7 +521,7 @@ bool process_win32(state *s, TCHAR *fn)
     // Because the wildcard is always in the last part of the input
     // (e.g. c:\bin\*.exe) we can use the original dirname, combined
     // with the filename we've found, to make the new filename.
-    if (not is_special_dir(FindFileData.cFileName)) {
+    if (!is_special_dir(FindFileData.cFileName)) {
 
       //      print_status("Found file: %S", FindFileData.cFileName);
 
@@ -530,8 +530,8 @@ bool process_win32(state *s, TCHAR *fn)
 		 _TEXT("%s%s"),
 		 dirname,
 		 FindFileData.cFileName);
-      if (not expanded_path(new_fn) and
-	  not (s->mode & mode_relative)) {
+      if (!expanded_path(new_fn) &&
+	  !(s->mode & mode_relative)) {
 	_sntprintf(expanded_fn,
 		   SSDEEP_PATH_MAX,
 		   _TEXT("\\\\?\\%s"),

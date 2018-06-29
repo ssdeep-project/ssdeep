@@ -59,7 +59,7 @@ void Filedata::clear_cluster(void)
 Filedata::Filedata(const TCHAR * fn, const char * sig, const char * match_file)
 {
   m_signature = std::string(sig);
-  if (not valid())
+  if (!valid())
     throw std::bad_alloc();
 
   m_filename = _tcsdup(fn);
@@ -101,7 +101,7 @@ Filedata::Filedata(const std::string& sig, const char * match_file)
     m_signature = std::string(sig);
 
     // We still have to check the validity of the signature
-    if (not valid())
+    if (!valid())
       throw std::bad_alloc();
 
     return;
@@ -163,11 +163,11 @@ bool operator==(const Filedata& a, const Filedata& b)
 {
   if (a.get_signature() != b.get_signature())
     return false;
-  if (a.has_match_file() and not b.has_match_file())
+  if (a.has_match_file() && !b.has_match_file())
     return false;
-  if (not a.has_match_file() and b.has_match_file())
+  if (!a.has_match_file() && b.has_match_file())
     return false;
-  if (a.has_match_file() and b.has_match_file())
+  if (a.has_match_file() && b.has_match_file())
   {
     if (a.get_match_file() != b.get_match_file())
       return false;

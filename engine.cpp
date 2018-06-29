@@ -8,7 +8,7 @@
 
 bool display_result(state *s, const TCHAR * fn, const char * sum) {
   // Only spend the extra time to make a Filedata object if we need to
-  if (MODE(mode_match_pretty) or MODE(mode_match) or MODE(mode_directory)) {
+  if (MODE(mode_match_pretty) || MODE(mode_match) || MODE(mode_directory)) {
     Filedata * f = NULL;
     
     try {
@@ -23,7 +23,7 @@ bool display_result(state *s, const TCHAR * fn, const char * sum) {
 	print_error_unicode(s, fn, "Unable to add hash to set of known hashes");
     }
     else {
-      // This block is for MODE(mode_match) or MODE(mode_directory)
+      // This block is for MODE(mode_match) || MODE(mode_directory)
       match_compare(s, f);
       
       if (MODE(mode_directory)) {
@@ -63,8 +63,8 @@ int hash_file(state *s, TCHAR *fn) {
 
 #ifdef WIN32
   TCHAR expanded_fn[SSDEEP_PATH_MAX];
-  if (not expanded_path(fn) && !(s->mode & mode_relative)) {
-    _sntprintf(expanded_fn,
+  if (!expanded_path(fn) && !(s->mode & mode_relative)) {
+    _sntprintf(expanded_fn, 
 	       SSDEEP_PATH_MAX,
 	       _TEXT("\\\\?\\%s"),
 	       fn);

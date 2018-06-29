@@ -131,7 +131,7 @@ static void process_cmd_line(state *s, int argc, char **argv)
       if (MODE(mode_compare_unknown) || MODE(mode_sigcompare))
 	fatal_error("Positive matching cannot be combined with other matching modes");
       s->mode |= mode_match;
-      if (not match_load(s,optarg))
+      if (!match_load(s,optarg))
 	match_files_loaded = TRUE;
       break;
       
@@ -139,7 +139,7 @@ static void process_cmd_line(state *s, int argc, char **argv)
       if (MODE(mode_match) || MODE(mode_sigcompare))
 	fatal_error("Signature matching cannot be combined with other matching modes");
       s->mode |= mode_compare_unknown;
-      if (not match_load(s,optarg))
+      if (!match_load(s,optarg))
 	match_files_loaded = TRUE;
       break;
 
@@ -162,7 +162,7 @@ static void process_cmd_line(state *s, int argc, char **argv)
   // the command line arguments.
   sanity_check(s,
 	       ((MODE(mode_match) || MODE(mode_compare_unknown))
-		&& not match_files_loaded),
+		&& !match_files_loaded),
 	       "No matching files loaded");
   
   sanity_check(s,
@@ -174,15 +174,15 @@ static void process_cmd_line(state *s, int argc, char **argv)
 	       "Directory mode and pretty matching are mutually exclusive");
 
   sanity_check(s,
-	       MODE(mode_csv) and MODE(mode_cluster),
+	       MODE(mode_csv) && MODE(mode_cluster),
 	       "CSV and clustering modes cannot be combined");
 
   // -m, -p, and -d are incompatible with -k and -x
   // The former treat FILES as raw files. The latter require them to be sigs
   sanity_check(s,
-	       ((MODE(mode_match) or MODE(mode_match_pretty) or MODE(mode_directory))
-		and
-		(MODE(mode_compare_unknown) or MODE(mode_sigcompare))),
+	       ((MODE(mode_match) || MODE(mode_match_pretty) || MODE(mode_directory))
+		&&
+		(MODE(mode_compare_unknown) || MODE(mode_sigcompare))),
 	       "Incompatible matching modes");
 
 
@@ -214,7 +214,7 @@ static int is_absolute_path(TCHAR *fn)
     internal_error("Unknown error in is_absolute_path");
   
 #ifdef _WIN32
-  return (isalpha(fn[0]) and _TEXT(':') == fn[1]);
+  return (isalpha(fn[0]) && _TEXT(':') == fn[1]);
 # else
   return (DIR_SEPARATOR == fn[0]);
 #endif
@@ -292,7 +292,7 @@ int main(int argc, char **argv)
     // on it on Win32 (i.e. where it matters). The setting of 'goal'
     // to the original argc occured at the start of main(), so we just
     // need to update it if we're *not* in signature compare mode.
-    if (not (s->mode & mode_sigcompare)) {
+    if (!(s->mode & mode_sigcompare)) {
       goal = s->argc;
     }
     
@@ -319,7 +319,7 @@ int main(int argc, char **argv)
     // to be meaningful, we should display a warning message to the user.
     // This happens mostly when people are testing very small files
     // e.g. $ echo "hello world" > foo && ssdeep foo
-    if ((not s->found_meaningful_file) and s->processed_file)
+    if (!s->found_meaningful_file && s->processed_file)
     {
       print_error(s,"%s: Did not process files large enough to produce meaningful results", __progname);
     }
@@ -331,7 +331,7 @@ int main(int argc, char **argv)
   // work for us.
   if (MODE(mode_sigcompare))
     s->mode |= mode_match_pretty;
-  if (MODE(mode_match_pretty) or MODE(mode_sigcompare) or MODE(mode_cluster))
+  if (MODE(mode_match_pretty) || MODE(mode_sigcompare) || MODE(mode_cluster))
     find_matches_in_known(s);
   if (MODE(mode_cluster))
     display_clusters(s);

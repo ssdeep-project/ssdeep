@@ -37,7 +37,7 @@
 /// @return Returns false success, true on error
 bool sig_file_open(state *s, const char * fn)
 {
-  if (NULL == s or NULL == fn)
+  if (NULL == s || NULL == fn)
     return true;
 
   s->known_handle = fopen(fn,"rb");
@@ -60,7 +60,7 @@ bool sig_file_open(state *s, const char * fn)
 
   chop_line(buffer);
 
-  if (strncmp(buffer,SSDEEPV1_0_HEADER,MAX_STR_LEN) and 
+  if (strncmp(buffer,SSDEEPV1_0_HEADER,MAX_STR_LEN) &&
       strncmp(buffer,SSDEEPV1_1_HEADER,MAX_STR_LEN)) 
   {
     if ( ! (MODE(mode_silent)) )
@@ -88,7 +88,7 @@ bool sig_file_open(state *s, const char * fn)
 /// Otherwise, false.
 bool sig_file_next(state *s, Filedata ** f)
 {
-  if (NULL == s or NULL == f or NULL == s->known_handle)
+  if (NULL == s || NULL == f || NULL == s->known_handle)
     return true;
 
   char buffer[MAX_STR_LEN];
@@ -220,19 +220,19 @@ void handle_clustering(state *s, Filedata *a, Filedata *b)
   bool a_has = a->has_cluster(), b_has = b->has_cluster();
 
   // In the easiest case, one of these has a cluster and one doesn't
-  if (a_has and not b_has)
+  if (a_has && !b_has)
   {
     cluster_add(a,b);
     return;
   }
-  if (b_has and not a_has)
+  if (b_has && !a_has)
   {
     cluster_add(b,a);
     return;
   }
   
   // Combine existing clusters
-  if (a_has and b_has)
+  if (a_has && b_has)
   {
     cluster_join(s,a,b);
     return;
@@ -301,14 +301,14 @@ bool match_compare(state *s, Filedata * f)
     {
       if (!(_tcsncmp(f->get_filename(),
 		     (*it)->get_filename(),
-		     std::max(fn_len,_tcslen((*it)->get_filename())))) and
+		     std::max(fn_len,_tcslen((*it)->get_filename())))) &&
 	  (f->get_signature() == (*it)->get_signature()))
       {
 	// Unless these results from different matching files (such as
 	// what happens in sigcompare mode). That being said, we have to
 	// be careful to avoid NULL values such as when working in 
 	// normal pretty print mode.
-	if (not(f->has_match_file()) or 
+	if (!f->has_match_file() ||
 	    f->get_match_file() == (*it)->get_match_file())
 	  continue;
       }
@@ -320,7 +320,7 @@ bool match_compare(state *s, Filedata * f)
       print_error(s, "%s: Bad hashes in comparison", __progname);
     else
     {
-      if (score > s->threshold or MODE(mode_display_all))
+      if (score > s->threshold || MODE(mode_display_all))
       {
 	handle_match(s,f,(*it),score);
 	status = true;
@@ -345,7 +345,7 @@ bool find_matches_in_known(state *s)
     // In pretty mode and sigcompare mode we need to display a blank
     // line after each file. In clustering mode we don't display anything
     // right now.
-    if (status and not(MODE(mode_cluster)))
+    if (status && !(MODE(mode_cluster)))
       print_status("");
   }
 
@@ -364,7 +364,7 @@ bool match_add(state *s, Filedata * f) {
 
 
 bool match_load(state *s, const char *fn) {
-  if (NULL == s or NULL == fn)
+  if (NULL == s || NULL == fn)
     return true;
   
   if (sig_file_open(s,fn))
@@ -375,7 +375,7 @@ bool match_load(state *s, const char *fn) {
   do {
     Filedata * f; 
     status = sig_file_next(s,&f);
-    if (not status) {
+    if (!status) {
       if (match_add(s,f)) {
 	// One bad hash doesn't mean this load was a failure.
 	// We don't change the return status because match_add failed.
@@ -383,7 +383,7 @@ bool match_load(state *s, const char *fn) {
 	break;
       }
     }
-  } while (not sig_file_end(s));
+  } while (!sig_file_end(s));
 
   sig_file_close(s);
 
@@ -393,7 +393,7 @@ bool match_load(state *s, const char *fn) {
 
 bool match_compare_unknown(state *s, const char * fn)
 { 
-  if (NULL == s or NULL == fn)
+  if (NULL == s || NULL == fn)
     return true;
 
   if (sig_file_open(s,fn))
@@ -405,9 +405,9 @@ bool match_compare_unknown(state *s, const char * fn)
   {
     Filedata *f;
     status = sig_file_next(s,&f);
-    if (not status)
+    if (!status)
       match_compare(s,f);
-  } while (not sig_file_end(s));
+  } while (!sig_file_end(s));
 
   sig_file_close(s);
 

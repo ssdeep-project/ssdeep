@@ -30,9 +30,13 @@
 #include <errno.h>
 #include <limits.h>
 #include <sys/stat.h>
+#ifndef _WIN32
 #include <unistd.h>
+#endif
 #include <ctype.h>
+#ifndef _WIN32
 #include <inttypes.h>
+#endif
 
 #ifdef HAVE_DIRENT_H
 # include <dirent.h>

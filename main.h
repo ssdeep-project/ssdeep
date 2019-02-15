@@ -98,14 +98,5 @@
 #define FALSE  0
 #define TRUE   1
 
-#ifndef MIN
-#define MIN(a,b) ((a)<(b)?(a):(b))
-#endif
-
-#ifndef MAX
-#define MAX(a,b) ((a)>(b)?(a):(b))
-#endif
-
-
 
 #endif   // #ifndef __MAIN_H

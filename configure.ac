@@ -1,4 +1,4 @@
-AC_INIT([ssdeep],[2.14.1],[floss_ssdeep@irq.a4lg.com])
+AC_INIT([ssdeep],[2.14.2],[floss_ssdeep@irq.a4lg.com])
 AM_INIT_AUTOMAKE
 
 AC_CONFIG_FILES([Makefile])

@@ -1,3 +1,9 @@
+** Version 2.14.2 - TO BE DETERMINED
+
+* Bug Fixes
+
+  - Improved guards for including header files from the config
+
 ** Version 2.14.1 - 7 Nov 2017
 
 * Bug Fixes

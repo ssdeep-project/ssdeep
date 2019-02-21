@@ -1,3 +1,8 @@
+2019-02-16: Jesse Kornblum <research@jessekornblum.com>:
+
+	* Makefile.am, fuzzy.c, main.h: Add proper build guards for include
+	  statememnts, remove include dependencies.
+
 2017-11-28: Travis Finkenauer <tmfink@juniper.net>:
 
 	* edit_dist.c: Include edit_dist.h to pick up forward declaration of

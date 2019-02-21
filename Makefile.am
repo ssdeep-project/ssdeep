@@ -6,7 +6,7 @@ ssdeep_LDADD=libfuzzy.la
 ACLOCAL_AMFLAGS = -I m4
 
 lib_LTLIBRARIES=libfuzzy.la
-libfuzzy_la_SOURCES=fuzzy.c edit_dist.c find-file-size.c
+libfuzzy_la_SOURCES=fuzzy.c edit_dist.c
 libfuzzy_la_LDFLAGS=-no-undefined -version-info 3:0:1
 
 include_HEADERS=fuzzy.h edit_dist.h
@@ -15,7 +15,8 @@ man_MANS=ssdeep.1
 
 ssdeep_SOURCES = main.cpp match.cpp engine.cpp filedata.cpp   	\
                  dig.cpp cycles.cpp helpers.cpp ui.cpp edit_dist.h     	\
-                 main.h fuzzy.h tchar-local.h ssdeep.h filedata.h match.h
+                 main.h fuzzy.h tchar-local.h ssdeep.h filedata.h match.h \
+		 find-file-size.c
 
 dll: $(libfuzzy_la_SOURCES)
 	$(CC) $(CFLAGS) -shared -o fuzzy.dll $(libfuzzy_la_SOURCES) \

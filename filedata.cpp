@@ -117,6 +117,10 @@ Filedata::Filedata(const std::string& sig, const char * match_file)
   if (stop != sig.size() - 1)
     throw std::bad_alloc();
 
+  // Skip any malformed input lines.
+  if (start > stop)
+    throw std::bad_alloc();
+
   // Strip off the final quotation mark and record the filename
   std::string tmp = sig.substr(start,(stop - start));
 

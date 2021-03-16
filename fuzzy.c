@@ -864,14 +864,24 @@ int fuzzy_compare(const char *str1, const char *str2)
   size_t s1b1len, s1b2len, s2b1len, s2b2len;
   char s1b1[SPAMSUM_LENGTH], s1b2[SPAMSUM_LENGTH];
   char s2b1[SPAMSUM_LENGTH], s2b2[SPAMSUM_LENGTH];
-  char *s1p, *s2p, *tmp;
+  char *s1p, *s2p, *tmp, *endptr = NULL;
 
   if (NULL == str1 || NULL == str2)
     return -1;
 
   // each spamsum is prefixed by its block size
-  if (sscanf(str1, "%lu:", &block_size1) != 1 ||
-      sscanf(str2, "%lu:", &block_size2) != 1) {
+  block_size1 = strtoul(str1, &endptr, 10);
+  if (endptr == str1 || *endptr != ':') {
+    return -1;
+  }
+  if (block_size1 == ULONG_MAX && errno == ERANGE) {
+    return -1;
+  }
+  block_size2 = strtoul(str2, &endptr, 10);
+  if (endptr == str2 || *endptr != ':') {
+    return -1;
+  }
+  if (block_size2 == ULONG_MAX && errno == ERANGE) {
     return -1;
   }
 

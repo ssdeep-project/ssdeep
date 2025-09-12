@@ -2,7 +2,7 @@
 
 This file documents the fuzzy hashing API. Information on how to use the fuzzy hashing program ssdeep can be found in the man page. On *nix systems you can view this file with:
 
-```bash
+```console
 $ man ./ssdeep.1
 ```
 
@@ -64,13 +64,13 @@ This function returns a value from 0 to 100 indicating the match score of the tw
 
 #### To compile the program using gcc:
 
-```bash
+```console
 $ gcc -Wall -I/usr/local/include -L/usr/local/lib sample.c -lfuzzy
 ```
 
 #### Using mingw:
 
-```cmd
+```console
 C:\> gcc -Wall -Ic:\path\to\includes sample.c fuzzy.dll
 ```
 
@@ -80,13 +80,13 @@ To paraphrase the MinGW documentation, http://www.mingw.org/mingwfaq.shtml#faq-m
 
 The Windows ssdeep package includes a Win32 DLL and a .def file. Although MSVC users can't use the DLL directly, they can easily create a .lib file using the Microsoft LIB tool:
 
-```cmd
+```console
 C:\> lib /machine:i386 /def:fuzzy.def
 ```
 
 You can then compile your program using the resulting library:
 
-```cmd
+```console
 C:\> cl sample.c fuzzy.lib
 ```
 

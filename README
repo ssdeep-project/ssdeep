@@ -100,4 +100,4 @@ A sample program that uses the API is in `sample.c`.
 
 ## 📚 See Also
 
-Jesse D. Kornblum, "Identifying almost identical files using context triggered piecewise hashing", Digital Investigation, 3(S):91-97, September 2006, http://dx.doi.org/10.1016/j.diin.2006.06.015, The Proceedings of the 6th Annual Digital Forensic Research Workshop
+Jesse D. Kornblum, "Identifying almost identical files using context triggered piecewise hashing", Digital Investigation, 3(S):91-97, September 2006, http://dx.doi.org/10.1016/j.diin.2006.06.015, The Proceedings of the 6th Annual Digital Forensic Research Workshop.

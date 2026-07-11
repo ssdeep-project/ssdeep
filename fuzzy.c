@@ -280,8 +280,9 @@ static void fuzzy_engine_step(struct fuzzy_state *self, unsigned char c)
   if (self->flags & FUZZY_STATE_NEED_LASTHASH)
     self->lasth = sum_hash(c, self->lasth);
 
-  /* 0xffffffff !== -1 (mod 3) */
-  if (!horg)
+  /* Prevent piece-splitting trigger on
+     roll_sum(...) == 0xffffffff != -1 (mod 3) */
+  if (horg == 0)
     return;
   /* With growing blocksize almost no runs fail the next test. */
   if (likely(h & self->rollmask))

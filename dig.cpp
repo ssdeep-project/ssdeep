@@ -316,12 +316,6 @@ static int should_hash_symlink(state *s, TCHAR *fn, int *link_type)
 }
 
 
-#define RETURN_IF_MODE(A) \
-if (s->mode & A) \
-  return TRUE; \
-break;
-
-
 static int should_hash(state *s, TCHAR *fn)
 {
   int type = file_type(s, fn);

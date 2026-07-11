@@ -444,8 +444,7 @@ int fuzzy_digest(const struct fuzzy_state *self,
       sz = SPAMSUM_LENGTH / 2 - 1;
     assert(sz <= remain);
     if ((flags & FUZZY_FLAG_ELIMSEQ) != 0)
-      sz = memcpy_eliminate_sequences(result,
-				      self->bh[bi].digest, sz);
+      sz = memcpy_eliminate_sequences(result, self->bh[bi].digest, sz);
     else
       memcpy(result, self->bh[bi].digest, sz);
     result += sz;

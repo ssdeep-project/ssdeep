@@ -61,7 +61,7 @@ bool hash_file(state *s, TCHAR *fn) {
   TCHAR *my_filename, *msg;
   FILE *handle;
 
-#ifdef WIN32
+#ifdef _WIN32
   TCHAR expanded_fn[SSDEEP_PATH_MAX];
   if (!expanded_path(fn) && !(s->mode & mode_relative)) {
     _sntprintf(expanded_fn, 

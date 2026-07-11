@@ -6,7 +6,7 @@
 
 void print_status(const char *fmt, ...)
 {
-  va_list(ap);
+  va_list ap;
   
   va_start(ap,fmt); 
   vprintf(fmt,ap); 
@@ -24,7 +24,7 @@ void print_error(const state *s, const char *fmt, ...)
   if (s->mode & mode_silent)
     return;
 
-  va_list(ap);
+  va_list ap;
   
   va_start(ap,fmt); 
   vfprintf(stderr,fmt,ap); 
@@ -35,7 +35,7 @@ void print_error(const state *s, const char *fmt, ...)
 }
 
 #define MD5DEEP_PRINT_MSG(HANDLE,MSG) \
-va_list(ap);  \
+va_list ap;  \
 va_start(ap,MSG); \
 if (vfprintf(HANDLE,MSG,ap) < 0)  \
 { \
@@ -74,7 +74,7 @@ void internal_error(const char *fmt, ... )
 
 void fatal_error(const char *fmt, ... )
 {
-  va_list(ap);
+  va_list ap;
   
   va_start(ap,fmt); 
   vprintf(fmt,ap); 

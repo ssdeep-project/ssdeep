@@ -371,15 +371,14 @@ int fuzzy_digest(const struct fuzzy_state *self,
   unsigned int bi = self->bhstart;
   uint32_t h = roll_sum(&self->roll);
   int i, remain = FUZZY_MAX_RESULT - 1; /* Exclude terminating '\0'. */
-  /* Verify that our elimination was not overeager. */
-  assert(bi == 0 || (uint_least64_t)SSDEEP_BS(bi) / 2 * SPAMSUM_LENGTH <
-	 self->total_size);
-
+  /* Verify total input size. */
   if (self->total_size > SSDEEP_TOTAL_SIZE_MAX) {
-    /* The input exceeds data types. */
     errno = EOVERFLOW;
     return -1;
   }
+  /* Verify that our elimination was not overeager. */
+  assert(bi == 0 || (uint_least64_t)SSDEEP_BS(bi) / 2 * SPAMSUM_LENGTH <
+	 self->total_size);
   /* Fixed size optimization. */
   if ((self->flags & FUZZY_STATE_SIZE_FIXED) &&
       self->fixed_size != self->total_size) {

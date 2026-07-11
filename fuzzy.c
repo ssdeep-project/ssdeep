@@ -2,7 +2,7 @@
  * Copyright (C) 2002 Andrew Tridgell <tridge@samba.org>
  * Copyright (C) 2006 ManTech International Corporation
  * Copyright (C) 2013 Helmut Grohne <helmut@subdivi.de>
- * Copyright (C) 2017 Tsukasa OI <floss_ssdeep@irq.a4lg.com>
+ * Copyright (C) 2017, 2026 Tsukasa OI <floss_ssdeep@irq.a4lg.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -342,12 +342,11 @@ int fuzzy_update(struct fuzzy_state *self,
   return 0;
 }
 
-static int memcpy_eliminate_sequences(char *dst,
-				      const char *src,
-				      int n)
+static size_t memcpy_eliminate_sequences(char *dst,
+					 const char *src,
+					 size_t n)
 {
   const char *srcend = src + n;
-  assert(n >= 0);
   if (src < srcend) *dst++ = *src++;
   if (src < srcend) *dst++ = *src++;
   if (src < srcend) *dst++ = *src++;
@@ -370,7 +369,9 @@ int fuzzy_digest(const struct fuzzy_state *self,
 {
   unsigned int bi = self->bhstart;
   uint32_t h = roll_sum(&self->roll);
-  int i, remain = FUZZY_MAX_RESULT - 1; /* Exclude terminating '\0'. */
+  size_t sz, remain = FUZZY_MAX_RESULT - 1; /* Exclude terminating '\0'. */
+  int isz;
+  char ch;
   /* Verify total input size. */
   if (self->total_size > SSDEEP_TOTAL_SIZE_MAX) {
     errno = EOVERFLOW;
@@ -395,28 +396,29 @@ int fuzzy_digest(const struct fuzzy_state *self,
     --bi;
   assert(!(bi > 0 && self->bh[bi].dindex < SPAMSUM_LENGTH / 2));
 
-  i = snprintf(result, (size_t)remain, "%lu:", (unsigned long)SSDEEP_BS(bi));
-  if (i <= 0)
+  isz = snprintf(result, remain, "%lu:", (unsigned long)SSDEEP_BS(bi));
+  if (isz <= 0)
     /* Maybe snprintf has set errno here? */
     return -1;
-  assert(i < remain);
-  remain -= i;
-  result += i;
-  i = (int)self->bh[bi].dindex;
-  assert(i <= remain);
+  sz = (size_t)isz;
+  assert(sz < remain);
+  remain -= sz;
+  result += sz;
+  sz = (size_t)self->bh[bi].dindex;
+  assert(sz <= remain);
   if ((flags & FUZZY_FLAG_ELIMSEQ) != 0)
-    i = memcpy_eliminate_sequences(result, self->bh[bi].digest, i);
+    sz = memcpy_eliminate_sequences(result, self->bh[bi].digest, sz);
   else
-    memcpy(result, self->bh[bi].digest, (size_t)i);
-  result += i;
-  remain -= i;
+    memcpy(result, self->bh[bi].digest, sz);
+  result += sz;
+  remain -= sz;
   if (h != 0)
   {
     /* Write then commit (++result, --remain)
        if we don't need to eliminate sequences. */
     assert(remain > 0);
     *result = b64[self->bh[bi].h];
-    if((flags & FUZZY_FLAG_ELIMSEQ) == 0 || i < 3 ||
+    if((flags & FUZZY_FLAG_ELIMSEQ) == 0 || sz < 3 ||
        *result != result[-1] ||
        *result != result[-2] ||
        *result != result[-3]) {
@@ -427,7 +429,7 @@ int fuzzy_digest(const struct fuzzy_state *self,
   else if (self->bh[bi].digest[self->bh[bi].dindex] != '\0') {
     assert(remain > 0);
     *result = self->bh[bi].digest[self->bh[bi].dindex];
-    if((flags & FUZZY_FLAG_ELIMSEQ) == 0 || i < 3 ||
+    if((flags & FUZZY_FLAG_ELIMSEQ) == 0 || sz < 3 ||
        *result != result[-1] ||
        *result != result[-2] ||
        *result != result[-3]) {
@@ -441,24 +443,26 @@ int fuzzy_digest(const struct fuzzy_state *self,
   if (bi < self->bhend - 1)
   {
     ++bi;
-    i = (int)self->bh[bi].dindex;
+    sz = (size_t)self->bh[bi].dindex;
     if ((flags & FUZZY_FLAG_NOTRUNC) == 0 &&
-	i > SPAMSUM_LENGTH / 2 - 1)
-      i = SPAMSUM_LENGTH / 2 - 1;
-    assert(i <= remain);
+	sz > SPAMSUM_LENGTH / 2 - 1)
+      sz = SPAMSUM_LENGTH / 2 - 1;
+    assert(sz <= remain);
     if ((flags & FUZZY_FLAG_ELIMSEQ) != 0)
-      i = memcpy_eliminate_sequences(result,
-				     self->bh[bi].digest, i);
+      sz = memcpy_eliminate_sequences(result,
+				      self->bh[bi].digest, sz);
     else
-      memcpy(result, self->bh[bi].digest, (size_t)i);
-    result += i;
-    remain -= i;
+      memcpy(result, self->bh[bi].digest, sz);
+    result += sz;
+    remain -= sz;
     if (h != 0) {
       assert(remain > 0);
-      h = (flags & FUZZY_FLAG_NOTRUNC) != 0 ? self->bh[bi].h :
-	self->bh[bi].halfh;
-      *result = b64[h];
-      if ((flags & FUZZY_FLAG_ELIMSEQ) == 0 || i < 3 ||
+      ch = b64[
+	(flags & FUZZY_FLAG_NOTRUNC) != 0 ? self->bh[bi].h :
+	self->bh[bi].halfh
+      ];
+      *result = ch;
+      if ((flags & FUZZY_FLAG_ELIMSEQ) == 0 || sz < 3 ||
 	  *result != result[-1] ||
 	  *result != result[-2] ||
 	  *result != result[-3])
@@ -468,12 +472,12 @@ int fuzzy_digest(const struct fuzzy_state *self,
       }
     }
     else {
-      i = (flags & FUZZY_FLAG_NOTRUNC) != 0 ?
+      ch = (flags & FUZZY_FLAG_NOTRUNC) != 0 ?
 	  self->bh[bi].digest[self->bh[bi].dindex] : self->bh[bi].halfdigest;
-      if (i != '\0') {
+      if (ch != '\0') {
 	assert(remain > 0);
-	*result = i;
-	if ((flags & FUZZY_FLAG_ELIMSEQ) == 0 || i < 3 ||
+	*result = ch;
+	if ((flags & FUZZY_FLAG_ELIMSEQ) == 0 || sz < 3 ||
 	    *result != result[-1] ||
 	    *result != result[-2] ||
 	    *result != result[-3])

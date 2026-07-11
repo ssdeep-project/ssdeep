@@ -896,11 +896,6 @@ int fuzzy_compare(const char *str1, const char *str2)
     return 0;
   }
 
-  if (!s1p || !s2p) {
-    // badly formed ...
-    return -1;
-  }
-
   // there is very little information content is sequences of
   // the same character like 'LLLLL'. Eliminate any sequences
   // longer than 3 while reading two pieces.

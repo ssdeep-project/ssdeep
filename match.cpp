@@ -103,7 +103,7 @@ bool sig_file_next(state *s, Filedata ** f)
   {
     *f = new Filedata(std::string(buffer),s->known_fn);
   }
-  catch (std::bad_alloc)
+  catch (const std::bad_alloc&)
   {
     // This can happen on a badly formatted line, or a blank one.
     // We don't display errors on blank lines.

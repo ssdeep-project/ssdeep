@@ -14,7 +14,7 @@ bool display_result(state *s, const TCHAR * fn, const char * sum) {
     try {
       f = new Filedata(fn, sum);
     }
-    catch (std::bad_alloc) {
+    catch (const std::bad_alloc&) {
       fatal_error("%s: Unable to create Filedata object in engine.cpp:display_result()", __progname);
     }
 

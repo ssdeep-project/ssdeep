@@ -395,7 +395,7 @@ int fuzzy_digest(const struct fuzzy_state *self,
   while (bi > self->bhstart && self->bh[bi].dindex < SPAMSUM_LENGTH / 2)
     --bi;
   assert(!(bi > 0 && self->bh[bi].dindex < SPAMSUM_LENGTH / 2));
-
+  /* Block size: write */
   isz = snprintf(result, remain, "%lu:", (unsigned long)SSDEEP_BS(bi));
   if (isz <= 0)
     /* Maybe snprintf has set errno here? */
@@ -404,6 +404,7 @@ int fuzzy_digest(const struct fuzzy_state *self,
   assert(sz < remain);
   remain -= sz;
   result += sz;
+  /* Block hash 1: write except the last character (if any). */
   sz = (size_t)self->bh[bi].dindex;
   assert(sz <= remain);
   if ((flags & FUZZY_FLAG_ELIMSEQ) != 0)
@@ -412,6 +413,7 @@ int fuzzy_digest(const struct fuzzy_state *self,
     memcpy(result, self->bh[bi].digest, sz);
   result += sz;
   remain -= sz;
+  /* Block hash 1: optional last character handling. */
   if (h != 0)
   {
     /* Write then commit (++result, --remain)
@@ -442,6 +444,7 @@ int fuzzy_digest(const struct fuzzy_state *self,
   --remain;
   if (bi < self->bhend - 1)
   {
+    /* Block hash 2 (common): write except the last character (if any). */
     ++bi;
     sz = (size_t)self->bh[bi].dindex;
     if ((flags & FUZZY_FLAG_NOTRUNC) == 0 &&
@@ -455,6 +458,7 @@ int fuzzy_digest(const struct fuzzy_state *self,
       memcpy(result, self->bh[bi].digest, sz);
     result += sz;
     remain -= sz;
+    /* Block hash 2 (common): optional last character handling. */
     if (h != 0) {
       assert(remain > 0);
       ch = b64[
@@ -490,6 +494,7 @@ int fuzzy_digest(const struct fuzzy_state *self,
   }
   else if (h != 0)
   {
+    /* Block hash 2 (nearly empty): first and last. */
     assert(bi == 0 || bi == NUM_BLOCKHASHES - 1);
     assert(remain > 0);
     if (bi == 0)

@@ -35,7 +35,7 @@ bool expanded_path(TCHAR *p)
 }
 
 
-void sanity_check(state *s, int condition, const char *msg)
+void sanity_check(state *s, bool condition, const char *msg)
 {
   if (NULL == s)
     exit(EXIT_FAILURE);
@@ -57,34 +57,34 @@ void sanity_check(state *s, int condition, const char *msg)
 // we're guaranteed to be working with a filename here, there's no way
 // that s will end with a DIR_SEPARATOR (e.g. /foo/bar/). This function
 // will not work properly for a string that ends in a DIR_SEPARATOR */
-int my_basename(TCHAR *s)
+bool my_basename(TCHAR *s)
 {
   size_t len;
   TCHAR * tmp;
 
   if (NULL == s)
-    return TRUE;
+    return true;
 
   tmp = _tcsrchr(s,DIR_SEPARATOR);
 
   if (NULL == tmp)
-    return FALSE;
+    return false;
 
   len = _tcslen(tmp);
 
   // We advance tmp one character to move us past the DIR_SEPARATOR
   _tmemmove(s,tmp+1,len);
 
-  return FALSE;
+  return false;
 }
 
 
-int my_dirname(TCHAR *c)
+bool my_dirname(TCHAR *c)
 {
   TCHAR *tmp;
 
   if (NULL == c)
-    return TRUE;
+    return true;
 
   // If there are no DIR_SEPARATORs in the directory name, then the 
   // directory name should be the empty string 
@@ -94,7 +94,7 @@ int my_dirname(TCHAR *c)
   else
     c[0] = 0;
 
-  return FALSE;
+  return false;
 }
 
 
@@ -185,7 +185,7 @@ int find_next_comma_tchar(TCHAR *s, unsigned int start)
 {
   size_t size = _tcslen(s);
   unsigned int pos = start;
-  int in_quote = FALSE;
+  bool in_quote = false;
 
   while (pos < size)
   {
@@ -214,15 +214,15 @@ void mm_magic(void){MM_INIT("%s\n","\x49\x20\x64\x6f\x20\x6e\x6f\x74\x20\x62\x65
 
 // Returns the string after the nth comma in the string s. If that
 // string is quoted, the quotes are removed. If there is no valid
-// string to be found, returns TRUE. Otherwise, returns FALSE 
-int find_comma_separated_string_tchar(TCHAR *s, unsigned int n)
+// string to be found, returns true. Otherwise, returns false.
+bool find_comma_separated_string_tchar(TCHAR *s, unsigned int n)
 {
   int start = 0, end;
   unsigned int count = 0;
   while (count < n)
   {
     if ((start = find_next_comma_tchar(s,start)) == -1)
-      return TRUE;
+      return true;
     ++count;
     // Advance the pointer past the current comma
     ++start;
@@ -244,7 +244,7 @@ int find_comma_separated_string_tchar(TCHAR *s, unsigned int n)
   s[end] = 0;
   shift_string_tchar(s,0,start);
 
-  return FALSE;
+  return false;
 }
 
 
@@ -274,7 +274,7 @@ int find_next_comma(char *s, unsigned int start)
 {
   size_t size=strlen(s);
   unsigned int pos = start; 
-  int in_quote = FALSE;
+  bool in_quote = false;
   
   while (pos < size)
     {
@@ -301,15 +301,15 @@ int find_next_comma(char *s, unsigned int start)
 
 /// Returns the string after the nth comma in the string s. If that
 /// string is quoted, the quotes are removed. If there is no valid 
-/// string to be found, returns TRUE. Otherwise, returns FALSE 
-int find_comma_separated_string(char *s, unsigned int n)
+/// string to be found, returns true. Otherwise, returns false.
+bool find_comma_separated_string(char *s, unsigned int n)
 {
   int start = 0, end;
   unsigned int count = 0; 
   while (count < n)
     {
       if ((start = find_next_comma(s,start)) == -1)
-	return TRUE;
+	return true;
       ++count;
       // Advance the pointer past the current comma
       ++start;
@@ -331,15 +331,15 @@ int find_comma_separated_string(char *s, unsigned int n)
   s[end] = 0;
   shift_string(s,0,start);
   
-  return FALSE;
+  return false;
 }
 
 
 
-int remove_escaped_quotes(char * str)
+bool remove_escaped_quotes(char * str)
 {
   if (NULL == str)
-    return TRUE;
+    return true;
   
   size_t pos = 0;
   while (str[pos] != 0)
@@ -350,7 +350,7 @@ int remove_escaped_quotes(char * str)
     ++pos;
   }
   
-  return FALSE;
+  return false;
 }
   
 

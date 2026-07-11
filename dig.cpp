@@ -13,9 +13,9 @@
 
 #include "ssdeep.h"
 
-#define STATUS_OK   FALSE
+#define STATUS_OK   false
 
-static int is_special_dir(TCHAR *d)
+static bool is_special_dir(TCHAR *d)
 {
   return ((!_tcsncmp(d,_TEXT("."),1) && (_tcslen(d) == 1)) ||
           (!_tcsncmp(d,_TEXT(".."),2) && (_tcslen(d) == 2)));
@@ -176,9 +176,9 @@ static void clean_name(state *s, TCHAR *fn)
 }
 
 
-static int process_dir(state *s, TCHAR *fn)
+static bool process_dir(state *s, TCHAR *fn)
 {
-  int return_value = STATUS_OK;
+  bool return_value = STATUS_OK;
   TCHAR *new_file;
   _TDIR *current_dir;
   struct _tdirent *entry;
@@ -280,7 +280,7 @@ static int file_type(state *s, TCHAR *fn)
 }
 
 
-static int should_hash_symlink(state *s, TCHAR *fn, int *link_type)
+static bool should_hash_symlink(state *s, TCHAR *fn, int *link_type)
 {
   int type;
   _tstat_t sb;
@@ -294,7 +294,7 @@ static int should_hash_symlink(state *s, TCHAR *fn, int *link_type)
   if (_sstat(fn,&sb))
     {
       print_error_unicode(s,fn,"%s",strerror(errno));
-      return FALSE;
+      return false;
     }
 
   type = file_type_helper(sb);
@@ -307,16 +307,16 @@ static int should_hash_symlink(state *s, TCHAR *fn, int *link_type)
 	{
 	  print_error_unicode(s,fn,"Is a directory");
 	}
-      return FALSE;
+      return false;
     }
 
   if (link_type != NULL)
     *link_type = type;
-  return TRUE;
+  return true;
 }
 
 
-static int should_hash(state *s, TCHAR *fn)
+static bool should_hash(state *s, TCHAR *fn)
 {
   int type = file_type(s, fn);
 
@@ -331,36 +331,36 @@ static int should_hash(state *s, TCHAR *fn)
     {
       print_error_unicode(s,fn,"Is a directory");
     }
-    return FALSE;
+    return false;
   }
 
   if (type == file_symlink)
     return should_hash_symlink(s,fn,NULL);
 
   if (type == file_unknown)
-    return FALSE;
+    return false;
 
   // By default we hash anything we can't identify as a "bad thing"
-  return TRUE;
+  return true;
 }
 
 
-int process_normal(state *s, TCHAR *fn)
+bool process_normal(state *s, TCHAR *fn)
 {
   clean_name(s,fn);
 
   if (should_hash(s,fn))
     return (hash_file(s,fn));
 
-  return FALSE;
+  return false;
 }
 #endif   // ifndef _WIN32
 
 
-int process_stdin(state *s)
+bool process_stdin(state *s)
 {
   if (NULL == s)
-    return TRUE;
+    return true;
 
   char sum[FUZZY_MAX_RESULT];
   int status = fuzzy_hash_stream(stdin, sum);
@@ -368,19 +368,19 @@ int process_stdin(state *s)
   if (status != 0)
   {
     print_error_unicode(s,_TEXT("stdin"),"Error processing stdin");
-    return TRUE;
+    return true;
   }
 
   display_result(s,_TEXT("stdin"),sum);
 
-  return FALSE;
+  return false;
 }
 
 
 
 
 #ifdef _WIN32
-static int is_win32_device_file(TCHAR *fn)
+static bool is_win32_device_file(TCHAR *fn)
 {
   /* Specifications for device files came from
      http://msdn.microsoft.com/library/default.asp?url=/library/en-us/fileio/base/createfile.asp
@@ -393,20 +393,20 @@ static int is_win32_device_file(TCHAR *fn)
   if (!_tcsnicmp(fn, _TEXT("\\\\.\\physicaldrive"),17) &&
       (_tcslen(fn) == 18) &&
       isdigit(fn[17]))
-    return TRUE;
+    return true;
 
   if (!_tcsnicmp(fn, _TEXT("\\\\.\\tape"),8) &&
       (_tcslen(fn) == 9) &&
       isdigit(fn[8]))
-    return TRUE;
+    return true;
 
   if ((!_tcsnicmp(fn,_TEXT("\\\\.\\"),4)) &&
       (_tcslen(fn) == 6) &&
       (isalpha(fn[4])) &&
       (fn[5] == ':'))
-    return TRUE;
+    return true;
 
-  return FALSE;
+  return false;
 }
 
 

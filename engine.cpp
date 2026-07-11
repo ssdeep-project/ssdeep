@@ -47,7 +47,7 @@ bool display_result(state *s, const TCHAR * fn, const char * sum) {
     }
 
     printf ("%s,\"", sum);
-    display_filename(stdout, fn, TRUE);
+    display_filename(stdout, fn, true);
     print_status("\"");
   }
 
@@ -55,7 +55,7 @@ bool display_result(state *s, const TCHAR * fn, const char * sum) {
 }
 
 
-int hash_file(state *s, TCHAR *fn) {
+bool hash_file(state *s, TCHAR *fn) {
   size_t fn_length;
   char *sum;
   TCHAR *my_filename, *msg;
@@ -79,14 +79,14 @@ int hash_file(state *s, TCHAR *fn) {
   if (NULL == handle)
   {
     print_error_unicode(s,fn,"%s", strerror(errno));
-    return TRUE;
+    return true;
   }
  
   if ((sum = (char *)malloc(sizeof(char) * FUZZY_MAX_RESULT)) == NULL)
   {
     fclose(handle);
     print_error_unicode(s,fn,"%s", strerror(errno));
-    return TRUE;
+    return true;
   }
 
 #define MSG_LENGTH (MAX_STATUS_MSG + 20)
@@ -95,7 +95,7 @@ int hash_file(state *s, TCHAR *fn) {
     free(sum);
     fclose(handle);
     print_error_unicode(s,fn,"%s", strerror(errno));
-    return TRUE;
+    return true;
   }
 
   if (MODE(mode_verbose))
@@ -133,6 +133,6 @@ int hash_file(state *s, TCHAR *fn) {
   fclose(handle);
   free(sum);
   free(msg);
-  return FALSE;
+  return false;
 }
 

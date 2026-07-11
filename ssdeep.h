@@ -169,19 +169,19 @@ int getopt(int argc, char *const argv[], const char *optstring);
 // *********************************************************************
 // Checking for cycles
 // *********************************************************************
-int done_processing_dir(TCHAR *fn);
-int processing_dir(TCHAR *fn);
-int have_processed_dir(TCHAR *fn);
+bool done_processing_dir(TCHAR *fn);
+bool processing_dir(TCHAR *fn);
+bool have_processed_dir(TCHAR *fn);
 
 bool process_win32(state *s, TCHAR *fn);
-int process_normal(state *s, TCHAR *fn);
-int process_stdin(state *s);
+bool process_normal(state *s, TCHAR *fn);
+bool process_stdin(state *s);
 
 
 // *********************************************************************
 // Fuzzy Hashing Engine
 // *********************************************************************
-int hash_file(state *s, TCHAR *fn);
+bool hash_file(state *s, TCHAR *fn);
 bool display_result(state *s, const TCHAR * fn, const char * sum);
 
 
@@ -192,28 +192,28 @@ void try_msg(void);
 
 bool expanded_path(TCHAR *p);
 
-void sanity_check(state *s, int condition, const char *msg);
+void sanity_check(state *s, bool condition, const char *msg);
 
 // The basename function kept misbehaving on OS X, so I rewrote it.
 // This function isn't perfect, nor is it designed to be. Because
 // we're guarenteed to be working with a filename here, there's no way
 // that s will end with a DIR_SEPARATOR (e.g. /foo/bar/). This function
 // will not work properly for a string that ends in a DIR_SEPARATOR
-int my_basename(TCHAR *s);
-int my_dirname(TCHAR *s);
+bool my_basename(TCHAR *s);
+bool my_dirname(TCHAR *s);
 
 // Remove the newlines, if any, from the string. Works with both
 // \r and \r\n style newlines
 void chop_line_tchar(TCHAR *s);
 void chop_line(char *s);
 
-int find_comma_separated_string_tchar(TCHAR *s, unsigned int n);
+bool find_comma_separated_string_tchar(TCHAR *s, unsigned int n);
 void shift_string_tchar(TCHAR *fn, unsigned int start, unsigned int new_start);
 
-int find_comma_separated_string(char *s, unsigned int n);
+bool find_comma_separated_string(char *s, unsigned int n);
 void shift_string(char *fn, size_t start, size_t new_start);
 
-int remove_escaped_quotes(char * str);
+bool remove_escaped_quotes(char * str);
 
 void prepare_filename(state *s, TCHAR *fn);
 
@@ -239,7 +239,7 @@ void print_error(const state *s, const char *fmt, ...);
 void print_error_unicode(state *s, const TCHAR *fn, const char *fmt, ...);
 void internal_error(const char *fmt, ... );
 void fatal_error(const char *fmt, ... );
-void display_filename(FILE *out, const TCHAR *fn, int escape_quotes);
+void display_filename(FILE *out, const TCHAR *fn, bool escape_quotes);
 
 
 

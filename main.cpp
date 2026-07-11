@@ -69,7 +69,8 @@ static void usage(void)
 
 static void process_cmd_line(state *s, int argc, char **argv)
 {
-  int i, match_files_loaded = FALSE;
+  int i;
+  bool match_files_loaded = false;
 
   while ((i=getopt(argc,argv,"gavhVpdsblcxt:rm:k:")) != -1) {
     switch(i) {
@@ -132,7 +133,7 @@ static void process_cmd_line(state *s, int argc, char **argv)
 	fatal_error("Positive matching cannot be combined with other matching modes");
       s->mode |= mode_match;
       if (!match_load(s,optarg))
-	match_files_loaded = TRUE;
+	match_files_loaded = true;
       break;
       
     case 'k':
@@ -140,7 +141,7 @@ static void process_cmd_line(state *s, int argc, char **argv)
 	fatal_error("Signature matching cannot be combined with other matching modes");
       s->mode |= mode_compare_unknown;
       if (!match_load(s,optarg))
-	match_files_loaded = TRUE;
+	match_files_loaded = true;
       break;
 
     case 'h':
@@ -193,7 +194,7 @@ static void process_cmd_line(state *s, int argc, char **argv)
 
 
 #ifdef _WIN32
-static int prepare_windows_command_line(state *s)
+static bool prepare_windows_command_line(state *s)
 {
   int argc;
   TCHAR **argv;
@@ -203,12 +204,12 @@ static int prepare_windows_command_line(state *s)
   s->argc = argc;
   s->argv = argv;
 
-  return FALSE;
+  return false;
 }
 #endif
 
 
-static int is_absolute_path(TCHAR *fn)
+static bool is_absolute_path(TCHAR *fn)
 {
   if (NULL == fn)
     internal_error("Unknown error in is_absolute_path");
@@ -249,7 +250,8 @@ static void generate_filename(state *s, TCHAR *fn, TCHAR *cwd, TCHAR *input)
 
 int main(int argc, char **argv)
 {
-  int count, status, goal = argc;
+  int count, goal = argc;
+  bool status = false;
   state *s;
   TCHAR *fn, *cwd;
 
@@ -306,9 +308,9 @@ int main(int argc, char **argv)
 	generate_filename(s, fn, cwd, s->argv[count]);
 	
 #ifdef _WIN32
-	status = process_win32(s, fn);
+	status ||= process_win32(s, fn);
 #else
-	status = process_normal(s, fn);
+	status = status || process_normal(s, fn);
 #endif
       }
       

@@ -160,7 +160,7 @@ void display_clusters(const state *s)
     std::set<Filedata *>::const_iterator cit;
     for (cit = (*it)->begin() ; cit != (*it)->end() ; ++cit)
     {
-      display_filename(stdout,(*cit)->get_filename(),FALSE);
+      display_filename(stdout, (*cit)->get_filename(), false);
       print_status("");
     }
     
@@ -259,9 +259,9 @@ void handle_match(state *s,
   if (s->mode & mode_csv)
   {
     printf("\"");
-    display_filename(stdout,a->get_filename(),TRUE);
+    display_filename(stdout, a->get_filename(), true);
     printf("\",\"");
-    display_filename(stdout,b->get_filename(),TRUE);
+    display_filename(stdout, b->get_filename(), true);
     print_status("\",%u", score);
   }
   else if (s->mode & mode_cluster)
@@ -274,11 +274,11 @@ void handle_match(state *s,
     // or the colon which separates them from the filename
     if (a->has_match_file())
       printf ("%s:", a->get_match_file().c_str());
-    display_filename(stdout,a->get_filename(),FALSE);
+    display_filename(stdout, a->get_filename(), false);
     printf (" matches ");
     if (b->has_match_file())
       printf ("%s:", b->get_match_file().c_str());
-    display_filename(stdout,b->get_filename(),FALSE);
+    display_filename(stdout, b->get_filename(), false);
     print_status(" (%u)", score);
   }
 }

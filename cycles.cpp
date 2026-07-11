@@ -40,7 +40,7 @@ static void dump_table(void)
 
 
 
-int done_processing_dir(TCHAR *fn)
+bool done_processing_dir(TCHAR *fn)
 {
   dir_table *last, *temp;
   TCHAR *d_name = (TCHAR *)malloc(sizeof(TCHAR) * SSDEEP_PATH_MAX);
@@ -57,7 +57,7 @@ int done_processing_dir(TCHAR *fn)
 
     // This code never gets executed... 
     free(d_name);
-    return FALSE;
+    return false;
   }
 
   temp = my_table;
@@ -68,7 +68,7 @@ int done_processing_dir(TCHAR *fn)
     free(temp->name);
     free(temp);
     free(d_name);
-    return TRUE;
+    return true;
   }
 
   while (temp->next != NULL)
@@ -81,7 +81,7 @@ int done_processing_dir(TCHAR *fn)
       free(temp->name);
       free(temp);
       free(d_name);
-      return TRUE;
+      return true;
     }
   }
 
@@ -90,13 +90,13 @@ int done_processing_dir(TCHAR *fn)
 
   // This code never gets executed... 
   //  free (d_name);
-  return FALSE;
+  return false;
 }
 
 
 
 
-int processing_dir(TCHAR *fn)
+bool processing_dir(TCHAR *fn)
 {
   dir_table *new_dir, *temp;
   TCHAR *d_name = (TCHAR *)malloc(sizeof(TCHAR) * SSDEEP_PATH_MAX);
@@ -114,7 +114,7 @@ int processing_dir(TCHAR *fn)
     my_table->next = NULL;
 
     free(d_name);
-    return TRUE;
+    return true;
   }
  
   temp = my_table;
@@ -128,7 +128,7 @@ int processing_dir(TCHAR *fn)
 		     __progname, d_name);
       // Does not execute
       free(d_name);
-      return FALSE;
+      return false;
     }
     temp = temp->next;       
   }
@@ -139,17 +139,17 @@ int processing_dir(TCHAR *fn)
   temp->next = new_dir;
 
   free(d_name);
-  return TRUE;
+  return true;
 }
 
 
-int have_processed_dir(TCHAR *fn)
+bool have_processed_dir(TCHAR *fn)
 {
   dir_table *temp;
   TCHAR *d_name;
 
   if (my_table == NULL)
-    return FALSE;
+    return false;
 
   d_name = (TCHAR *)malloc(sizeof(TCHAR) * SSDEEP_PATH_MAX);
 #ifdef _WIN32
@@ -164,14 +164,14 @@ int have_processed_dir(TCHAR *fn)
     if (!_tcsncmp(temp->name,d_name,SSDEEP_PATH_MAX))
     {
       free(d_name);
-      return TRUE;
+      return true;
     }
 
     temp = temp->next;       
   }
 
   free(d_name);
-  return FALSE;
+  return false;
 }
 
 

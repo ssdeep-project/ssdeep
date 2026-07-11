@@ -52,7 +52,7 @@ void print_error_unicode(state *s, const TCHAR *fn, const char *fmt, ...)
 
   if (!(s->mode & mode_silent))
     {
-      display_filename(stderr,fn,FALSE);
+      display_filename(stderr, fn, false);
       fprintf(stderr,": ");
       MD5DEEP_PRINT_MSG(stderr,fmt);
     }
@@ -86,7 +86,7 @@ void fatal_error(const char *fmt, ... )
 
 
 #ifdef _WIN32
-void display_filename(FILE *out, const TCHAR *fn, int escape_quotes)
+void display_filename(FILE *out, const TCHAR *fn, bool escape_quotes)
 {
   size_t pos,len;
 
@@ -116,7 +116,7 @@ void display_filename(FILE *out, const TCHAR *fn, int escape_quotes)
   }
 }
 #else
-void display_filename(FILE *out, const TCHAR *fn, int escape_quotes)
+void display_filename(FILE *out, const TCHAR *fn, bool escape_quotes)
 {
   size_t pos, len;
 

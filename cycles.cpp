@@ -44,6 +44,8 @@ bool done_processing_dir(TCHAR *fn)
 {
   dir_table *last, *temp;
   TCHAR *d_name = (TCHAR *)malloc(sizeof(TCHAR) * SSDEEP_PATH_MAX);
+  if (!d_name)
+    internal_error("%s: Out of memory", __progname);
 
 #ifdef _WIN32
   _wfullpath(d_name,fn,SSDEEP_PATH_MAX);
@@ -100,6 +102,8 @@ bool processing_dir(TCHAR *fn)
 {
   dir_table *new_dir, *temp;
   TCHAR *d_name = (TCHAR *)malloc(sizeof(TCHAR) * SSDEEP_PATH_MAX);
+  if (!d_name)
+    internal_error("%s: Out of memory", __progname);
 
 #ifdef _WIN32
   _wfullpath(d_name,fn,SSDEEP_PATH_MAX);
@@ -110,6 +114,8 @@ bool processing_dir(TCHAR *fn)
   if (my_table == NULL)
   {
     my_table = (dir_table*)malloc(sizeof(dir_table));
+    if (!my_table)
+      internal_error("%s: Out of memory", __progname);
     my_table->name = _tcsdup(d_name);
     my_table->next = NULL;
 
@@ -134,6 +140,8 @@ bool processing_dir(TCHAR *fn)
   }
 
   new_dir = (dir_table*)malloc(sizeof(dir_table));
+  if (!new_dir)
+    internal_error("%s: Out of memory", __progname);
   new_dir->name = _tcsdup(d_name);
   new_dir->next = NULL;  
   temp->next = new_dir;
@@ -152,6 +160,8 @@ bool have_processed_dir(TCHAR *fn)
     return false;
 
   d_name = (TCHAR *)malloc(sizeof(TCHAR) * SSDEEP_PATH_MAX);
+  if (!d_name)
+    internal_error("%s: Out of memory", __progname);
 #ifdef _WIN32
   _wfullpath(d_name,fn,SSDEEP_PATH_MAX);
 #else

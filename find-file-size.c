@@ -150,6 +150,8 @@ off_t find_dev_size(int fd, int blk_size)
     return 0;
   
   buf = malloc(blk_size);
+  if (!buf)
+    return 0;
   
   for (;;) {
     ssize_t nread;

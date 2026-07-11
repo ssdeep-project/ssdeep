@@ -412,6 +412,8 @@ int fuzzy_digest(const struct fuzzy_state *self,
   remain -= i;
   if (h != 0)
   {
+    /* Write then commit (++result, --remain)
+       if we don't need to eliminate sequences. */
     assert(remain > 0);
     *result = b64[self->bh[bi].h];
     if((flags & FUZZY_FLAG_ELIMSEQ) == 0 || i < 3 ||

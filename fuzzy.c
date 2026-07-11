@@ -393,7 +393,7 @@ int fuzzy_digest(const struct fuzzy_state *self,
     bi = self->bhend - 1;
   while (bi > self->bhstart && self->bh[bi].dindex < SPAMSUM_LENGTH / 2)
     --bi;
-  assert (!(bi > 0 && self->bh[bi].dindex < SPAMSUM_LENGTH / 2));
+  assert(!(bi > 0 && self->bh[bi].dindex < SPAMSUM_LENGTH / 2));
 
   i = snprintf(result, (size_t)remain, "%lu:", (unsigned long)SSDEEP_BS(bi));
   if (i <= 0)

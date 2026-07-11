@@ -73,9 +73,6 @@ class Filedata
 };
 
 
-/// Display [blocksize]:[sig1]:[sig2],"filename"
-std::ostream& operator<<(std::ostream& o, const Filedata& f);
-
 /// RBF - We can use this IF AND ONLY IF get_filename() returns a std::wstring
 //bool operator==(const Filedata& a, const Filedata& b);
 

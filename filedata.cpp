@@ -153,12 +153,6 @@ Filedata::Filedata(const std::string& sig, const char * match_file)
 }
 
 
-std::ostream& operator<<(std::ostream& o, const Filedata& f)
-{
-  return o << f.get_signature() << "," << f.get_filename() << ",";
-}
-
-
 bool operator==(const Filedata& a, const Filedata& b)
 {
   if (a.get_signature() != b.get_signature())

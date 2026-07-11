@@ -414,23 +414,15 @@ int fuzzy_digest(const struct fuzzy_state *self,
   result += sz;
   remain -= sz;
   /* Block hash 1: optional last character handling. */
-  if (h != 0)
+  ch = (h != 0)
+    ? b64[self->bh[bi].h]
+    : self->bh[bi].digest[self->bh[bi].dindex];
+  if (ch != '\0')
   {
     /* Write then commit (++result, --remain)
        if we don't need to eliminate sequences. */
     assert(remain > 0);
-    *result = b64[self->bh[bi].h];
-    if((flags & FUZZY_FLAG_ELIMSEQ) == 0 || sz < 3 ||
-       *result != result[-1] ||
-       *result != result[-2] ||
-       *result != result[-3]) {
-      ++result;
-      --remain;
-    }
-  }
-  else if (self->bh[bi].digest[self->bh[bi].dindex] != '\0') {
-    assert(remain > 0);
-    *result = self->bh[bi].digest[self->bh[bi].dindex];
+    *result = ch;
     if((flags & FUZZY_FLAG_ELIMSEQ) == 0 || sz < 3 ||
        *result != result[-1] ||
        *result != result[-2] ||
@@ -459,12 +451,15 @@ int fuzzy_digest(const struct fuzzy_state *self,
     result += sz;
     remain -= sz;
     /* Block hash 2 (common): optional last character handling. */
-    if (h != 0) {
+    ch = (h != 0)
+      ? b64[(flags & FUZZY_FLAG_NOTRUNC) != 0
+	? self->bh[bi].h
+	: self->bh[bi].halfh]
+      : (flags & FUZZY_FLAG_NOTRUNC) != 0
+	? self->bh[bi].digest[self->bh[bi].dindex]
+	: self->bh[bi].halfdigest;
+    if (ch != '\0') {
       assert(remain > 0);
-      ch = b64[
-	(flags & FUZZY_FLAG_NOTRUNC) != 0 ? self->bh[bi].h :
-	self->bh[bi].halfh
-      ];
       *result = ch;
       if ((flags & FUZZY_FLAG_ELIMSEQ) == 0 || sz < 3 ||
 	  *result != result[-1] ||
@@ -473,22 +468,6 @@ int fuzzy_digest(const struct fuzzy_state *self,
       {
 	++result;
 	--remain;
-      }
-    }
-    else {
-      ch = (flags & FUZZY_FLAG_NOTRUNC) != 0 ?
-	  self->bh[bi].digest[self->bh[bi].dindex] : self->bh[bi].halfdigest;
-      if (ch != '\0') {
-	assert(remain > 0);
-	*result = ch;
-	if ((flags & FUZZY_FLAG_ELIMSEQ) == 0 || sz < 3 ||
-	    *result != result[-1] ||
-	    *result != result[-2] ||
-	    *result != result[-3])
-	{
-	  ++result;
-	  --remain;
-	}
       }
     }
   }

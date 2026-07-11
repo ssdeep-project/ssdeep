@@ -729,7 +729,10 @@ static int edit_distn_pa(const unsigned long long *parray, size_t s1len, const c
 // eliminate sequences of longer than 3 identical characters. These
 // sequences contain very little information so they tend to just bias
 // the result unfairly
-static int copy_eliminate_sequences(char **out, size_t outsize, char **in, char etoken)
+static int copy_eliminate_sequences(char **out,
+				    size_t outsize,
+				    const char **in,
+				    char etoken)
 {
   size_t seq = 0;
   char prev = **in, curr;
@@ -853,14 +856,15 @@ int fuzzy_compare(const char *str1, const char *str2)
   size_t s1b1len, s1b2len, s2b1len, s2b2len;
   char s1b1[SPAMSUM_LENGTH], s1b2[SPAMSUM_LENGTH];
   char s2b1[SPAMSUM_LENGTH], s2b2[SPAMSUM_LENGTH];
-  char *s1p, *s2p, *tmp;
+  const char *s1p, *s2p;
+  char *tmp;
 
   if (NULL == str1 || NULL == str2)
     return -1;
 
   // each spamsum is prefixed by its block size
   errno = 0;
-  block_size1 = strtoul(str1, &s1p, 10);
+  block_size1 = strtoul(str1, (char**)&s1p, 10);
   if (s1p == str1 || *s1p != ':') {
     return -1;
   }
@@ -868,7 +872,7 @@ int fuzzy_compare(const char *str1, const char *str2)
     return -1;
   }
   errno = 0;
-  block_size2 = strtoul(str2, &s2p, 10);
+  block_size2 = strtoul(str2, (char**)&s2p, 10);
   if (s2p == str2 || *s2p != ':') {
     return -1;
   }

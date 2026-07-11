@@ -1,8 +1,10 @@
+# Generic
+.*
+!.git?*
+*~
 
 # /
-/*~
 /*.tmp
-/.*.swp
 /*.a
 /*.o
 /*.la
@@ -15,8 +17,6 @@
 /*.exe
 /*.obj
 /*.in
-/.deps
-/.libs
 /Makefile
 /aclocal.m4
 /autom4te.cache

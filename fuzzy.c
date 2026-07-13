@@ -34,6 +34,7 @@
 #include <assert.h>
 #include <errno.h>
 #include <limits.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -603,18 +604,18 @@ int fuzzy_hash_filename(const char *filename, /*@out@*/ char *result)
 // false positive rate for low score thresholds while having
 // negligable affect on the rate of spam detection.
 //
-// return 1 if the two strings do have a common substring, 0 otherwise
+// return whether if the two strings do have a common substring.
 //
 #ifndef SSDEEP_ENABLE_POSITION_ARRAY
-static int has_common_substring(const char *s1, size_t s1len, const char *s2, size_t s2len)
+static bool has_common_substring(const char *s1, size_t s1len, const char *s2, size_t s2len)
 {
   size_t i, j;
   uint32_t hashes[SPAMSUM_LENGTH - (ROLLING_WINDOW - 1)];
 
   if (s1len < ROLLING_WINDOW)
-    return 0;
+    return false;
   if (s2len < ROLLING_WINDOW)
-    return 0;
+    return false;
 
   // there are many possible algorithms for common substring
   // detection. In this case I am re-using the rolling hash code
@@ -653,11 +654,11 @@ static int has_common_substring(const char *s1, size_t s1len, const char *s2, si
     {
       // confirm the match after checking potential match
       if (hashes[i] == h && !memcmp(s1 + i, s2 + j, ROLLING_WINDOW))
-	  return 1;
+	return true;
     }
   }
 
-  return 0;
+  return false;
 }
 #endif
 
@@ -665,7 +666,7 @@ static int has_common_substring(const char *s1, size_t s1len, const char *s2, si
 #ifdef SSDEEP_ENABLE_POSITION_ARRAY
 
 // position array-based version of has_common_substring
-static int has_common_substring_pa(const unsigned long long *parray, const char *s2, size_t s2len)
+static bool has_common_substring_pa(const unsigned long long *parray, const char *s2, size_t s2len)
 {
   unsigned long long D;
   // ROLLING_WINDOW <= s2len <= 64
@@ -684,12 +685,12 @@ static int has_common_substring_pa(const unsigned long long *parray, const char 
       r--;
       D = (D << 1) & parray[*++ch - CHAR_MIN];
       if (r == l && D)
-	return 1;
+	return true;
     }
     // Boyer-Moore-like skipping
     r += ROLLING_WINDOW;
   }
-  return 0;
+  return false;
 }
 
 // position array-based version of edit_distn
@@ -729,24 +730,26 @@ static int edit_distn_pa(const unsigned long long *parray, size_t s1len, const c
 // eliminate sequences of longer than 3 identical characters. These
 // sequences contain very little information so they tend to just bias
 // the result unfairly
-static int copy_eliminate_sequences(char **out,
-				    size_t outsize,
-				    const char **in,
-				    char etoken)
+//
+// return whether the copy succeeded.
+static bool copy_eliminate_sequences(char **out,
+				     size_t outsize,
+				     const char **in,
+				     char etoken)
 {
   size_t seq = 0;
   char prev = **in, curr;
   if (!prev || prev == etoken)
-    return 1;
+    return true;
   if (!outsize--)
-    return 0;
+    return false;
   *(*out)++ = prev;
   ++(*in);
-  while (1)
+  while (true)
   {
     curr = **in;
     if (!curr || curr == etoken)
-      return 1;
+      return true;
     ++(*in);
     if (curr == prev)
     {
@@ -756,20 +759,20 @@ static int copy_eliminate_sequences(char **out,
 	continue;
       }
       if (!outsize--)
-	return 0;
+	return false;
       *(*out)++ = curr;
     }
     else
     {
       if (!outsize--)
-	return 0;
+	return false;
       *(*out)++ = curr;
       seq = 0;
       prev = curr;
     }
   }
   // unreachable
-  return 0;
+  return false;
 }
 
 //

@@ -659,10 +659,10 @@ static bool has_common_substring(const char *s1, size_t s1len, const char *s2, s
 
   return false;
 }
-#endif
 
+// edit_distn is separately defined in edit_dist.c.
 
-#ifdef SSDEEP_ENABLE_POSITION_ARRAY
+#else
 
 // position array-based version of has_common_substring
 static bool has_common_substring_pa(const unsigned long long *parray, const char *s2, size_t s2len)

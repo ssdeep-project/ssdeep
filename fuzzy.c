@@ -23,14 +23,6 @@
  *     http://ssdeep.sf.net/
  */
 
-#ifndef MIN
-#define MIN(a,b) ((a)<(b)?(a):(b))
-#endif
-
-#ifndef MAX
-#define MAX(a,b) ((a)>(b)?(a):(b))
-#endif
-
 #include <assert.h>
 #include <errno.h>
 #include <limits.h>
@@ -788,6 +780,7 @@ static uint32_t score_strings(const char *s1,
 			      unsigned long block_size)
 {
   uint32_t score;
+  size_t minlen;
 
 #ifdef SSDEEP_ENABLE_POSITION_ARRAY
   unsigned long long parray[CHAR_MAX - CHAR_MIN + 1];
@@ -817,6 +810,8 @@ static uint32_t score_strings(const char *s1,
   // us a pretty good idea of how closely related the two strings are
   score = edit_distn(s1, s1len, s2, s2len);
 #endif
+  // compute MIN(s1len, s2len)
+  minlen = s1len < s2len ? s1len : s2len;
 
   // scale the edit distance by the lengths of the two
   // strings. This changes the score to be a measure of the
@@ -841,10 +836,8 @@ static uint32_t score_strings(const char *s1,
   // when the blocksize is small we don't want to exaggerate the match size
   if (block_size >= (99 + ROLLING_WINDOW) / ROLLING_WINDOW * MIN_BLOCKSIZE)
     return score;
-  if (score > block_size/MIN_BLOCKSIZE * MIN(s1len, s2len))
-  {
-    score = block_size/MIN_BLOCKSIZE * MIN(s1len, s2len);
-  }
+  if (score > block_size/MIN_BLOCKSIZE * minlen)
+    score = block_size/MIN_BLOCKSIZE * minlen;
   return score;
 }
 
@@ -944,7 +937,8 @@ int fuzzy_compare(const char *str1, const char *str2)
       uint32_t score1, score2;
       score1 = score_strings(s1b1, s1b1len, s2b1, s2b1len, block_size1);
       score2 = score_strings(s1b2, s1b2len, s2b2, s2b2len, block_size1*2);
-      score = MAX(score1, score2);
+      // take the maximum.
+      score = score1 > score2 ? score1 : score2;
     }
     else if (block_size1 * 2 == block_size2) {
       score = score_strings(s2b1, s2b1len, s1b2, s1b2len, block_size2);

@@ -36,7 +36,11 @@
 #include "fuzzy.h"
 #include "edit_dist.h"
 
-#if defined(__GNUC__) && __GNUC__ >= 3
+#ifndef __has_builtin
+#define __has_builtin(name) 0
+#endif
+
+#if __has_builtin(__builtin_expect) || (defined(__GNUC__) && __GNUC__ >= 3)
 #define likely(x)       __builtin_expect(!!(x), 1)
 #define unlikely(x)     __builtin_expect(!!(x), 0)
 #else

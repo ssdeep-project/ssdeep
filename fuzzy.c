@@ -687,7 +687,7 @@ static bool has_common_substring_pa(const unsigned long long *parray, const char
       if (r == l && D)
 	return true;
     }
-    // Boyer-Moore-like skipping
+    // Skip by ROLLING_WINDOW (needle-independent).
     r += ROLLING_WINDOW;
   }
   return false;

@@ -32,6 +32,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L
+#include <stdbit.h>
+#endif
 
 #include "fuzzy.h"
 #include "edit_dist.h"
@@ -692,31 +695,41 @@ static bool has_common_substring_pa(const unsigned long long *parray, const char
 // position array-based version of edit_distn
 static int edit_distn_pa(const unsigned long long *parray, size_t s1len, const char *s2, size_t s2len)
 {
-  unsigned long long pv, nv, ph, nh, zd, mt, x, y;
+#if __has_builtin(__builtin_popcountll) || (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L)
+  // Population count is available: either C23 or GCC extension
+  unsigned long long v, p;
+  size_t i, llcs;
+  v = -1;
+  for (i = 0; i < s2len; i++)
+  {
+    p = v & parray[s2[i] - CHAR_MIN];
+    v = (v + p) | (v - p);
+  }
+#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L
+  llcs = stdc_count_zeros_ull(v);
+#else
+  llcs = __builtin_popcountll(~v);
+#endif
+  return (int)(s1len + s2len - 2 * llcs);
+#else
+  unsigned long long h, n, x, y, v;
   unsigned long long msb;
   size_t i;
   // 0 < s1len <= 64
   int cur = (int)s1len;
   msb = 1ull << (s1len - 1);
-  pv = -1;
-  nv = 0;
+  h = -1;
   for (i = 0; i < s2len; i++)
   {
-    mt = parray[s2[i] - CHAR_MIN];
-    zd = (((mt & pv) + pv) ^ pv) | mt | nv;
-    nh = pv & zd;
-    if (nh & msb)
-      --cur;
-    x  = nv | ~(pv | zd) | (pv & ~mt & 1ull);
-    y  = (pv - nh) >> 1;
-    ph = (x + y) ^ y;
-    if (ph & msb)
-      ++cur;
-    x  = (ph << 1) | 1ull;
-    nv = x & zd;
-    pv = (nh << 1) | ~(x | zd) | (x & (pv - nh));
+    n = ~parray[s2[i] - CHAR_MIN];
+    x = ~h | (n & 1);
+    y = n >> 1;
+    v = (((x & y) + y) ^ y) | x;
+    cur += (v & msb) ? +1 : -1;
+    h = (~v << 1) | (h & n);
   }
   return cur;
+#endif
 }
 
 #endif

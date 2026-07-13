@@ -700,7 +700,7 @@ static int edit_distn_pa(const unsigned long long *parray, size_t s1len, const c
   unsigned long long msb;
   size_t i;
   // 0 < s1len <= 64
-  int cur = s1len;
+  int cur = (int)s1len;
   msb = 1ull << (s1len - 1);
   pv = -1;
   nv = 0;

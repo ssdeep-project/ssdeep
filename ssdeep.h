@@ -34,12 +34,6 @@
 // this limit to 32,767 characters by prepending filenames with "\\?\"
 #define SSDEEP_PATH_MAX 32767
 
-#define MD5DEEP_ALLOC(TYPE,VAR,SIZE)     \
-VAR = (TYPE *)malloc(sizeof(TYPE) * SIZE);  \
-if (NULL == VAR)  \
-   return EXIT_FAILURE; \
-memset(VAR,0,SIZE * sizeof(TYPE));
-
 
 // These are the types of files we can encounter while hashing
 #define file_regular    0

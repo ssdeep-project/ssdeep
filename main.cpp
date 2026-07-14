@@ -280,8 +280,10 @@ int main(int argc, char **argv)
     status = process_stdin(s);
   }
   else {
-    MD5DEEP_ALLOC(TCHAR, fn, SSDEEP_PATH_MAX);
-    MD5DEEP_ALLOC(TCHAR, cwd, SSDEEP_PATH_MAX);
+    fn = (TCHAR *)calloc(SSDEEP_PATH_MAX, sizeof(TCHAR));
+    cwd = (TCHAR *)calloc(SSDEEP_PATH_MAX, sizeof(TCHAR));
+    if (!fn || !cwd)
+      internal_error("%s: Out of memory", __progname);
     
     cwd = _tgetcwd(cwd, SSDEEP_PATH_MAX);
     if (NULL == cwd)

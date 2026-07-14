@@ -36,15 +36,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L
-#include <stdbit.h>
-#endif
 
 #include "fuzzy.h"
 #include "edit_dist.h"
 
 #ifndef __has_builtin
 #define __has_builtin(name) 0
+#endif
+
+#ifndef __has_include
+#define __has_include(name) 0
 #endif
 
 #if __has_builtin(__builtin_expect) || (defined(__GNUC__) && __GNUC__ >= 3)
@@ -59,6 +60,13 @@
 #define MIN_BLOCKSIZE 3
 #define HASH_INIT 0x27
 #define NUM_BLOCKHASHES 31
+
+#if (HAVE_CONFIG_H && HAVE_STDBIT_H) || __has_include(<stdbit.h>)
+#define SSDEEP_HAVE_STDBIT_H 1
+#endif
+#if SSDEEP_HAVE_STDBIT_H
+#include <stdbit.h>
+#endif
 
 // Enable bit-parallel string processing only if bit-parallel algorithms
 // are enabled and considered to be efficient.
@@ -709,7 +717,7 @@ static int edit_distn_pa(const unsigned long long *parray, size_t s1len, const c
     p = v & parray[s2[i] - CHAR_MIN];
     v = (v + p) | (v - p);
   }
-#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L
+#if SSDEEP_HAVE_STDBIT_H
   llcs = stdc_count_zeros_ull(v);
 #else
   llcs = __builtin_popcountll(~v);

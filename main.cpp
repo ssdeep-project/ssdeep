@@ -310,7 +310,7 @@ int main(int argc, char **argv)
 	generate_filename(s, fn, cwd, s->argv[count]);
 	
 #ifdef _WIN32
-	status ||= process_win32(s, fn);
+	status = status || process_win32(s, fn);
 #else
 	status = status || process_normal(s, fn);
 #endif

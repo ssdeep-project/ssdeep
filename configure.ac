@@ -1,4 +1,5 @@
 AC_INIT([ssdeep],[2.14.2],[floss_ssdeep@irq.a4lg.com])
+AC_PREREQ([2.71])
 AM_INIT_AUTOMAKE
 
 AC_CONFIG_FILES([Makefile])

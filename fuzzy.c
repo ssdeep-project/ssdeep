@@ -23,6 +23,10 @@
  *     http://ssdeep.sf.net/
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <assert.h>
 #include <errno.h>
 #include <limits.h>

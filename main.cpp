@@ -236,13 +236,8 @@ static void generate_filename(state *s, TCHAR *fn, TCHAR *cwd, TCHAR *input)
 #ifdef _WIN32
     _wfullpath(fn, input, SSDEEP_PATH_MAX);
 #else     
-    if (NULL == cwd)
-      // If we can't get the current working directory, we're not
-      // going to be able to build the relative path to this file anyway.
-      // So we just call realpath and make the best of things
-      realpath(input, fn);
-    else
-      snprintf(fn, SSDEEP_PATH_MAX, "%s%c%s", cwd, DIR_SEPARATOR, input);
+    assert(NULL != cwd);
+    snprintf(fn, SSDEEP_PATH_MAX, "%s%c%s", cwd, DIR_SEPARATOR, input);
 #endif
   }
 }

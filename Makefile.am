@@ -16,7 +16,7 @@ man_MANS=ssdeep.1
 ssdeep_SOURCES = main.cpp match.cpp engine.cpp filedata.cpp   	\
                  dig.cpp cycles.cpp helpers.cpp ui.cpp edit_dist.h     	\
                  main.h fuzzy.h tchar-local.h ssdeep.h filedata.h match.h \
-		 find-file-size.c
+		 find-file-size.c sum_table.h
 
 dll: $(libfuzzy_la_SOURCES)
 	$(CC) $(CFLAGS) -shared -o fuzzy.dll $(libfuzzy_la_SOURCES) \
@@ -25,7 +25,7 @@ dll: $(libfuzzy_la_SOURCES)
 
 CLEANFILES=fuzzy.dll fuzzy.def
 
-EXTRA_DIST=$(man_MANS) bootstrap sum_table.h sample.c FILEFORMAT m4/README
+EXTRA_DIST=$(man_MANS) bootstrap sample.c FILEFORMAT m4/README
 
 WINDOWSDOCS=README.TXT API.TXT FILEFORMAT.TXT NEWS.TXT
 

@@ -9,6 +9,9 @@ AC_CANONICAL_HOST
 
 AC_PROG_CC
 AC_PROG_CXX
+AX_CXX_COMPILE_STDCXX([23], [], [optional])
+AX_CXX_COMPILE_STDCXX([20], [], [optional])
+AX_CXX_COMPILE_STDCXX([11], [], [optional])
 
 LT_INIT([win32-dll])
 AC_PROG_INSTALL

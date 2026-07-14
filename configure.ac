@@ -63,7 +63,7 @@ AC_SYS_LARGEFILE
 
 AC_CHECK_HEADERS([libgen.h])
 AC_CHECK_HEADERS([dirent.h])
-AC_CHECK_HEADERS([inttypes.h stdbit.h])
+AC_CHECK_HEADERS([stdbit.h])
 
 AC_CHECK_HEADERS([fcntl.h sys/types.h sys/ioctl.h sys/param.h wchar.h unistd.h sys/stat.h sys/disk.h])
 

@@ -24,6 +24,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
+#define FUZZY_HAVE_CONFIG_H 1
 #include "config.h"
 #endif
 
@@ -62,7 +63,7 @@
 #define HASH_INIT 0x27
 #define NUM_BLOCKHASHES 31
 
-#if (HAVE_CONFIG_H && HAVE_STDBIT_H) || __has_include(<stdbit.h>)
+#if (FUZZY_HAVE_CONFIG_H && HAVE_STDBIT_H) || __has_include(<stdbit.h>)
 #define FUZZY_HAVE_STDBIT_H 1
 #endif
 #if FUZZY_HAVE_STDBIT_H

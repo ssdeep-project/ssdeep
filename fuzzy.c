@@ -701,7 +701,7 @@ static int edit_distn_pa(const unsigned long long *parray, size_t s1len, const c
   // Population count is available: either C23 or GCC extension
   unsigned long long v, p;
   size_t i, llcs;
-  v = -1;
+  v = (unsigned long long)-1;
   for (i = 0; i < s2len; i++)
   {
     p = v & parray[s2[i] - CHAR_MIN];
@@ -720,7 +720,7 @@ static int edit_distn_pa(const unsigned long long *parray, size_t s1len, const c
   // 0 < s1len <= 64
   int cur = (int)s1len;
   msb = 1ull << (s1len - 1);
-  h = -1;
+  h = (unsigned long long)-1;
   for (i = 0; i < s2len; i++)
   {
     n = ~parray[s2[i] - CHAR_MIN];
@@ -798,8 +798,7 @@ static uint32_t score_strings(const char *s1,
 			      size_t      s2len,
 			      unsigned long block_size)
 {
-  uint32_t score;
-  size_t minlen;
+  uint32_t score, minlen;
 
 #ifdef FUZZY_ENABLE_POSITION_ARRAY
   unsigned long long parray[CHAR_MAX - CHAR_MIN + 1];
@@ -830,14 +829,14 @@ static uint32_t score_strings(const char *s1,
   score = edit_distn(s1, s1len, s2, s2len);
 #endif
   // compute MIN(s1len, s2len)
-  minlen = s1len < s2len ? s1len : s2len;
+  minlen = (uint32_t)(s1len < s2len ? s1len : s2len);
 
   // scale the edit distance by the lengths of the two
   // strings. This changes the score to be a measure of the
   // proportion of the message that has changed rather than an
   // absolute quantity. It also copes with the variability of
   // the string lengths.
-  score = (score * SPAMSUM_LENGTH) / (s1len + s2len);
+  score = (score * SPAMSUM_LENGTH) / (uint32_t)(s1len + s2len);
 
   // at this stage the score occurs roughly on a 0-SPAMSUM_LENGTH scale,
   // with 0 being a good match and SPAMSUM_LENGTH being a complete

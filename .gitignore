@@ -9,12 +9,14 @@
 /*.o
 /*.la
 /*.lai
+/*.lib
 /*.lo
 /*.so
 /*.so.[0-9]*
 /*.dll
 /*.def
 /*.exe
+/*.exp
 /*.obj
 /*.in
 /Makefile

@@ -36,6 +36,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 
 #include "fuzzy.h"
 #include "edit_dist.h"
@@ -557,22 +558,21 @@ int fuzzy_hash_stream(FILE *handle, /*@out@*/ char *result)
 
 int fuzzy_hash_file(FILE *handle, /*@out@*/ char *result)
 {
-  off_t fpos, fposend;
+  off_t fpos;
+  struct stat fst;
   int status = -1;
   struct fuzzy_state *ctx;
   fpos = ftello(handle);
   if (fpos < 0)
     return -1;
-  if (fseeko(handle, 0, SEEK_END) < 0)
+  if (fstat(fileno(handle), &fst) < 0)
     return -1;
-  fposend = ftello(handle);
-  if (fposend < 0)
-    return -1;
+  // At least, the file pointed by `handle` must be seekable.
   if (fseeko(handle, 0, SEEK_SET) < 0)
     return -1;
   if (NULL == (ctx = fuzzy_new()))
     return -1;
-  if (fuzzy_set_total_input_length(ctx, (uint_least64_t)fposend) < 0)
+  if (S_ISREG(fst.st_mode) && fuzzy_set_total_input_length(ctx, (uint_least64_t)fst.st_size) < 0)
     goto out;
   if (fuzzy_update_stream(ctx, handle) < 0)
     goto out;

@@ -62,17 +62,17 @@
 #define NUM_BLOCKHASHES 31
 
 #if (HAVE_CONFIG_H && HAVE_STDBIT_H) || __has_include(<stdbit.h>)
-#define SSDEEP_HAVE_STDBIT_H 1
+#define FUZZY_HAVE_STDBIT_H 1
 #endif
-#if SSDEEP_HAVE_STDBIT_H
+#if FUZZY_HAVE_STDBIT_H
 #include <stdbit.h>
 #endif
 
 // Enable bit-parallel string processing only if bit-parallel algorithms
 // are enabled and considered to be efficient.
-#if !defined(SSDEEP_DISABLE_POSITION_ARRAY) || !SSDEEP_DISABLE_POSITION_ARRAY
+#if !FUZZY_DISABLE_POSITION_ARRAY
 #if SPAMSUM_LENGTH <= 64 && CHAR_MIN >= -256 && CHAR_MAX <= 256 && (CHAR_MAX - CHAR_MIN + 1) <= 256
-#define SSDEEP_ENABLE_POSITION_ARRAY
+#define FUZZY_ENABLE_POSITION_ARRAY
 #endif
 #endif
 
@@ -131,7 +131,7 @@ static unsigned char sum_hash(unsigned char c, unsigned char h)
 }
 
 /* A blockhash contains a signature state for a specific (implicit) blocksize.
- * The blocksize is given by SSDEEP_BS(index). The h and halfh members are the
+ * The blocksize is given by FUZZY_BS(index). The h and halfh members are the
  * partial FNV hashes, where halfh stops to be reset after digest is
  * SPAMSUM_LENGTH/2 long. The halfh hash is needed be able to truncate digest
  * for the second output hash to stay compatible with ssdeep output. */
@@ -159,9 +159,9 @@ struct fuzzy_state
 #define FUZZY_STATE_NEED_LASTHASH  1u
 #define FUZZY_STATE_SIZE_FIXED     2u
 
-#define SSDEEP_BS(index) (((uint32_t)MIN_BLOCKSIZE) << (index))
-#define SSDEEP_TOTAL_SIZE_MAX \
-  ((uint_least64_t)SSDEEP_BS(NUM_BLOCKHASHES-1) * SPAMSUM_LENGTH)
+#define FUZZY_BS(index) (((uint32_t)MIN_BLOCKSIZE) << (index))
+#define FUZZY_TOTAL_SIZE_MAX \
+  ((uint_least64_t)FUZZY_BS(NUM_BLOCKHASHES-1) * SPAMSUM_LENGTH)
 
 /*@only@*/ /*@null@*/ struct fuzzy_state *fuzzy_new(void)
 {
@@ -202,7 +202,7 @@ extern const int EOVERFLOW;
 int fuzzy_set_total_input_length(struct fuzzy_state *state, uint_least64_t total_fixed_length)
 {
   unsigned int bi = 0;
-  if (total_fixed_length > SSDEEP_TOTAL_SIZE_MAX)
+  if (total_fixed_length > FUZZY_TOTAL_SIZE_MAX)
   {
     errno = EOVERFLOW;
     return -1;
@@ -215,7 +215,7 @@ int fuzzy_set_total_input_length(struct fuzzy_state *state, uint_least64_t total
   }
   state->flags |= FUZZY_STATE_SIZE_FIXED;
   state->fixed_size = total_fixed_length;
-  while ((uint_least64_t)SSDEEP_BS(bi) * SPAMSUM_LENGTH < total_fixed_length)
+  while ((uint_least64_t)FUZZY_BS(bi) * SPAMSUM_LENGTH < total_fixed_length)
   {
     ++bi;
     if (bi == NUM_BLOCKHASHES - 2)
@@ -344,9 +344,9 @@ int fuzzy_update(struct fuzzy_state *self,
 		 const unsigned char *buffer,
 		 size_t buffer_size)
 {
-  if (unlikely(buffer_size > SSDEEP_TOTAL_SIZE_MAX ||
-      SSDEEP_TOTAL_SIZE_MAX - buffer_size < self->total_size )) {
-    self->total_size = SSDEEP_TOTAL_SIZE_MAX + 1;
+  if (unlikely(buffer_size > FUZZY_TOTAL_SIZE_MAX ||
+      FUZZY_TOTAL_SIZE_MAX - buffer_size < self->total_size )) {
+    self->total_size = FUZZY_TOTAL_SIZE_MAX + 1;
   }
   else
     self->total_size += buffer_size;
@@ -386,12 +386,12 @@ int fuzzy_digest(const struct fuzzy_state *self,
   int isz;
   char ch;
   /* Verify total input size. */
-  if (self->total_size > SSDEEP_TOTAL_SIZE_MAX) {
+  if (self->total_size > FUZZY_TOTAL_SIZE_MAX) {
     errno = EOVERFLOW;
     return -1;
   }
   /* Verify that our elimination was not overeager. */
-  assert(bi == 0 || (uint_least64_t)SSDEEP_BS(bi) / 2 * SPAMSUM_LENGTH <
+  assert(bi == 0 || (uint_least64_t)FUZZY_BS(bi) / 2 * SPAMSUM_LENGTH <
 	 self->total_size);
   /* Fixed size optimization. */
   if ((self->flags & FUZZY_STATE_SIZE_FIXED) &&
@@ -400,7 +400,7 @@ int fuzzy_digest(const struct fuzzy_state *self,
     return -1;
   }
   /* Initial blocksize guess. */
-  while ((uint_least64_t)SSDEEP_BS(bi) * SPAMSUM_LENGTH < self->total_size)
+  while ((uint_least64_t)FUZZY_BS(bi) * SPAMSUM_LENGTH < self->total_size)
     ++bi;
   /* Adapt blocksize guess to actual digest length. */
   if (bi >= self->bhend)
@@ -409,7 +409,7 @@ int fuzzy_digest(const struct fuzzy_state *self,
     --bi;
   assert(!(bi > 0 && self->bh[bi].dindex < SPAMSUM_LENGTH / 2));
   /* Block size: write */
-  isz = snprintf(result, remain, "%lu:", (unsigned long)SSDEEP_BS(bi));
+  isz = snprintf(result, remain, "%lu:", (unsigned long)FUZZY_BS(bi));
   if (isz <= 0)
     /* Maybe snprintf has set errno here? */
     return -1;
@@ -617,7 +617,7 @@ int fuzzy_hash_filename(const char *filename, /*@out@*/ char *result)
 //
 // return whether if the two strings do have a common substring.
 //
-#ifndef SSDEEP_ENABLE_POSITION_ARRAY
+#ifndef FUZZY_ENABLE_POSITION_ARRAY
 static bool has_common_substring(const char *s1, size_t s1len, const char *s2, size_t s2len)
 {
   size_t i, j;
@@ -717,7 +717,7 @@ static int edit_distn_pa(const unsigned long long *parray, size_t s1len, const c
     p = v & parray[s2[i] - CHAR_MIN];
     v = (v + p) | (v - p);
   }
-#if SSDEEP_HAVE_STDBIT_H
+#if FUZZY_HAVE_STDBIT_H
   llcs = stdc_count_zeros_ull(v);
 #else
   llcs = __builtin_popcountll(~v);
@@ -811,7 +811,7 @@ static uint32_t score_strings(const char *s1,
   uint32_t score;
   size_t minlen;
 
-#ifdef SSDEEP_ENABLE_POSITION_ARRAY
+#ifdef FUZZY_ENABLE_POSITION_ARRAY
   unsigned long long parray[CHAR_MAX - CHAR_MIN + 1];
   size_t i;
   // skip short strings

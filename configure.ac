@@ -74,7 +74,7 @@ AC_ARG_ENABLE([bitparallel-string-ops],
 [AS_HELP_STRING([--disable-bitparallel-string-ops], [disable using bit-parallel string operations (which would work best at 64-bit environment)])],,
 [enable_bitparallel_string_ops=yes])
 AS_IF([test "x$enable_bitparallel_string_ops" = xno],[
-AC_DEFINE([SSDEEP_DISABLE_POSITION_ARRAY], [1], [Define to 1 if the user chose to disable bit-parallel string operations.])
+AC_DEFINE([FUZZY_DISABLE_POSITION_ARRAY], [1], [Define to 1 if the user chose to disable bit-parallel string operations.])
 ],)
 
 # These includes are required on FreeBSD

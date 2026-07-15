@@ -195,10 +195,6 @@ struct fuzzy_state
   return newstate;
 }
 
-#ifdef S_SPLINT_S
-extern const int EOVERFLOW;
-#endif
-
 int fuzzy_set_total_input_length(struct fuzzy_state *state, uint_least64_t total_fixed_length)
 {
   unsigned int bi = 0;
@@ -558,12 +554,6 @@ int fuzzy_hash_stream(FILE *handle, /*@out@*/ char *result)
   fuzzy_free(ctx);
   return ret;
 }
-
-#ifdef S_SPLINT_S
-typedef size_t off_t;
-int fseeko(FILE *, off_t, int);
-off_t ftello(FILE *);
-#endif
 
 int fuzzy_hash_file(FILE *handle, /*@out@*/ char *result)
 {

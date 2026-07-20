@@ -670,27 +670,29 @@ static bool has_common_substring(const char *s1, size_t s1len, const char *s2, s
 // position array-based version of has_common_substring
 static bool has_common_substring_pa(const unsigned long long *parray, const char *s2, size_t s2len)
 {
-  unsigned long long D;
+  unsigned long long d;
   // ROLLING_WINDOW <= s2len <= 64
-  size_t r = ROLLING_WINDOW - 1;
-  size_t l;
+  size_t r;
+  size_t l = s2len - ROLLING_WINDOW;
   const char *ch;
-  while (r < s2len)
+  while (true)
   {
     // because we want to reuse position array for s1,
     // both s1 and s2 (in the original pseudocode) are reversed.
-    l = r - (ROLLING_WINDOW - 1);
-    ch = &s2[s2len - 1 - r];
-    D = parray[*ch - CHAR_MIN];
-    while (D)
+    ch = s2 + l;
+    d = parray[*ch - CHAR_MIN];
+    r = l + (ROLLING_WINDOW - 1);
+    while (d)
     {
-      r--;
-      D = (D << 1) & parray[*++ch - CHAR_MIN];
-      if (r == l && D)
-	return true;
+      l++;
+      d = (d << 1) & parray[*++ch - CHAR_MIN];
+      if (l == r && d != 0)
+        return true;
     }
     // Skip by ROLLING_WINDOW (needle-independent).
-    r += ROLLING_WINDOW;
+    if (l < ROLLING_WINDOW)
+      break;
+    l -= ROLLING_WINDOW;
   }
   return false;
 }

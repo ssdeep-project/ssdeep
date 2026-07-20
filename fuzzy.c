@@ -700,7 +700,7 @@ static bool has_common_substring_pa(const unsigned long long *parray, const char
 // position array-based version of edit_distn
 static int edit_distn_pa(const unsigned long long *parray, size_t s1len, const char *s2, size_t s2len)
 {
-#if __has_builtin(__builtin_popcountll) || (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L)
+#if __has_builtin(__builtin_popcountll) || FUZZY_HAVE_STDBIT_H
   // Population count is available: either C23 or GCC extension
   unsigned long long v, p;
   size_t i, llcs;

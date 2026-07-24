@@ -702,18 +702,18 @@ static int edit_distn_pa(const unsigned long long *parray, size_t s1len, const c
 {
 #if __has_builtin(__builtin_popcountll) || FUZZY_HAVE_STDBIT_H
   // Population count is available: either C23 or GCC extension
-  unsigned long long v, p;
+  unsigned long long h, p;
   size_t i, llcs;
-  v = (unsigned long long)-1;
+  h = (unsigned long long)-1;
   for (i = 0; i < s2len; i++)
   {
-    p = v & parray[s2[i] - CHAR_MIN];
-    v = (v + p) | (v - p);
+    p = h & parray[s2[i] - CHAR_MIN];
+    h = (h + p) | (h - p);
   }
 #if FUZZY_HAVE_STDBIT_H
-  llcs = stdc_count_zeros_ull(v);
+  llcs = stdc_count_zeros_ull(h);
 #else
-  llcs = __builtin_popcountll(~v);
+  llcs = __builtin_popcountll(~h);
 #endif
   return (int)(s1len + s2len - 2 * llcs);
 #else

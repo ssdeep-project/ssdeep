@@ -19,8 +19,8 @@ AC_PROG_INSTALL
 AC_CONFIG_MACRO_DIR([m4])
 
 case $host in
-  *-*-*linux*-*) AC_DEFINE([__LINUX__],1,[Linux operating system functions]) ;;
-  *-*-mingw32)   CPPFLAGS="-DUNICODE -D_UNICODE $CPPFLAGS"
+    *-*-*linux*-*) AC_DEFINE([__LINUX__],1,[Linux operating system functions]) ;;
+    *-*-mingw32)   CPPFLAGS="-DUNICODE -D_UNICODE $CPPFLAGS"
 esac
 
 
@@ -78,16 +78,15 @@ AC_DEFINE([FUZZY_DISABLE_POSITION_ARRAY], [1], [Define to 1 if the user chose to
 ],)
 
 # These includes are required on FreeBSD
-AC_CHECK_HEADERS([sys/mount.h],[],[],
-[#ifdef HAVE_SYS_TYPES_H
- # include <sys/types.h>
- #endif
- #ifdef HAVE_SYS_PARAM_H
- # include <sys/param.h>
- #endif])
+AC_CHECK_HEADERS([sys/mount.h], [], [], [
+#ifdef HAVE_SYS_TYPES_H
+# include <sys/types.h>
+#endif
+#ifdef HAVE_SYS_PARAM_H
+# include <sys/param.h>
+#endif
+])
 
 AC_FUNC_FSEEKO
 
 AC_OUTPUT
-
-

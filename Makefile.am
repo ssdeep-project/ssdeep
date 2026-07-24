@@ -13,10 +13,11 @@ include_HEADERS=fuzzy.h edit_dist.h
 
 man_MANS=ssdeep.1
 
-ssdeep_SOURCES = main.cpp match.cpp engine.cpp filedata.cpp   	\
-                 dig.cpp cycles.cpp helpers.cpp ui.cpp edit_dist.h     	\
-                 main.h fuzzy.h tchar-local.h ssdeep.h filedata.h match.h \
-		 find-file-size.c sum_table.h
+ssdeep_SOURCES = \
+	main.cpp match.cpp engine.cpp filedata.cpp               \
+	dig.cpp cycles.cpp helpers.cpp ui.cpp edit_dist.h        \
+	main.h fuzzy.h tchar-local.h ssdeep.h filedata.h match.h \
+	find-file-size.c sum_table.h
 
 dll: $(libfuzzy_la_SOURCES)
 	$(CC) $(CFLAGS) -shared -o fuzzy.dll $(libfuzzy_la_SOURCES) \
@@ -71,4 +72,3 @@ nice:
 
 preflight:
 	@grep RBF $(DISTFILES)
-

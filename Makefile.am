@@ -56,13 +56,3 @@ world: distclean
 	$(srcdir)/configure --host=i686-w64-mingw32 LIBS="-Wl,-Bstatic -lstdc++ -lpthread -static-libgcc"
 	$(MAKE) win-package
 	$(MAKE) dist
-
-
-# Only generic routines go below this line
-# ------------------------------------------------------------------
-
-nice:
-	rm -f *~
-
-preflight:
-	@grep RBF $(DISTFILES)

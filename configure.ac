@@ -19,8 +19,8 @@ AC_PROG_INSTALL
 AC_CONFIG_MACRO_DIR([m4])
 
 case $host in
-    *-*-*linux*-*) AC_DEFINE([__LINUX__],1,[Linux operating system functions]) ;;
-    *-*-mingw32)   CPPFLAGS="-DUNICODE -D_UNICODE $CPPFLAGS"
+    *-*-*linux*) AC_DEFINE([__LINUX__],1,[Linux operating system functions]) ;;
+    *-*-mingw*)  CPPFLAGS="-DUNICODE -D_UNICODE $CPPFLAGS"
 esac
 
 

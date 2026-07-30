@@ -41,8 +41,6 @@ NEWS.TXT: $(srcdir)/NEWS
 	cp $< $@
 
 win-docs: $(WINDOWSDOCS)
-#	flip -d $(WINDOWSDOCS)
-#	unix2dos $(WINDOWSDOCS)
 
 win-package: win-docs
 	rm -rf $(distdir).zip $(distdir)
@@ -51,8 +49,6 @@ win-package: win-docs
 	$(STRIP) ssdeep.exe
 	mkdir $(distdir)
 	cp $(WINDOWSDOCS) ssdeep.exe fuzzy.dll fuzzy.def $(srcdir)/fuzzy.h $(srcdir)/sample.c $(distdir)
-#	flip -d $(distdir)/{sample.c,fuzzy.def}
-#	unix2dos $(distdir)/{sample.c,fuzzy.def}
 	zip -lr9 $(distdir).zip $(distdir)
 	rm -rf $(distdir) $(WINDOWSDOCS)
 

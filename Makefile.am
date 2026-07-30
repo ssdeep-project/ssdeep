@@ -44,8 +44,8 @@ win-docs: $(WINDOWSDOCS)
 
 win-package: win-docs
 	rm -rf $(distdir).zip $(distdir)
-	make
-	make dll
+	$(MAKE)
+	$(MAKE) dll
 	$(STRIP) ssdeep.exe
 	mkdir $(distdir)
 	cp $(WINDOWSDOCS) ssdeep.exe fuzzy.dll fuzzy.def $(srcdir)/fuzzy.h $(srcdir)/sample.c $(distdir)
@@ -54,8 +54,8 @@ win-package: win-docs
 
 world: distclean
 	$(srcdir)/configure --host=i686-w64-mingw32 LIBS="-Wl,-Bstatic -lstdc++ -lpthread -static-libgcc"
-	make win-package
-	make dist
+	$(MAKE) win-package
+	$(MAKE) dist
 
 
 # Only generic routines go below this line

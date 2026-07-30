@@ -3,6 +3,7 @@ ACLOCAL_AMFLAGS = -I m4
 lib_LTLIBRARIES = libfuzzy.la
 libfuzzy_la_SOURCES = fuzzy.c edit_dist.c
 libfuzzy_la_LDFLAGS = -no-undefined -version-info 3:0:1
+fuzzy_dll_SOURCES = $(srcdir)/fuzzy.c $(srcdir)/edit_dist.c
 
 bin_PROGRAMS = ssdeep
 ssdeep_SOURCES = \
@@ -16,8 +17,8 @@ include_HEADERS = fuzzy.h edit_dist.h
 
 man_MANS = ssdeep.1
 
-dll: $(libfuzzy_la_SOURCES)
-	$(CC) $(CFLAGS) -shared -o fuzzy.dll $(libfuzzy_la_SOURCES) \
+dll: $(fuzzy_dll_SOURCES)
+	$(CC) $(CFLAGS) -shared -o fuzzy.dll $(fuzzy_dll_SOURCES) \
 		-Wl,--output-def,fuzzy.def,--out-implib,libfuzzy.a
 	$(STRIP) fuzzy.dll
 
@@ -27,17 +28,17 @@ EXTRA_DIST = $(man_MANS) bootstrap sample.c FILEFORMAT m4/README
 
 WINDOWSDOCS = README.TXT API.TXT FILEFORMAT.TXT NEWS.TXT
 
-README.TXT: ssdeep.1
-	COLUMNS=76 man ./ssdeep.1 | col -bx > README.TXT
+README.TXT: $(srcdir)/ssdeep.1
+	COLUMNS=76 man $< | col -bx > $@
 
-API.TXT: README
-	cp README API.TXT
+API.TXT: $(srcdir)/README
+	cp $< $@
 
-FILEFORMAT.TXT: FILEFORMAT
-	cp FILEFORMAT FILEFORMAT.TXT
+FILEFORMAT.TXT: $(srcdir)/FILEFORMAT
+	cp $< $@
 
-NEWS.TXT: NEWS
-	cp NEWS NEWS.TXT
+NEWS.TXT: $(srcdir)/NEWS
+	cp $< $@
 
 win-docs: $(WINDOWSDOCS)
 #	flip -d $(WINDOWSDOCS)
@@ -49,14 +50,14 @@ win-package: win-docs
 	make dll
 	$(STRIP) ssdeep.exe
 	mkdir $(distdir)
-	cp $(WINDOWSDOCS) ssdeep.exe fuzzy.dll fuzzy.def fuzzy.h sample.c $(distdir)
+	cp $(WINDOWSDOCS) ssdeep.exe fuzzy.dll fuzzy.def $(srcdir)/fuzzy.h $(srcdir)/sample.c $(distdir)
 #	flip -d $(distdir)/{sample.c,fuzzy.def}
 #	unix2dos $(distdir)/{sample.c,fuzzy.def}
 	zip -lr9 $(distdir).zip $(distdir)
 	rm -rf $(distdir) $(WINDOWSDOCS)
 
 world: distclean
-	./configure --host=i686-w64-mingw32 LIBS="-Wl,-Bstatic -lstdc++ -lpthread -static-libgcc"
+	$(srcdir)/configure --host=i686-w64-mingw32 LIBS="-Wl,-Bstatic -lstdc++ -lpthread -static-libgcc"
 	make win-package
 	make dist
 

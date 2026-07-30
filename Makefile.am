@@ -1,34 +1,31 @@
-
-bin_PROGRAMS=ssdeep
-
-ssdeep_LDADD=libfuzzy.la
-
 ACLOCAL_AMFLAGS = -I m4
 
-lib_LTLIBRARIES=libfuzzy.la
-libfuzzy_la_SOURCES=fuzzy.c edit_dist.c
-libfuzzy_la_LDFLAGS=-no-undefined -version-info 3:0:1
+lib_LTLIBRARIES = libfuzzy.la
+libfuzzy_la_SOURCES = fuzzy.c edit_dist.c
+libfuzzy_la_LDFLAGS = -no-undefined -version-info 3:0:1
 
-include_HEADERS=fuzzy.h edit_dist.h
-
-man_MANS=ssdeep.1
-
+bin_PROGRAMS = ssdeep
 ssdeep_SOURCES = \
 	main.cpp match.cpp engine.cpp filedata.cpp               \
 	dig.cpp cycles.cpp helpers.cpp ui.cpp edit_dist.h        \
 	main.h fuzzy.h tchar-local.h ssdeep.h filedata.h match.h \
 	find-file-size.c sum_table.h
+ssdeep_LDADD = libfuzzy.la
+
+include_HEADERS = fuzzy.h edit_dist.h
+
+man_MANS = ssdeep.1
 
 dll: $(libfuzzy_la_SOURCES)
 	$(CC) $(CFLAGS) -shared -o fuzzy.dll $(libfuzzy_la_SOURCES) \
 		-Wl,--output-def,fuzzy.def,--out-implib,libfuzzy.a
 	$(STRIP) fuzzy.dll
 
-CLEANFILES=fuzzy.dll fuzzy.def
+CLEANFILES = fuzzy.dll fuzzy.def
 
-EXTRA_DIST=$(man_MANS) bootstrap sample.c FILEFORMAT m4/README
+EXTRA_DIST = $(man_MANS) bootstrap sample.c FILEFORMAT m4/README
 
-WINDOWSDOCS=README.TXT API.TXT FILEFORMAT.TXT NEWS.TXT
+WINDOWSDOCS = README.TXT API.TXT FILEFORMAT.TXT NEWS.TXT
 
 README.TXT: ssdeep.1
 	COLUMNS=76 man ./ssdeep.1 | col -bx > README.TXT

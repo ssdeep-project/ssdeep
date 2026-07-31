@@ -31,13 +31,14 @@
 #include <assert.h>
 #include <errno.h>
 #include <limits.h>
-#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+
+#include <stdbool.h>
 
 #include "fuzzy.h"
 #include "edit_dist.h"

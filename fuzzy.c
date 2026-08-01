@@ -43,12 +43,19 @@
 #include "fuzzy.h"
 #include "edit_dist.h"
 
-#ifndef __has_builtin
-#define __has_builtin(name) 0
-#endif
-
 #ifndef __has_include
 #define __has_include(name) 0
+#endif
+
+#if (FUZZY_HAVE_CONFIG_H && HAVE_STDBIT_H) || __has_include(<stdbit.h>)
+#define FUZZY_HAVE_STDBIT_H 1
+#endif
+#if FUZZY_HAVE_STDBIT_H
+#include <stdbit.h>
+#endif
+
+#ifndef __has_builtin
+#define __has_builtin(name) 0
 #endif
 
 #if __has_builtin(__builtin_expect) || (defined(__GNUC__) && __GNUC__ >= 3)
@@ -63,13 +70,6 @@
 #define MIN_BLOCKSIZE 3
 #define HASH_INIT 0x27
 #define NUM_BLOCKHASHES 31
-
-#if (FUZZY_HAVE_CONFIG_H && HAVE_STDBIT_H) || __has_include(<stdbit.h>)
-#define FUZZY_HAVE_STDBIT_H 1
-#endif
-#if FUZZY_HAVE_STDBIT_H
-#include <stdbit.h>
-#endif
 
 // Enable bit-parallel string processing only if bit-parallel algorithms
 // are enabled and considered to be efficient.

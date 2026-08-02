@@ -20,7 +20,7 @@ AC_CONFIG_MACRO_DIR([m4])
 
 case $host in
     *-*-*linux*) AC_DEFINE([__LINUX__],1,[Linux operating system functions]) ;;
-    *-*-mingw*)  CPPFLAGS="-DUNICODE -D_UNICODE $CPPFLAGS"
+    *-*-mingw*)  CPPFLAGS="-DUNICODE -D_UNICODE $CPPFLAGS" ;;
 esac
 
 

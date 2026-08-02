@@ -29,7 +29,7 @@ EXTRA_DIST = $(man_MANS) bootstrap sample.c FILEFORMAT m4/README
 WINDOWSDOCS = README.TXT API.TXT FILEFORMAT.TXT NEWS.TXT
 
 README.TXT: $(srcdir)/ssdeep.1
-	COLUMNS=76 man $< | col -bx > $@
+	GROFF_SGR=1 groff -man -Tutf8 -P-cbou -rLL=75n -rIN=7n -rBP=7n $< >$@
 
 API.TXT: $(srcdir)/README
 	cp $< $@

@@ -3,7 +3,7 @@ ACLOCAL_AMFLAGS = -I m4
 lib_LTLIBRARIES = libfuzzy.la
 libfuzzy_la_SOURCES = fuzzy.c edit_dist.c
 libfuzzy_la_LDFLAGS = -no-undefined -version-info 3:0:1
-fuzzy_dll_SOURCES = $(srcdir)/fuzzy.c $(srcdir)/edit_dist.c
+fuzzy_dll_SOURCES_ = $(srcdir)/fuzzy.c $(srcdir)/edit_dist.c
 
 bin_PROGRAMS = ssdeep
 ssdeep_SOURCES = \
@@ -17,8 +17,8 @@ include_HEADERS = fuzzy.h edit_dist.h
 
 man_MANS = ssdeep.1
 
-dll: $(fuzzy_dll_SOURCES)
-	$(CC) $(CFLAGS) -shared -o fuzzy.dll $(fuzzy_dll_SOURCES) \
+dll: $(fuzzy_dll_SOURCES_)
+	$(CC) $(CFLAGS) -shared -o fuzzy.dll $(fuzzy_dll_SOURCES_) \
 		-Wl,--output-def,fuzzy.def,--out-implib,libfuzzy.a
 	$(STRIP) fuzzy.dll
 

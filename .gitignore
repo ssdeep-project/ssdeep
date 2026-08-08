@@ -2,6 +2,9 @@
 .*
 !.git?*
 *~
+conftst*
+conftest*
+confdefs*
 
 # /
 /*.tmp

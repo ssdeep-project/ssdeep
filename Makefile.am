@@ -5,7 +5,10 @@ libfuzzy_la_SOURCES = fuzzy.c edit_dist.c
 libfuzzy_la_LDFLAGS = -no-undefined -version-info 3:0:1
 fuzzy_dll_SOURCES_ = $(srcdir)/fuzzy.c $(srcdir)/edit_dist.c
 
-bin_PROGRAMS = ssdeep
+bin_PROGRAMS =
+if !LIBONLY
+bin_PROGRAMS += ssdeep
+endif
 ssdeep_SOURCES = \
 	main.cpp match.cpp engine.cpp filedata.cpp               \
 	dig.cpp cycles.cpp helpers.cpp ui.cpp edit_dist.h        \

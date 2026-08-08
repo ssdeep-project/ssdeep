@@ -23,6 +23,12 @@ case $host in
     *-*-mingw*)  CPPFLAGS="-DUNICODE -D_UNICODE $CPPFLAGS" ;;
 esac
 
+dnl --enable-libonly
+AC_ARG_ENABLE([libonly],
+[AS_HELP_STRING([--enable-libonly], [builds only libfuzzy (not ssdeep)])],,
+[enable_libonly=no])
+AM_CONDITIONAL([LIBONLY], [test "x$enable_libonly" = xyes])
+
 
 # Bring additional directories where things might be found into our
 # search path. I don't know why autoconf doesn't do this by default

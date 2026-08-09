@@ -586,7 +586,7 @@ bool process_win32(state *s, TCHAR *fn)
   if (GetLastError() != ERROR_NO_MORE_FILES) {
     // The Windows API for getting an intelligible error message
     // is beserk. Rather than play their silly games, we
-    // acknowledge that an unknown error occured and hope we
+    // acknowledge that an unknown error occurred and hope we
     // can continue.
     print_error_unicode(s, new_fn, "Unknown error during directory traversal");
     return true;

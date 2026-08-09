@@ -289,7 +289,7 @@ int main(int argc, char **argv)
     // The signature comparsion mode needs to use the command line
     // arguments and argument count. We don't do wildcard expansion
     // on it on Win32 (i.e. where it matters). The setting of 'goal'
-    // to the original argc occured at the start of main(), so we just
+    // to the original argc occurred at the start of main(), so we just
     // need to update it if we're *not* in signature compare mode.
     if (!(s->mode & mode_sigcompare)) {
       goal = s->argc;

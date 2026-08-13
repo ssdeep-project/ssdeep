@@ -1,0 +1,35 @@
+LANGUAGE 0, 0
+
+/* VS_VERSION_INFO VERSIONINFO */
+1 VERSIONINFO
+  FILEVERSION    @PACKAGE_VERSION_WINRES@
+  PRODUCTVERSION @PACKAGE_VERSION_WINRES@
+  FILEFLAGSMASK  0x3fL
+  FILEFLAGS      @PACKAGE_FILEFLAG_WINRES_PREREL@
+  FILEOS         0x40004L  /* VOS_NT_WINDOWS32 */
+  FILETYPE       0x2L      /* VFT_DLL */
+  FILESUBTYPE    0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "ssdeep Project\0"
+            VALUE "FileDescription", "Fuzzy hashing library\0"
+            VALUE "FileVersion", "@PACKAGE_VERSION@@PACKAGE_VERSION_WINRES_PREREL@\0"
+            VALUE "InternalName", "fuzzy\0"
+            VALUE "LegalCopyright", L"Copyright \x00a9 2002-@PACKAGE_YEAR@ ssdeep contributors.\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "fuzzy.dll\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "ssdeep\0"
+            VALUE "ProductVersion", "@PACKAGE_VERSION@@PACKAGE_VERSION_WINRES_PREREL@\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0, 1200
+    END
+END

@@ -2,7 +2,49 @@ AC_INIT([ssdeep],[2.14.2],[floss_ssdeep@irq.a4lg.com])
 AC_PREREQ([2.71])
 AM_INIT_AUTOMAKE
 
-AC_CONFIG_FILES([Makefile])
+dnl Version info
+PACKAGE_VERSION_PRERELEASE=true
+PACKAGE_YEAR=2026
+AC_SUBST([PACKAGE_YEAR])
+
+dnl Parse version info
+ssdeep_parse_version () {
+    t=$(echo "$PACKAGE_VERSION" | sed 's/^\([0-9]\+\(\.[0-9]\+\)\+\).*/\1/')
+    PACKAGE_VERSION_MAJOR=${t%%.*}
+    t=${t#*.}
+    PACKAGE_VERSION_MINOR=${t%%.*}
+    PACKAGE_VERSION_REV=0
+    PACKAGE_VERSION_SUBREV=0
+    case "$t" in
+    *.*)
+        t=${t#*.}
+        PACKAGE_VERSION_REV=${t%%.*}
+        case "$t" in
+        *.*)
+            t=${t#*.}
+            PACKAGE_VERSION_SUBREV=${t%%.*}
+            ;;
+        esac
+        ;;
+    esac
+}
+ssdeep_parse_version
+PACKAGE_VERSION_WINRES=${PACKAGE_VERSION_MAJOR},${PACKAGE_VERSION_MINOR},${PACKAGE_VERSION_REV},${PACKAGE_VERSION_SUBREV}
+PACKAGE_VERSION_WINRES_PREREL=''
+AS_IF([$PACKAGE_VERSION_PRERELEASE], [PACKAGE_VERSION_WINRES_PREREL=' (prerelease)'])
+PACKAGE_VERSION_MAN_PREREL=''
+PACKAGE_FILEFLAG_WINRES_PREREL=0
+AS_IF([$PACKAGE_VERSION_PRERELEASE], [
+    PACKAGE_VERSION_MAN_PREREL=' \- TO BE DETERMINED'
+dnl VS_FF_PRERELEASE == 2
+    PACKAGE_FILEFLAG_WINRES_PREREL=2
+])
+AC_SUBST([PACKAGE_VERSION_WINRES])
+AC_SUBST([PACKAGE_VERSION_WINRES_PREREL])
+AC_SUBST([PACKAGE_VERSION_MAN_PREREL])
+AC_SUBST([PACKAGE_FILEFLAG_WINRES_PREREL])
+
+AC_CONFIG_FILES([Makefile ssdeep.1])
 AC_CONFIG_HEADERS([config.h])
 
 AC_CANONICAL_HOST
@@ -14,18 +56,24 @@ AX_CXX_COMPILE_STDCXX([20], [], [optional])
 AX_CXX_COMPILE_STDCXX([11], [], [optional])
 
 LT_INIT([win32-dll])
+LT_LANG([Windows Resource])
 AC_PROG_INSTALL
+AC_CHECK_TOOL([WINDRES], [windres], [false])
 
 AC_CONFIG_MACRO_DIR([m4])
 
 dnl Detect OS and environment
+ssdeep_os_windows=false
 AS_CASE([$host],
 [*-*-*linux*], [dnl
     AC_DEFINE([__LINUX__],1,[Linux operating system functions])
 ],
 [*-*-mingw*], [dnl
+    ssdeep_os_windows=true
     CPPFLAGS="-DUNICODE -D_UNICODE $CPPFLAGS"
 ])
+AM_CONDITIONAL([WIN_WITH_WINDRES], [$ssdeep_os_windows && test "$WINDRES" != false])
+AS_IF([$ssdeep_os_windows && test "$WINDRES" != false], [AC_CONFIG_FILES([fuzzy-win32res.rc ssdeep-win32res.rc])])
 
 dnl --enable-libonly
 AC_ARG_ENABLE([libonly],

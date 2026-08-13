@@ -2,10 +2,16 @@
 
 This file documents the fuzzy hashing API. Information on how to use the fuzzy
 hashing program ssdeep can be found in the man page. On *nix systems you can
-view this file with:
+view this file with
 
 ```console
 $ man ./ssdeep.1
+```
+
+or
+
+```console
+$ man ./ssdeep.1.in
 ```
 
 Windows users can get the ssdeep usage information from `README.TXT`.

@@ -1,0 +1,75 @@
+LANGUAGE 0, 0
+
+/* VS_VERSION_INFO VERSIONINFO */
+1 VERSIONINFO
+  FILEVERSION    @PACKAGE_VERSION_WINRES@
+  PRODUCTVERSION @PACKAGE_VERSION_WINRES@
+  FILEFLAGSMASK  0x3fL
+  FILEFLAGS      @PACKAGE_FILEFLAG_WINRES_PREREL@
+  FILEOS         0x40004L  /* VOS_NT_WINDOWS32 */
+  FILETYPE       0x1L      /* VFT_APP */
+  FILESUBTYPE    0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "ssdeep Project\0"
+            VALUE "FileDescription", "Fuzzy hashing program\0"
+            VALUE "FileVersion", "@PACKAGE_VERSION@@PACKAGE_VERSION_WINRES_PREREL@\0"
+            VALUE "InternalName", "ssdeep\0"
+            VALUE "LegalCopyright", L"Copyright \x00a9 2002-@PACKAGE_YEAR@ ssdeep contributors.\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "ssdeep.exe\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "ssdeep\0"
+            VALUE "ProductVersion", "@PACKAGE_VERSION@@PACKAGE_VERSION_WINRES_PREREL@\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0, 1200
+    END
+END
+
+/*
+    Except "longPathAware" portion (which is our work),
+    the RT_MANIFEST resource below is from Cygwin project's
+    windows-default-manifest (release 6.5).
+*/
+
+/* CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST MOVEABLE PURE DISCARDABLE */
+1 24 MOVEABLE PURE DISCARDABLE
+BEGIN
+  "<?xml version=""1.0"" encoding=""UTF-8"" standalone=""yes""?>\n"
+  "<assembly xmlns=""urn:schemas-microsoft-com:asm.v1"" manifestVersion=""1.0"">\n"
+  "  <trustInfo xmlns=""urn:schemas-microsoft-com:asm.v3"">\n"
+  "    <security>\n"
+  "      <requestedPrivileges>\n"
+  "        <requestedExecutionLevel level=""asInvoker""/>\n"
+  "      </requestedPrivileges>\n"
+  "    </security>\n"
+  "  </trustInfo>\n"
+  "  <compatibility xmlns=""urn:schemas-microsoft-com:compatibility.v1"">\n"
+  "    <application>\n"
+  "      <!--The ID below indicates application support for Windows Vista -->\n"
+  "      <supportedOS Id=""{e2011457-1546-43c5-a5fe-008deee3d3f0}""/>\n"
+  "      <!--The ID below indicates application support for Windows 7 -->\n"
+  "      <supportedOS Id=""{35138b9a-5d96-4fbd-8e2d-a2440225f93a}""/>\n"
+  "      <!--The ID below indicates application support for Windows 8 -->\n"
+  "      <supportedOS Id=""{4a2f28e3-53b9-4441-ba9c-d69d4a4a6e38}""/>\n"
+  "      <!--The ID below indicates application support for Windows 8.1 -->\n"
+  "      <supportedOS Id=""{1f676c76-80e1-4239-95bb-83d0f6d0da78}""/> \n"
+  "      <!--The ID below indicates application support for Windows 10 -->\n"
+  "      <supportedOS Id=""{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}""/> \n"
+  "    </application>\n"
+  "  </compatibility>\n"
+  "  <application xmlns=""urn:schemas-microsoft-com:asm.v3"">\n"
+  "    <windowsSettings>\n"
+  "       <longPathAware xmlns=""http://schemas.microsoft.com/SMI/2016/WindowsSettings"">true</longPathAware>\n"
+  "    </windowsSettings>\n"
+  "  </application>\n"
+  "</assembly>\n"
+END

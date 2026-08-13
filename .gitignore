@@ -44,6 +44,10 @@ confdefs*
 /NEWS.TXT
 /ssdeep
 /ssdeep-[0-9]*
+/ssdeep.1
+!/ssdeep.1.in
+/*-win32res.rc
+!/*-win32res.rc.in
 
 # /m4/
 /m4/*.m4

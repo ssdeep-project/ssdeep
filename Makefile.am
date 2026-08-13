@@ -1,9 +1,18 @@
 ACLOCAL_AMFLAGS = -I m4
+SUFFIXES = .rc
+
+.rc.$(OBJEXT):
+	$(AM_V_GEN)$(WINDRES) -i $< -o $@
+.rc.lo:
+	$(AM_V_GEN)$(LIBTOOL) --tag=RC --mode=compile $(WINDRES) $< -o $@
 
 lib_LTLIBRARIES = libfuzzy.la
 libfuzzy_la_SOURCES = fuzzy.c edit_dist.c
 libfuzzy_la_LDFLAGS = -no-undefined -version-info 3:0:1
 fuzzy_dll_SOURCES_ = $(srcdir)/fuzzy.c $(srcdir)/edit_dist.c
+if WIN_WITH_WINDRES
+nodist_libfuzzy_la_SOURCES = fuzzy-win32res.rc
+endif
 
 bin_PROGRAMS =
 if !LIBONLY
@@ -15,10 +24,13 @@ ssdeep_SOURCES = \
 	main.h fuzzy.h tchar-local.h ssdeep.h filedata.h match.h \
 	find-file-size.c sum_table.h
 ssdeep_LDADD = libfuzzy.la
+if WIN_WITH_WINDRES
+nodist_ssdeep_SOURCES = ssdeep-win32res.rc
+endif
 
 include_HEADERS = fuzzy.h edit_dist.h
 
-man_MANS = ssdeep.1
+nodist_man_MANS = ssdeep.1
 
 dll: $(fuzzy_dll_SOURCES_)
 	$(CC) $(CFLAGS) -shared -o fuzzy.dll $(fuzzy_dll_SOURCES_) \
@@ -31,7 +43,7 @@ EXTRA_DIST = $(man_MANS) bootstrap sample.c FILEFORMAT m4/README
 
 WINDOWSDOCS = README.TXT API.TXT FILEFORMAT.TXT NEWS.TXT
 
-README.TXT: $(srcdir)/ssdeep.1
+README.TXT: ssdeep.1
 	GROFF_SGR=1 groff -man -Tutf8 -P-cbou -rLL=75n -rIN=7n -rBP=7n $< >$@
 
 API.TXT: $(srcdir)/README

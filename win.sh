@@ -1,5 +1,6 @@
 #!/bin/sh
+set -eu
 
-make distclean
-./configure --host=i686-w64-mingw32 CXXFLAGS="-Wall -W -g -ggdb -O3 -static" CFLAGS="-Wall -W -g -ggdb -O3 -static" LIBS="-Wl,-Bstatic -lstdc++ -lpthread -static-libgcc"
-make
+cmake -S . -B build-win -DCMAKE_TOOLCHAIN_FILE=cmake/mingw32.cmake \
+  -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
+cmake --build build-win --parallel 4

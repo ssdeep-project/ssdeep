@@ -1,1 +1,3 @@
+# Authors
+
 ssdeep was written by Jesse Kornblum, Helmut Grohne and Tsukasa OI.

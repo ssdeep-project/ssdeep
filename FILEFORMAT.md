@@ -1,28 +1,29 @@
+# SSDEEP File Format Version 1.1
 
-SSDEEP FILE FORMAT VERSION 1.1
+## 1. Revision History
 
-1. REVISION HISTORY
-
-14 Aug 2006 - Initial version (jk)
-15 Jul 2010 - Adding quotation marks to filenames
-
+- 14 Aug 2006 - Initial version (jk)
+- 15 Jul 2010 - Adding quotation marks to filenames
 
 
-2. FILE HEADER
+
+## 2. File Header
 
 The first line of the file is a header, like this:
 
+```text
 ssdeep,1.1--blocksize:hash:hash,filename
+```
 
-ssdeep - Identifies the file type
-1.1    - The version of the file format, NOT the version of the program
---     - Separator
+- `ssdeep` - Identifies the file type
+- `1.1` - The version of the file format, NOT the version of the program
+- `--` - Separator
 
 The remainder of the line identifies the format of the file. 
 Note that for version 1.1 these values must be given EXACTLY as shown above
 
 
-3. FILE DATA
+## 3. File Data
 
 Each line represents the hash of one file as listed in the header.
 Specifically, we have the blocksize used by the program, the hash 
@@ -31,6 +32,6 @@ are enclosed in quotation marks. Filenames which contain a quotation mark
 will have those quotes slash escaped. For example, the file ma"in.c 
 will be listed as: 
 
+```text
 "ma\"in.c"
-
-
+```

@@ -17,7 +17,7 @@
    C:\> lib /machine:i386 /def:fuzzy.def
    C:\> cl sample.c fuzzy.lib
 
-   See the README that came with this file for more details on using
+   See the README.md that came with this file for more details on using
    the library on Windows systems with Microsoft Visual C. 
 
 

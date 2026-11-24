@@ -1,6 +1,5 @@
 #!/bin/sh
+set -eu
 
-make distclean
-./configure CXXFLAGS="-Wall -W -g -ggdb -O0" CFLAGS="-Wall -W -g -ggdb -O0"
-make -j4
-
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
+cmake --build build --parallel 4

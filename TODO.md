@@ -1,14 +1,12 @@
+# TODO
+
 - Update man page
 
 - Update web page, to include new man page
 
-- Write README
+- Write README.md
 
 - Find a way to estimate device sizes on Windows
     Perhaps an IOTCL_DISK_GET_DRIVE_GEOMETRY_EX would work?
 
 - See if Windows Vista's symbolic links create problems for dig.c
-
-
-
-

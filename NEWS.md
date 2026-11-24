@@ -1,78 +1,80 @@
-** Version 2.14.2 - TO BE DETERMINED
+# News
 
-* Bug Fixes
+## Version 2.15 - TO BE DETERMINED
+
+### Bug Fixes
 
   - Improved guards for including header files from the config
 
-** Version 2.14.1 - 7 Nov 2017
+## Version 2.14.1 - 7 Nov 2017
 
-* Bug Fixes
+### Bug Fixes
 
   - Fixed a spelling error.
   - Made relative path mode on Win32 to work.
 
 
-** Version 2.14 - 12 Sep 2017
+## Version 2.14 - 12 Sep 2017
 
-* New Features
+### New Features
 
   - Optimizations to the fuzzy hashing engine. (hash generator can run as twice
     as fast and comparison can run 1.5 through 5 times faster [heavily depends
     on the data and platform] than the previous release)
 
-* Bug Fixes
+### Bug Fixes
 
   - Fixed issue when certain memory allocation is failed.
 
 
-** Version 2.13 - 24 Apr 2015
+## Version 2.13 - 24 Apr 2015
 
-* New Features
+### New Features
 
   - Added fuzzy_set_total_input_length function to the API.
   - Added support for files up to 192GB.
   - Added support for arbitrary length input from the standard input.
 
-* Bug Fixes
+### Bug Fixes
 
   - Fixed issue when comparing hashes from relatively simple files.
   - Fixed portability issues.
 
 
-** Version 2.12 - 24 Oct 2014
+## Version 2.12 - 24 Oct 2014
 
-* Bug Fixes
+### Bug Fixes
 
   - Fixed issue when comparing identical hashes but with different
     block sizes.
 
 
-** Version 2.11.1 - 27 Sep 2014
+## Version 2.11.1 - 27 Sep 2014
 
-* Bug Fixes
+### Bug Fixes
 
   - Made libfuzzy compile as a shared library again.
 
 
-** Version 2.11 - 11 Sep 2014
+## Version 2.11 - 11 Sep 2014
 
-* New Features
+### New Features
 
   - Added fuzzy_clone function to the API.
   - Moved to modern Win32 compiler.
 
-* Bug Fixes
+### Bug Fixes
 
   - Fixed edge case on signature generaion. Behavior now matches v2.9 again.
 
 
-** Version 2.10 - 17 Jul 2013
+## Version 2.10 - 17 Jul 2013
 
-* New Features
+### New Features
 
   - Fuzzy Hashing engine re-written to be thread safe.
 
-* Bug Fixes
+### Bug Fixes
 
   - Able to handle long file paths on Win32.
   - Fixed bug on comparing signatures with the same block size.
@@ -80,35 +82,35 @@
   - Fixed memory leak
 
 
-** Version 2.9 - 23 Jul 2012
+## Version 2.9 - 23 Jul 2012
 
-* New Features
+### New Features
 
   - Added warning message for when some data on stdin is not hashed.
   - Can now hash up to 512MB of data on stdin.
   - Added clustering mode to group together matching files
 
-* Bug Fixes
+### Bug Fixes
 
   - Fixed incorrect match scores for hashes with long filenames.
 
 
-** Version 2.8 - 25 May 2012
+## Version 2.8 - 25 May 2012
 
-* New Features
+### New Features
 
   - Converted to C++
 
-* Bug Fixes
+### Bug Fixes
 
   - Fixed filename display on Win32.
   - Fixed support for large files on some platforms.
   - Fixed errors in handling command line argument processing.
 
 
-** Version 2.7 - 30 Sep 2011
+## Version 2.7 - 30 Sep 2011
 
-* New Features
+### New Features
 
   - Added the capability to process the first 100MB of data
     from standard input.
@@ -116,26 +118,26 @@
   - Added a warning message when the program does not process
     any file large enough to produce a meaningful result.
 
-* Bug Fixes
+### Bug Fixes
 
   - Standard errors are now sent to stderr, not stdout.
 
 
-** Version 2.6 - 28 Sep 2010
+## Version 2.6 - 28 Sep 2010
 
-* New Features
+### New Features
 
   - Modified the output file format to allow for proper escaping of
     filenames with quotation marks in them.
 
-* Bug Fixes
+### Bug Fixes
 
   - Added quotation marks to filenames in CSV matching mode.
 
 
-** Version 2.5 - 6 May 2010
+## Version 2.5 - 6 May 2010
 
-* New Features
+### New Features
 
   - Added API documentation
 
@@ -143,75 +145,75 @@
 
   - Added compatibility for compiling with C++
 
-* Bug Fixes
+### Bug Fixes
 
   - Added parameter validation to API functions
 
   - Fixed some cosmetic errors in error handling
 
 
-** Version 2.4 - 25 Feb 2010
+## Version 2.4 - 25 Feb 2010
 
-* New Features
+### New Features
 
   - Added -k mode to compare unknown signatures against known signatures.
 
 
 
-** Version 2.3 - 10 Jan 2010
+## Version 2.3 - 10 Jan 2010
 
-* New Features
+### New Features
 
   - Added -a mode to display all 'matches', regardless of score.
 
 
 
-** Version 2.2 - 22 Jul 2009
+## Version 2.2 - 22 Jul 2009
 
-* New Features
+### New Features
 
   - Added capability to compare two or more files containing signatures
     against one another.
 
-* Bug Fixes
+### Bug Fixes
 
   - Changed default behavior to exit program on invalid command line flags
 
 
 
-** Version 2.1 - 1 Jan 2009
+## Version 2.1 - 1 Jan 2009
 
-* New Features
+### New Features
 
   - Added fuzzy_hash_filename function to hash an entire file given
     only its filename. Avoids issues on Win32 systems.
 
-* Bug Fixes
+### Bug Fixes
 
   - Fixed -p mode to display output
 
 
 
 
-** Version 2.0 - 2 Apr 2008
+## Version 2.0 - 2 Apr 2008
 
-* New Features
+### New Features
 
   - Created fuzzy hashing API/DLL
   - Added support for filenames with Unicode characters on Win32
   - Added threshold mode
   - Added CSV mode
 
-* Bug Fixes
+### Bug Fixes
 
   - Fixed extra characters appearing during verbose mode
 
 
 
 
-** Version 1.1 - 14 Aug 2006
+## Version 1.1 - 14 Aug 2006
 
-* New Features
+### New Features
 
   - First public release
   - Added verbose mode to display filenames as they're being hashed
@@ -223,21 +225,21 @@
   - Added LARGEFILE_SOURCE define to Linux version to allow processing
     of large files. (You never know...)
 
-* Bug Fixes
+### Bug Fixes
 
   - Fixed cosmetic errors in usage message. Updated man page.
 
 
 
 
-** Version 1.0 - 31 Mar 2006
+## Version 1.0 - 31 Mar 2006
 
-* New Features
+### New Features
 
  - Released internally
  - Added silent mode, -s. All error messages are suppressed.
 
-* Bug Fixes
+### Bug Fixes
 
  - Fixed failure to close files after reading in engine.c
  - Fixed routine to read headers of matching hashes on Windows.
@@ -256,9 +258,9 @@
 
 
 
-** Version 0.1 - 4 Nov 2005
+## Version 0.1 - 4 Nov 2005
 
-* New Features
+### New Features
 
  - Proof of concept
  - This version supports recursion, relative and bare file names, and

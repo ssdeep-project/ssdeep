@@ -40,7 +40,7 @@ static bool initialize_state(state *s)
 static void usage(void)
 {
   print_status ("%s version %s by Jesse Kornblum and the ssdeep Project", __progname, VERSION);
-  print_status ("For copyright information, see man page or README.TXT.");
+  print_status ("For copyright information, see man page or COPYING.");
   print_status ("");
   print_status ("Usage: %s [-m file] [-k file] [-dpgvrsblcxa] [-t val] [-h|-V] [FILES]", 
 	  __progname);

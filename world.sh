@@ -1,6 +1,5 @@
 #!/bin/sh
+set -eu
 
-make distclean
-./configure CXXFLAGS="-Wall -W -g -ggdb -O0" CFLAGS="-Wall -W -g -ggdb -O0"
-make world
-
+./win.sh
+cmake --build build-win --target package package_source
